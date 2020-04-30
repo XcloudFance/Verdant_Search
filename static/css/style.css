@@ -1,0 +1,133 @@
+
+/* a,span,div,p,span,label,input,button{
+	font-family: "Noto Sans SC","PingFang SC","Lantinghei SC","Microsoft YaHei",arial,"\5b8b\4f53",sans-serif, tahoma,Arial, Helvetica, sans-serif;
+	font-weight: 400;
+} */
+
+/*搜索框样式*/
+.form-scarch{
+	width: 560px;
+	height: 38px;
+	border: 0;
+	box-sizing: content-box;
+	padding: 0 6px 0 0;
+	margin: 3px 1px 4px 0;
+	outline: 0;
+}
+
+.form-div{
+	width: 600px;
+	height: 42px;
+	border: 1px solid #ccc;
+	box-shadow: 0 3px 3px rgba(0,0,0,0.33);
+	margin: 0 auto;
+	background-color: white;
+}
+
+.form-focus{
+	height: 100%;
+	width: 100%;
+	visibility: hidden;
+	opacity: 0;
+	background-color: rgba(0,0,0,0.75);
+	position: absolute;
+	top: 0;
+	left: 0;
+	transition: all 200ms ease-out;
+}
+
+/* 搜索按钮 */
+
+.form-button{
+	border: 0;
+	text-align: center;
+	width: 240px;
+	height: 32px;
+	margin: 0 auto;
+	outline: 0;
+	background-color: #00bc12;
+	cursor: pointer;
+	transition: all .2s ease;
+	color: white;
+	font-size: 16px;
+}
+
+.form-button:hover{
+	background-color: #5DBD14;
+}
+
+.form-button:active{
+	background-color: #009a12;
+}
+
+/*搜索结果*/
+
+.result-cont{
+	text-overflow: ellipsis;
+	font-size: 13px;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+	overflow: hidden;
+}
+
+.search-result-li{
+	height: 110px;
+}
+
+.search-result-li ol{
+	
+}
+
+.search-result-li ol li{
+	padding: 2px 4px 0;
+	transition: all .2s ease-out;
+	border: 1px solid rgba(255,255,255,0);
+	border-radius: 2px;
+	margin-bottom: 16px;
+}
+
+/* .search-result-li ol li:hover{
+	border: 1px solid rgba(0,0,0,.25);
+	box-shadow: 1px 1px 4px rgba(0,0,0,0.25);
+}
+ */
+.search-result-li ol li div{
+	/* height: 96px; */
+}
+
+.search-result-li ol li h2 a{
+	color: #001ba0;
+	text-decoration: blink;
+	border-bottom: 0px solid black;
+	transition: all .04s ease;
+}
+
+.search-result-li ol li h2 a:hover{
+	//text-decoration: underline;
+	border-bottom: 2px solid black;
+	padding-bottom: 1px;
+}
+
+.url-green{
+	font-size: 14px;
+	color: #669933;
+}
+
+.return-black{
+	color: rgba(0,0,0,0.55);
+	font-size: 14px;
+}
+
+.form-button{
+	font-size: 16px;
+	border: 0;
+	width: 338px;
+	height: 40px;
+	background-color: #00bc12;
+	transition: all .2s ease;
+	cursor: pointer;
+	padding: 1px 10px;
+	color: white;
+	outline: 0;
+}

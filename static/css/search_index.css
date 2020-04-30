@@ -1,0 +1,42 @@
+.form-focus{
+	height: 100%;
+	width: 100%;
+	visibility: hidden;
+	opacity: 0;
+	background-color: rgba(0,0,0,0.55);
+	position: absolute;
+	top: 0;
+	left: 0;
+	transition: all 200ms ease-out;
+}
+
+.form-button{
+	font-size: 16px;
+	width: 160px;
+	height: 36px;
+	display: inline-block;
+	outline: none;
+	border: 0;
+	background-color: #009c0f;
+	transition: all .2s ease;
+	cursor: pointer;
+	padding: 1px 10px;
+	color: white;
+}
+
+#input_form_k{
+	width: 430px;
+	height: 36px;
+	padding: 0 6px 0 6px;
+	border: 0;
+	display: inline-block;
+	outline: none;
+}
+
+.form-button:hover{
+	background-color: #5DBD14;
+}
+
+.form-button:active{
+	background-color: #009a12;
+}

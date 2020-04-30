@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet"/>
+		<style>
+			html,body { height: 100%;margin: 0; padding: 0;line-height: 0px;}
+		</style>
+		<link href="{{url_for('static',path ='css/search_index.css')}}" rel="stylesheet"/>
+	</head>
+	<body>
+		<div style="position: relative;padding-bottom: 0;height: 100%;min-height: 600px;">	
+			<div style="width: 590px;top: 27.2%;position: sticky;z-index: 2;margin: 0 auto;">
+				<div style="display: table;margin: 0 auto;padding: 8px;">
+					<img style="height:72px" src="{{url_for('static',path='img/verdant1.png')}}"/>
+				</div>
+				
+				<div style="box-shadow: 0 2px 5px 0 rgba(0,0,0,0.15);">
+					<div style="display: block;width: 590px;z-index: 10;height: 36px;">
+						<span style="width: 590px;display: inline-block;">
+							<input id="input_form_k" type="text" style="width: 578px;" placeholder="您想搜索什么？"/>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="form-focus" id="form_focus" data-bm="24"></div>
+		</div>
+	</body>
+	<script>
+		document.getElementById('input_form_k').addEventListener('focusin',function(){
+			document.getElementById('form_focus').style.opacity = '0.51';
+			document.getElementById('form_focus').style.visibility = 'visible';
+		});
+		
+		document.getElementById('input_form_k').addEventListener('focusout',function(){
+			document.getElementById('form_focus').style.opacity = '0';
+			document.getElementById('form_focus').style.visibility = 'hidden';
+		});
+		
+		document.addEventListener("keyup",function(e){
+			if(e.key==="Enter"){
+								/* 这个 search_list.html 替换成你要跳转到页面 */
+				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+			}
+		})
+	</script>
+</html>

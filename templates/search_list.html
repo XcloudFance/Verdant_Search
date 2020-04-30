@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:500" rel="stylesheet"/> -->
+		<style>
+			html,body { height: 100%;margin: 0; padding: 0;line-height: 21px;}
+			h1,h2{font: 19px 'Segoe UI',Arial,Helvetica,Sans-Serif;color: #600092;}
+			html, body, p, img, ol, ul, li, form, table, tr, th, td {
+				border: 0;
+				border-collapse: collapse;
+				border-spacing: 0;
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			
+			h2{margin: 3px;}
+		</style>
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet"/>
+		<style>
+			body,h1,h2,h3,h4,h5,h6,a,span,div,p,span,label,input{
+				font-family: "Noto Sans SC","PingFang SC","Lantinghei SC","Microsoft YaHei",arial,"\5b8b\4f53",sans-serif, tahoma,Arial, Helvetica, sans-serif;
+				font-weight: 400;
+			}
+		</style>
+		<link href="{{url_for('static',path = 'css/search_content.css')}}" rel="stylesheet"/>
+		<link href="{{url_for('static',path = 'css/search_index.css')}}" rel="stylesheet"/>
+	</head>
+	<body>
+		<div style="width: 100%;height: 60px;">
+			<div style="padding-top: 8px;">
+				<div style="width: 130px;float: left;margin: 4px;">
+					<div style="width: 110px;height: 36px;display: table;margin: 0 auto;margin-top: 3px;">
+						<img src="{{url_for('static',path = 'img/c_青荇搜索_1.jpg')}}"/>
+					</div>
+				</div>
+				<div class="search-input-w" style="width: 590px;top: 27.2%;">
+					<div style="/* box-shadow: 0 2px 5px 0 rgba(0,0,0,0.15);*/border: 1px solid #757575;">
+						<div style="display: block;width: 428px;z-index: 10;height: 36px;float: left;">
+							<span style="width: 428px;display: inline-block;">
+								<input id="input_form_k" type="text"/>
+							</span>
+						</div>
+						<div>
+							<span style="width: 160px;display: inline-block;">
+								<input class="form-button" id="start_search" type="button" value="搜索"/>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="width: 100%;">
+			<div style="word-break: break-all;word-wrap: break-word;position: relative;border-top: 1px solid rgba(0,0,0,.15);">
+				<div class="result-content-left">
+					<span>搜索结果<span class="return-black"> (共有 3 条结果)</span> </span>
+					<div class="search-result-li">
+						<ol id="result_list_ol">
+							
+						</ol>
+					</div>
+				</div>
+				<div class="result-content-right">
+					<span>推荐</span>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>		
+		function JsonToArray(stree){
+			let p = [];
+			for (let i=1;i<=stree.length;i++) {
+				p.push(stree[i.toString()])
+			}
+			return p
+		}
+		
+		function GetQueryString(name) {
+			let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			let r = window.location.search.substr(1).match(reg);
+			if (r != null)
+				return decodeURIComponent(r[2]);
+			return null;
+		}
+		
+		var keyword = GetQueryString("keyword");
+		document.getElementById("input_form_k").value = keyword;
+		SetList(keyword)
+		SetList(document.getElementById("input_form_k").value)
+		
+		document.getElementById("start_search").addEventListener("click",function(){
+			location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+		});
+		
+		function SetList(vl){
+			let xhr = null;
+			if (window.XMLHttpRequest){
+			    xhr = new XMLHttpRequest();
+			}else if (window.ActiveXObject){
+			    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			
+			xhr.open('GET', '/search?keyword=' + vl + '&amount=0', true);
+			xhr.onload = function () {
+				document.getElementById('result_list_ol').innerHTML = '';
+				let v = document.getElementById("result_list_ol");
+				let dt1 = (JSON.parse(xhr.response));
+				let dt = JsonToArray(dt1);
+				
+				dt.forEach((el) => {
+					console.log(el);
+					let l = document.createElement("li");
+					l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
+								  '<span class="url-green">'+ el.url + '</span>'+
+								  '<div class="result-cont">' + el.detail + '</div>';
+					v.appendChild(l)
+				});
+			}
+			xhr.send();
+		}
+	</script>
+</html>
