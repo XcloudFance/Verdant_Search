@@ -55,11 +55,15 @@
 		<div style="width: 100%;">
 			<div style="word-break: break-all;word-wrap: break-word;position: relative;border-top: 1px solid rgba(0,0,0,.15);">
 				<div class="result-content-left">
-					<span>搜索结果<span class="return-black"> (共有 3 条结果)</span> </span>
+					<span>搜索结果<span class="return-black"> (当前页共有 <span id="result_len">3</span> 条结果)</span> </span>
 					<div class="search-result-li">
 						<ol id="result_list_ol">
 							
 						</ol>
+					</div>
+					<div class="corl-v">
+						<a href="/">上一页</a>
+						<a href="/">下一页</a>
 					</div>
 				</div>
 				<div class="result-content-right">
@@ -87,14 +91,30 @@
 		
 		var keyword = GetQueryString("keyword");
 		document.getElementById("input_form_k").value = keyword;
-		SetList(keyword)
-		SetList(document.getElementById("input_form_k").value)
+		var amount = GetQueryString("amount");
+		const lastpg = parseInt(amount) - 10 <= 0 ? 0 : parseInt(amount) - 10;
+		const nextpg = parseInt(amount) != NaN ? parseInt(amount) + 10 : 10;
 		
 		document.getElementById("start_search").addEventListener("click",function(){
 			location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
 		});
 		
-		function SetList(vl){
+		{
+			let px = document.querySelector(".corl-v").querySelectorAll("a");
+			px[0].href = 'searchlist?keyword=' + keyword + '&amount=' + lastpg;
+			px[1].href = 'searchlist?keyword=' + keyword + '&amount=' + nextpg;
+		}
+		
+		function SetList(vl,amount_){
+			let v = document.getElementById("result_list_ol");
+			if(keyword==null){
+				let l = document.createElement("li");
+					l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>'+
+								  '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
+					v.appendChild(l)
+				return false
+			}
+			amount_ = parseInt(amount_) !=NaN ? parseInt(amount_) :0;
 			let xhr = null;
 			if (window.XMLHttpRequest){
 			    xhr = new XMLHttpRequest();
@@ -102,23 +122,36 @@
 			    xhr = new ActiveXObject("Microsoft.XMLHTTP");
 			}
 			
-			xhr.open('GET', '/search?keyword=' + vl + '&amount=0', true);
+			xhr.open('GET', '/search?keyword=' + vl + '&amount=' + amount_, true);
 			xhr.onload = function () {
 				document.getElementById('result_list_ol').innerHTML = '';
 				let v = document.getElementById("result_list_ol");
 				let dt1 = (JSON.parse(xhr.response));
-				let dt = JsonToArray(dt1);
-				
-				dt.forEach((el) => {
-					console.log(el);
+				if(dt1 != {}){
+					let dt = JsonToArray(dt1);
+					document.getElementById('result_len').innerText = dt1.length;
+					
+					dt.forEach((el) => {
+						console.log(el);
+						let l = document.createElement("li");
+						l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
+									  '<span class="url-green">'+ el.url + '</span>'+
+									  '<div class="result-cont">' + el.detail + '</div>';
+						v.appendChild(l)
+					});
+				}else{
 					let l = document.createElement("li");
-					l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
-								  '<span class="url-green">'+ el.url + '</span>'+
-								  '<div class="result-cont">' + el.detail + '</div>';
+					l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>'+
+								  '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
 					v.appendChild(l)
-				});
+				}
 			}
 			xhr.send();
+		}
+
+		window.onload = function(){
+			console.log(parseInt(amount))
+			SetList(keyword,amount)
 		}
 	</script>
 </html>

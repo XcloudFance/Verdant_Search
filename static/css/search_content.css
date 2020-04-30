@@ -72,3 +72,29 @@
 	color: rgba(0,0,0,0.55);
 	font-size: 14px;
 }
+
+.corl-v{
+	
+}
+
+.corl-v a{
+	text-decoration: none;
+	height: 32px;
+	padding: 0 18px;
+	border: 1px solid #e1e2e3;
+	display: inline-block;
+	text-align: center;
+	line-height: 28px;
+	cursor: pointer;
+	color: #2f2f2f;
+	background: #FFFFFF;
+	transition: all .35s ease;
+}
+
+.corl-v a:hover{
+	background: #DDDDDD;
+}
+
+.err_result{
+	
+}
