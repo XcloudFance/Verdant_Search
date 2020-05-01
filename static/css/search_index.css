@@ -1,11 +1,12 @@
 .form-focus{
 	height: 100%;
 	width: 100%;
-	background-color: rgba(255,255,255,1);
 	position: absolute;
 	top: 0;
 	left: 0;
-	transition: all 200ms ease-out;
+	transition: all 250ms ease-out;
+	z-index: 5;
+	background-position: center;
 }
 
 .form-button{
