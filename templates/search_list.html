@@ -60,10 +60,10 @@
 						<ol id="result_list_ol">
 							
 						</ol>
-					</div>
-					<div class="corl-v">
-						<a href="/">上一页</a>
-						<a href="/">下一页</a>
+						<div class="corl-v">
+							<a href="/">上一页</a>
+							<a href="/">下一页</a>
+						</div>
 					</div>
 				</div>
 				<div class="result-content-right">
@@ -92,11 +92,18 @@
 		var keyword = GetQueryString("keyword");
 		document.getElementById("input_form_k").value = keyword;
 		var amount = GetQueryString("amount");
-		const lastpg = parseInt(amount) - 10 <= 0 ? 0 : parseInt(amount) - 10;
-		const nextpg = parseInt(amount) != NaN ? parseInt(amount) + 10 : 10;
+		amount = amount!=null && typeof parseInt(amount)=="number" ? parseInt(amount) : 0;
+		const lastpg = amount - 10 <= 0 ? 0 : amount - 10;
+		const nextpg = amount + 10;
 		
 		document.getElementById("start_search").addEventListener("click",function(){
 			location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+		});
+
+		document.getElementById('input_form_k').addEventListener("keyup",function(e){
+			if(e.key=="Enter"){
+				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+			}
 		});
 		
 		{
@@ -132,9 +139,15 @@
 				if(xhr.response != '{}'){
 					let dt = JsonToArray(dt1);
 					document.getElementById('result_len').innerText = dt1.length;
+
+					if(dt1.length < 10){
+						let px = document.querySelector(".corl-v").querySelectorAll("a");
+						px[1].href = "";
+						px[1].style.display = "none";
+					}
 					
 					dt.forEach((el) => {
-						console.log(el);
+						//console.log(el);
 						let l = document.createElement("li");
 						l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
 									  '<span class="url-green">'+ el.url + '</span>'+
@@ -152,7 +165,6 @@
 		}
 
 		window.onload = function(){
-			console.log(parseInt(amount))
 			SetList(keyword,amount)
 		}
 	</script>

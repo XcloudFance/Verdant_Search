@@ -1,0 +1,2 @@
+$ cat .gitignore
+*/__pycache__

@@ -41,6 +41,13 @@
 			document.getElementById('form_focus').style.opacity = '0';
 			document.getElementById('form_focus').style.visibility = 'hidden';
 		});
+
+		document.getElementById('input_form_k').addEventListener("keyup",function(e){
+			if(e.key=="Enter"){
+				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+				//console.log(e,e.target.value)
+			}
+		});
 		
 		document.getElementById('start_search').addEventListener("click",function(e){
 			location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
