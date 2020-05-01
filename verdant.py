@@ -3,7 +3,7 @@ import pymysql
 import fastapi
 import demjson
 from fastapi import FastAPI
-from redis import StrictRedis
+
 from starlette.responses import Response
 from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
