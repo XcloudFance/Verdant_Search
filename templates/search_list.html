@@ -128,7 +128,8 @@
 				document.getElementById('result_list_ol').innerHTML = '';
 				let v = document.getElementById("result_list_ol");
 				let dt1 = (JSON.parse(xhr.response));
-				if(dt1 != {}){
+				
+				if(xhr.response != '{}'){
 					let dt = JsonToArray(dt1);
 					document.getElementById('result_len').innerText = dt1.length;
 					
