@@ -26,7 +26,7 @@ hea_ordinary = {
     "Host": "jyj.quanzhou.gov.cn",
     "Pragma": "no-cache",
     "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
 }
 hea = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -38,7 +38,7 @@ hea = {
     #"Host": "jyj.quanzhou.gov.cn",
     "Pragma": "no-cache",
     "Upgrade-Insecure-Requests": "1",
-    "User-Agent": "Mozilla/5.0 (compatible;VerdantSpider/1.0)",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
 }
 
 mysqlconfig = {}
@@ -144,14 +144,15 @@ def mainly(url):
                 tmpcode = code
                 # 取body做为内容
                 maincontent = get_p_content(code)
-
+                title = get_title(code)
                 dictlist[
                     i
                 ] = (
                     maincontent
                 )  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
                 geturl += geturls
-                wordlist = list(set(Cut(maincontent)))
+                wordlist = list(set(Cut(maincontent) + Cut(title)))
+                
                 # Initially, insert the URL into content table
                 cursor.execute("select count(*) as value from content")
                 my_weigh = weigh_judgement(i, code)  # 把权值保存到变量，一会儿要用
@@ -162,7 +163,7 @@ def mainly(url):
                     + ",%s,%s,%s,"
                     + str(my_weigh)
                     + ")",
-                    (i, dictlist[i], get_title(code)),
+                    (i, dictlist[i],title),
                 )
                 mysql.commit()
                 # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦

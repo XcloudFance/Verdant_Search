@@ -8,6 +8,8 @@ from starlette.responses import Response
 from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
+from cut import *
+
 mysql = pymysql.connect(host='127.0.0.1',port = 3306,user='root',password = 'root',db='cylinder')
 cursor = mysql.cursor()
 # -- fastapi initialization --
@@ -32,9 +34,12 @@ async def search(*,keyword,amount):
 
     cursor.execute('select value from search where keyer = %s',(keyword))
     ret = cursor.fetchone()
+    
     response_json = {}
     #在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
     if ret == None:
+        #试试分词
+
         return {}
     else:
         index_list = ret[0].split('|')
