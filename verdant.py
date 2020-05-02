@@ -39,8 +39,16 @@ async def search(*,keyword,amount):
     #在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
     if ret == None:
         #试试分词
-
-        return {}
+        #对结果进行分词
+        res_ = Cut(keyword)
+        set_ = {}
+        for i in res_:
+            cursor.execute('select * from search where keyword = %s',(i,))
+            if set_ == {}:
+                set_ = set(cursor.fetchone()[0])
+            else:
+                set_ = set(cursor.fetchone()[0]) & set_
+        return set_
     else:
         index_list = ret[0].split('|')
         if end_amount > len(index_list):
