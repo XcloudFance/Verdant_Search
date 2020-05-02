@@ -105,6 +105,12 @@
 				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
 			}
 		});
+
+		if(keyword!=null){
+			document.querySelector("title").innerText = keyword + " - 青荇搜索";
+		}else{
+			document.querySelector("title").innerText = "青荇搜索";
+		}
 		
 		{
 			let px = document.querySelector(".corl-v").querySelectorAll("a");
