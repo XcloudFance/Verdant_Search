@@ -9,7 +9,6 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from cut import *
-import jsonpage
 import pymysql
 import socket, socketserver
 import threading
@@ -94,6 +93,22 @@ def get_p_content(urlcode):
         ret += i.get_text() + " "
     return ret
 
+def get_keywords(urlcode):
+    bs = BeautifulSoup(urlcode,'lxml')
+    ret = ''
+    keyword = ''
+    description = ''
+    try:
+        keyword = bs.find(attrs={"name":"keywords"})['content']
+    except:
+        pass
+    try:
+        description = bs.find(attrs={"name":"description"})['content']
+    except:
+        pass
+    ret = keyword + description
+    return ret
+
 
 def weigh_judgement(url, urlcode):
     weigh = 10
@@ -104,6 +119,13 @@ def weigh_judgement(url, urlcode):
     #print(weigh_json)
     for i in weigh_json:
         if url.find(i) != -1:
+            weigh += int(weigh_json[i])
+    weigh_json = {}
+    f = open("./profession.json", "r+")
+    weigh_json = demjson.decode(f.read())
+    f.close()
+    for i in weigh_json:
+        if url == i:
             weigh += int(weigh_json[i])
     weigh += random.randint(1, 4)
     return weigh
@@ -118,6 +140,8 @@ def easier(url):
             url = url[: len(url) - 1]
         else:
             break
+    if url[:5] == 'https':
+        url = url[:4] +url[5:]
     return url[:]
 
 
@@ -134,7 +158,8 @@ def mainly(url):
                 # req = urllib.request.Request(url=i, headers=headers)
                 i = easier(i)
                 req = requests.get(i, hea)
-                req.encoding = "utf-8"
+                req.encoding = req.apparent_encoding #这是个坑，每个网站都有不同的编码机制
+                #req.encoding = "utf-8"
                 if i in dictlist:
                     continue
                 if i.find(".png") != -1:
@@ -143,7 +168,7 @@ def mainly(url):
                 geturls = gethtmurl(code)
                 tmpcode = code
                 # 取body做为内容
-                maincontent = get_p_content(code)
+                maincontent = get_keywords(code) +' '+ get_p_content(code)
                 title = get_title(code)
                 dictlist[
                     i
@@ -232,6 +257,7 @@ if __name__ == "__main__":
     cursor.execute('TRUNCATE TABLE search;')
     cursor.execute('TRUNCATE TABLE content;')
     mysql.commit()
-    mainly("http://poi.ac")
-    # print(easier('http://baidu.com//'))
+    mainly("https://www.baidu.com")
+
+    #print(easier('https://baidu.com//'))
     print("End!")
