@@ -12,6 +12,11 @@ from cut import *
 
 mysql = pymysql.connect(host='127.0.0.1',port = 3306,user='root',password = 'root',db='cylinder')
 cursor = mysql.cursor()
+def sort_by_value(d):
+    items=d.items()
+    backitems=[[v[1],v[0]] for v in items]
+    backitems.sort()
+    return [ backitems[i][1] for i in range(0,len(backitems))]
 
 def deal(keywords : list):
     ret = keywords[:]
@@ -51,38 +56,36 @@ async def search(*,keyword,amount):
         #试试分词
         #对结果进行分词,同样也对有空格的结果进行分词
         res_ = deal(Cut(keyword))
-
-        set_ = set({})
-        tmp = 0
+        match_weigh = {}
+        tmp_index_list = {}
         for i in res_:
             cursor.execute('select value from search where keyer = %s',(i,))
             fetch = cursor.fetchone()
-            if fetch == None:
-                tmp = 1
-                
-                continue
             index_list = fetch[0].split('|')
-            if end_amount > len(index_list):
-                end_amount = len(index_list)
-            if tmp == 0:
-                set_ = set(index_list)
-                tmp = 1
-            else:
-                set_ = set(index_list) & set_ #计算交集
+            for j in index_list:
+                if j in match_weigh:
+                    match_weigh[j] += 1
+                else:
+                    match_weigh[j] = 1
 
-        if set_ == set({}):#{}是空字典而不是空集合
+        for i in match_weigh:
+            cursor.execute('select weigh from content where id = '+i)#拿到权值
+            tmp_index_list[i] = cursor.fetchone()[0] + match_weigh[i]
+        index_list = sort_by_value(tmp_index_list)
+        index_list.reverse()
             
-            return {}
-        set_ = list(set_) #转换成列表好操作
-        index_list = set_[amount:end_amount]
         #取前几个
+        #排序
+        if end_amount > len(index_list):
+            end_amount = len(index_list)
+        index_list = index_list[amount:end_amount]
         length = len(index_list)
         tmp = 0
         for i in index_list:
             cursor.execute('select * from content where id = '+i)
             res = cursor.fetchone()
+
             tmp+=1
-            
             response_json[tmp] = {
                 'url':res[1],
                 'detail':res[2],

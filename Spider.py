@@ -42,7 +42,7 @@ hea = {
 
 mysqlconfig = {}
 mysql = pymysql.connect(
-    host="127.0.0.1", port=3306, user="root", password="root", db="cylinder"
+    host="localhost", port=3306, user="root", password="root", db="cylinder"
 )
 cursor = mysql.cursor()
 
@@ -62,6 +62,7 @@ def delcssjs(code):
             + len('<script type="text/javascript">') : code.find("</script>")
         ]
     return code
+
 
 
 def gethtmurl(url):
@@ -254,10 +255,10 @@ if __name__ == "__main__":
     # code = req.text
     # get_p_content(code)
     
-    cursor.execute('TRUNCATE TABLE search;')
-    cursor.execute('TRUNCATE TABLE content;')
+    #cursor.execute('TRUNCATE TABLE search;')
+    #cursor.execute('TRUNCATE TABLE content;')
     mysql.commit()
-    mainly("https://www.baidu.com")
+    mainly("http://poi.ac")
 
     #print(easier('https://baidu.com//'))
     print("End!")
