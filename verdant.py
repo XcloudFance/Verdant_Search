@@ -9,8 +9,14 @@ from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from cut import *
-
-mysql = pymysql.connect(host='127.0.0.1',port = 3306,user='root',password = 'root',db='cylinder')
+import time
+while True:
+    try:
+        mysql = pymysql.connect(host='127.0.0.1',port = 3306,user='root',password = 'root',db='cylinder')
+    except:
+        time.sleep(1)
+        continue
+    break
 cursor = mysql.cursor()
 def sort_by_value(d):
     items=d.items()
@@ -42,6 +48,7 @@ async def searchlist(request:Request):
     return templates.TemplateResponse("search_list.html", context={"request": request,'keyword':'233'})
 @app.get('/search')
 async def search(*,keyword,amount):
+    mysql.ping(reconnect=True)
     if keyword == ' ':
         return {}
     amount = int(amount)
@@ -61,6 +68,8 @@ async def search(*,keyword,amount):
         for i in res_:
             cursor.execute('select value from search where keyer = %s',(i,))
             fetch = cursor.fetchone()
+            if fetch == None:
+                continue
             index_list = fetch[0].split('|')
             for j in index_list:
                 if j in match_weigh:
