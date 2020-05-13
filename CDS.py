@@ -1,5 +1,7 @@
 # -*- coding:utf-8 -*-
 # encoding:utf-8
+#此版本为CDS(Custom Distrbuted Spider)版本，支持一键直接爬虫
+#用redis+mysql实现
 import os
 import sys
 import urllib
@@ -15,6 +17,10 @@ import threading
 import demjson
 import json
 import random
+import redis
+import CubeQL_Client
+import threading
+cube = CubeQL_Client.CubeQL()
 
 hea_ordinary = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -153,9 +159,11 @@ def easier(url):
     return url[:]
 
 
-def mainly(url):
-    geturl = [url]
+def mainly():
+    geturl = demjson.decode(cube.get())
+    #geturl = [url]
     length = 0
+
     while geturl != []:
         tmplist = geturl
         geturl = []
@@ -186,7 +194,13 @@ def mainly(url):
                 ] = (
                     maincontent
                 )  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
-                geturl += geturls
+                for url_ in geturls:
+                    #print(url_)
+                    cube.set(url_)
+
+                geturl = demjson.decode(cube.get())
+                #将geturls内的内容发到CubeQL
+                
                 wordlist = list(set(Cut(maincontent) + Cut(title)))
                 
                 # Initially, insert the URL into content table
@@ -267,8 +281,9 @@ if __name__ == "__main__":
     
     cursor.execute('TRUNCATE TABLE search;')
     cursor.execute('TRUNCATE TABLE content;')
-    mysql.commit()
-    mainly("http://zhidao.baidu.com")
+    #mysql.commit()
+    mainly()
 
     #print(easier('https://baidu.com//'))
+    #直接不用redis了，直接用我自己写的数据库    
     print("End!")

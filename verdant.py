@@ -10,6 +10,8 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from cut import *
 import time
+import re
+from requests_html import requests
 while True:
     try:
         mysql = pymysql.connect(host='127.0.0.1',port = 3306,user='root',password = 'root',db='cylinder')
@@ -33,8 +35,20 @@ def deal(keywords : list):
             ret.remove(tmp1[i])#用了一个特别骚的方法，直接删除index的话会导致for循环越界
     return ret
 
+def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
+    cmp = re.compile('([a-z]|[A-Z]|\s){1,}翻译')
+    cmpres = re.match(cmp,word)
+    if cmpres == None:
+        return False
+    else:
+        content = cmpres.group()
+        content = content[:len(content)-2]
+        req = requests.get('http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=')
+        return content
+        
+
 # -- fastapi initialization --
-app = FastAPI(debug = True)
+app = FastAPI(debug = True) 
 app.mount(
     "/static", StaticFiles(directory="static"), name="static"
 )  # 重定向/static作为static目录的css/js获取路径
@@ -59,6 +73,7 @@ async def search(*,keyword,amount):
     
     response_json = {}
     #在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
+    
     if ret == None:
         #试试分词
         #对结果进行分词,同样也对有空格的结果进行分词
@@ -125,3 +140,5 @@ async def search(*,keyword,amount):
             }
         response_json['length'] = (length)
         return response_json
+
+print(specfic_search('python anaiodcnaoifcajod翻译'))
