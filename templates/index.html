@@ -8,8 +8,6 @@
 			html,body { height: 100%;margin: 0; padding: 0;line-height: 0px;}
 		</style>
 		<link href="{{url_for('static',path ='css/search_index.css')}}" rel="stylesheet"/>
-		<link rel="shortcut icon" type="image/x-icon" href="{{url_for('static',path = 'img/favicon.ico')}}">
-
 	</head>
 	<body>
 		<div style="position: relative;padding-bottom: 0;height: 100%;min-height: 600px;">	
@@ -17,8 +15,8 @@
 				<div style="display: table;margin: 0 auto;padding: 8px;margin-bottom: 24px;">
 					<img style="height:72px" src="{{url_for('static',path='img/verdant1.png')}}"/>
 				</div>
-				<div style="box-shadow: 0 2px 5px 0 rgba(0,0,0,0.15);">
-					<div style="display: block;width: 430px;z-index: 10;height: 36px;float: left;">
+				<div class="search-input-w-box">
+					<div class="search-input-w-box-left">
 						<span style="width: 430px;display: inline-block;">
 							<input id="input_form_k" type="text" style="width: 418px;" placeholder="您想搜索什么？" maxlength="255"/>
 						</span>
@@ -27,6 +25,12 @@
 						<span style="width: 160px;display: inline-block;">
 							<input class="form-button" id="start_search" type="button" value="搜索"/>
 						</span>
+					</div>
+					<div id="search_associate">
+						<ul>
+							<li>搜索预览1</li>
+							<li>搜索预览2</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -37,10 +41,12 @@
 	<script>
 		document.getElementById('input_form_k').addEventListener('focusin',function(){
 			document.getElementById('form_focus').style.filter = "brightness(0.75)"
+			document.getElementById('search_associate').style.display = "block"
 		});
 		
 		document.getElementById('input_form_k').addEventListener('focusout',function(){
 			document.getElementById('form_focus').style.filter = "brightness(1)"
+			document.getElementById('search_associate').style.display = "none"
 		});
 
 		document.getElementById('input_form_k').addEventListener("keyup",function(e){

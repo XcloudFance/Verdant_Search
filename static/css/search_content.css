@@ -16,7 +16,7 @@
 	margin: 4px;
 }
 
-/*搜索结果*/
+/* 搜索结果 */
 .result-cont{
 	text-overflow: ellipsis;
 	font-size: 13px;
@@ -30,11 +30,8 @@
 	
 }
 
-.search-result-li ol{
-	
-}
-
-.search-result-li ol li{
+/* 返回结果 */
+.result-li{
 	padding: 2px 4px 0;
 	transition: all .2s ease-out;
 	border: 1px solid rgba(255,255,255,0);
@@ -42,27 +39,33 @@
 	margin-bottom: 16px;
 }
 
-.search-result-li ol li div{
-	/* height: 96px; */
-}
-
-.search-result-li ol li h2{
+.result-li h2{
 	margin: 0;
 }
 
-.search-result-li ol li h2 a{
+.result-li h2 a{
 	color: #001ba0;
 	text-decoration: none;
 	border-bottom: 0px solid black;
 	transition: all .04s ease;
 }
 
-.search-result-li ol li h2 a:hover{
+.result-li h2 a:hover{
 	text-decoration: none;
 	border-bottom: 2px solid black;
 	padding-bottom: 1px;
 }
 
+/* 翻译 */
+.result-translate{
+	padding: 2px 4px 0;
+	transition: all .2s ease-out;
+	border: 1px solid rgba(255,255,255,0);
+	border-radius: 2px;
+	margin-bottom: 16px;
+}
+
+/* 链接变绿 */
 .url-green{
 	font-size: 14px;
 	color: #669933;

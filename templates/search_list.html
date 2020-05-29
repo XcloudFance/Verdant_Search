@@ -18,11 +18,16 @@
 			
 			h2{margin: 3px;}
 		</style>
-		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet"/>
+		<!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet"/>
 		<style>
 			body,h1,h2,h3,h4,h5,h6,a,span,div,p,span,label,input{
 				font-family: "Noto Sans SC","PingFang SC","Lantinghei SC","Microsoft YaHei",arial,"\5b8b\4f53",sans-serif, tahoma,Arial, Helvetica, sans-serif;
 				font-weight: 400;
+			}
+		</style> -->
+		<style>
+			*{
+				font-family: -apple-system, "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
 			}
 		</style>
 		<link href="{{url_for('static',path = 'css/search_content.css')}}" rel="stylesheet"/>
@@ -37,18 +42,22 @@
 						<img src="{{url_for('static',path = 'img/c_青荇搜索_1.jpg')}}"/>
 					</div>
 				</div>
-				<div class="search-input-w" style="width: 590px;top: 27.2%;">
-					<div style="/* box-shadow: 0 2px 5px 0 rgba(0,0,0,0.15);*/border: 1px solid #757575;">
-						<div style="display: block;width: 428px;z-index: 10;height: 36px;float: left;">
-							<span style="width: 428px;display: inline-block;">
-								<input id="input_form_k" type="text"/>
-							</span>
-						</div>
-						<div>
-							<span style="width: 160px;display: inline-block;">
-								<input class="form-button" id="start_search" type="button" value="搜索"/>
-							</span>
-						</div>
+				<div class="search-input-w search-input-w-box" style="width: 590px;top: 27.2%;">
+					<div class="search-input-w-box-left">
+						<span style="width: 428px;display: inline-block;">
+							<input id="input_form_k" type="text"/>
+						</span>
+					</div>
+					<div>
+						<span style="width: 160px;display: inline-block;">
+							<input class="form-button" id="start_search" type="button" value="搜索"/>
+						</span>
+					</div>
+					<div id="search_associate">
+						<ul>
+							<li>搜索预览1</li>
+							<li>搜索预览2</li>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -59,7 +68,7 @@
 					<span>搜索结果<span class="return-black"> (当前页共有 <span id="result_len">3</span> 条结果)</span> </span>
 					<div class="search-result-li">
 						<ol id="result_list_ol">
-							
+							<li></li>
 						</ol>
 						<div class="corl-v">
 							<a href="/">上一页</a>
@@ -123,6 +132,7 @@
 			let v = document.getElementById("result_list_ol");
 			if(keyword==null){
 				let l = document.createElement("li");
+					l.className = 'result-li';
 					l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>'+
 								  '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
 					v.appendChild(l)
@@ -139,7 +149,7 @@
 			
 			xhr.open('GET', '/search?keyword=' + vl + '&amount=' + amount_, true);
 			xhr.onload = function () {
-				document.getElementById('result_list_ol').innerHTML = '';
+				//document.getElementById('result_list_ol').innerHTML = '';
 				let v = document.getElementById("result_list_ol");
 				let dt1 = (JSON.parse(xhr.response));
 				
@@ -156,9 +166,10 @@
 					dt.forEach((el) => {
 						//console.log(el);
 						let l = document.createElement("li");
-						l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
-									  '<span class="url-green">'+ el.url + '</span>'+
-									  '<div class="result-cont">' + el.detail + '</div>';
+							l.className = 'result-li';
+							l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
+										'<span class="url-green">'+ el.url + '</span>'+
+										'<div class="result-cont">' + el.detail + '</div>';
 						v.appendChild(l)
 					});
 				}else{
@@ -171,6 +182,14 @@
 			}
 			xhr.send();
 		}
+
+		document.getElementById('input_form_k').addEventListener('focusin',function(){
+			document.getElementById('search_associate').style.display = "block"
+		});
+		
+		document.getElementById('input_form_k').addEventListener('focusout',function(){
+			document.getElementById('search_associate').style.display = "none"
+		});
 
 		window.onload = function(){
 			SetList(keyword,amount)

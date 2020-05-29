@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 app = FastAPI(debug=True)
 cylinder = []
+baidu_cylinder = []
 limitation = 200
+#baidu-cds的思路就是将关键词从百度获取要爬虫的消息，然后放进cds待爬虫队列里面爬虫，并且标注为baidu出来的网址，给每个权值+20分x
 @app.post('/get')
 async def get():
     global cylinder
@@ -12,7 +14,6 @@ async def get():
     for i in range(amount):
         if cylinder != []:
             ret.append(cylinder.pop())
-    print(ret)
     return ret
     pass
 
@@ -29,5 +30,27 @@ async def setting(*,url):
 async def delete():
     cylinder = []
     return
+@app.post('/baidu_get')
+async def baiduget():
+    global baidu_cylinder
+    ret = []
+    amount = 5
+    for i in range(amount):
+        if baidu_cylinder != []:
+            ret.append(baidu_cylinder.pop())
+    return ret
+    pass
 
+@app.post('/baidu_set')
+async def baiduset(*,url):
+    global baidu_cylinder
+    if len(baidu_cylinder)>limitation:
+        return
+    baidu_cylinder.append(url)
+    baidu_cylinder = list(set(baidu_cylinder))
+    pass
+@app.post('/baidu_del')
+async def baidudel():
+    baidu_cylinder = []
+    pass
 #port = 1278

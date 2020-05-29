@@ -45,7 +45,7 @@ mysqlconfig = {}
 mysql = pymysql.connect(
     host="localhost", port=3306, user="root", password="root", db="cylinder"
 )
-cursor = mysql.cursor()
+cursor = mysql.cursor() 
 
 
 def togbk(string):
@@ -265,10 +265,10 @@ if __name__ == "__main__":
     # code = req.text
     # get_p_content(code)
     
-    cursor.execute('TRUNCATE TABLE search;')
-    cursor.execute('TRUNCATE TABLE content;')
-    mysql.commit()
-    mainly("http://zhidao.baidu.com")
+    #cursor.execute('TRUNCATE TABLE search;')
+    #cursor.execute('TRUNCATE TABLE content;')
+    #mysql.commit()
+    #mainly("http://www.4399.com/")
 
     #print(easier('https://baidu.com//'))
     print("End!")

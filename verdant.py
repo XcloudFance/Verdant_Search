@@ -12,6 +12,19 @@ from cut import *
 import time
 import re
 from requests_html import requests
+from get_pronun import *
+hea_ordinary = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
+    "Accept-Encoding": "gzip, deflate",
+    "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+    "Cookie": "AspxAutoDetectCookieSupport=1",
+    "Host": "jyj.quanzhou.gov.cn",
+    "Pragma": "no-cache",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
+}
 while True:
     try:
         mysql = pymysql.connect(host='127.0.0.1',port = 3306,user='root',password = 'root',db='cylinder')
@@ -36,15 +49,41 @@ def deal(keywords : list):
     return ret
 
 def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
-    cmp = re.compile('([a-z]|[A-Z]|\s){1,}翻译')
-    cmpres = re.match(cmp,word)
-    if cmpres == None:
-        return False
-    else:
+    #try:
+        re_list = ['([a-z]|[A-Z]|\s){1,}翻译','([a-z]|[A-Z]|\s){1,}','(.*)的英语']
+        mode = -1
+        tmp = -1
+        cmpres = ''
+        for i in re_list:
+            
+            cmp = re.compile(i)
+            cmpres = re.match(cmp,word)
+            tmp+=1
+            if cmpres != None:
+                print(cmpres)
+                mode = tmp
+                break
+        if mode == -1:
+            return False
+            #try
+        #print(mode)
+        #print(cmpres)
         content = cmpres.group()
-        content = content[:len(content)-2]
-        req = requests.get('http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=')
-        return content
+        #print(content)
+        if mode == 1:
+            content = content[:len(content)]
+        if mode == 0:
+            content = content[:len(content)-2]
+        if mode == 2:
+            content = content[:len(content)-3]
+        #print(content)
+        req = requests.get('http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i='+content)
+        
+        ret = get_word_mean(content,hea_ordinary)
+        ret_url =  "http://dict.youdao.com/search?q=" + content + "&keyfrom=new-fanyi.smartResult"
+        return ret,ret_url,mode
+    #except:
+     #   return False
         
 
 # -- fastapi initialization --
@@ -57,6 +96,7 @@ templates = Jinja2Templates(directory="templates")
 async def index(request:Request):
     return templates.TemplateResponse("index.html", context={"request": request})
 
+
 @app.get('/searchlist')
 async def searchlist(request:Request):
     return templates.TemplateResponse("search_list.html", context={"request": request,'keyword':'233'})
@@ -67,13 +107,28 @@ async def search(*,keyword,amount):
         return {}
     amount = int(amount)
     end_amount = int(amount)+10
-
+    length = 0
     cursor.execute('select value from search where keyer = %s',(keyword))
     ret = cursor.fetchone()
     
     response_json = {}
     #在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
+    specialsearch = specfic_search(keyword)
+    print(specialsearch)
     
+    if specialsearch != False:#单词翻译查询
+        if specialsearch[2] == 0 or specialsearch[2] == 1:
+            usatok,uktok = download_mp3(keyword)
+            response_json['1'] = {
+                'type':"translation",
+                'url':specialsearch[1],
+                'detail':specialsearch[0],
+                'title':keyword+"_有道翻译",
+                'music_USA':usatok,
+                'music_UK':uktok
+            }
+        length += 1
+        pass
     if ret == None:
         #试试分词
         #对结果进行分词,同样也对有空格的结果进行分词
@@ -103,21 +158,25 @@ async def search(*,keyword,amount):
         if end_amount > len(index_list):
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
-        length = len(index_list)
-        tmp = 0
+        
+        
         for i in index_list:
             cursor.execute('select * from content where id = '+i)
             res = cursor.fetchone()
-
-            tmp+=1
-            response_json[tmp] = {
+            
+            length += 1
+            response_json[length] = {
                 'url':res[1],
                 'detail':res[2],
-                'title':res[3]
+                'title':res[3],
+                'type':'normal'
             }
         response_json['length'] = (length)
         #如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
         #并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
+        if length <= 10 :
+            #开始对百度进行爬虫，给CDS布置任务
+            req = requests.post('http://localhost:1278/baidu_set?url='+keyword)
         return response_json
 
     else:
@@ -126,19 +185,18 @@ async def search(*,keyword,amount):
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
         #取前几个
-        length = len(index_list)
-        tmp = 0
+        
         for i in index_list:
             cursor.execute('select * from content where id = '+i)
             res = cursor.fetchone()
-            tmp+=1
+            length += 1
             
-            response_json[tmp] = {
+            response_json[length] = {
                 'url':res[1],
                 'detail':res[2],
                 'title':res[3]
             }
         response_json['length'] = (length)
         return response_json
-
-print(specfic_search('python anaiodcnaoifcajod翻译'))
+if __name__ == '__main__':
+    print(specfic_search('I am in schoolaedrawdawdrawdarfaweddgdfgerd'))
