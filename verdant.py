@@ -183,6 +183,9 @@ async def search(*,keyword,amount):
         return response_json
 
     else:
+        #新增关键词权值统计
+        cursor.execute('update search set weigh = weigh + 1 where keyer = %s',(keyword))
+        mysql.commit()
         index_list = ret[0].split('|')
         if end_amount > len(index_list):
             end_amount = len(index_list)
@@ -201,5 +204,22 @@ async def search(*,keyword,amount):
             }
         response_json['length'] = (length)
         return response_json
+
+@app.get('/keyword_think')
+def thinking(*,keyword):
+    limited = 7
+    step = 0
+    cursor.execute('select keyer from search where keyer like "'+keyword+'%" order by weigh desc' )
+    #desc为逆序排序，like就是匹配字符串的前缀
+    ret = []
+    for i in cursor.fetchall():
+        step += 1
+        if step == limited:
+            break
+        
+        ret.append(i[0])
+    return ret
+    
+        
 if __name__ == '__main__':
     print(specfic_search('I am in schoolaedrawdawdrawdarfaweddgdfgerd'))
