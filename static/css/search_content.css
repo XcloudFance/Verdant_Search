@@ -65,6 +65,49 @@
 	margin-bottom: 16px;
 }
 
+.result-translate h2{
+	margin: 0;
+}
+
+.result-translate h2 a{
+	color: #001ba0;
+	text-decoration: none;
+	border-bottom: 0px solid black;
+	transition: all .04s ease;
+}
+
+.result-translate a:hover{
+	text-decoration: none;
+	border-bottom: 2px solid black;
+	padding-bottom: 1px;
+}
+
+.result-translate-content-left{
+	text-overflow: ellipsis;
+	font-size: 13px;
+	/* display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3; */
+	overflow: hidden;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	box-shadow: 1px 1px 1px rgba(0,0,0,0.233);
+}
+
+.result-translate-content-c1{
+	font-size: 30px;
+	margin: 12px 6px 10px;
+}
+
+.result-translate-content-c2{
+	font-size: 14px;
+	margin: 4px 6px;
+}
+
+.result-translate-content-c3{
+	white-space: break-spaces;
+	margin: 12px 6px 6px;
+}
+
 /* 链接变绿 */
 .url-green{
 	font-size: 14px;

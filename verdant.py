@@ -91,6 +91,9 @@ app = FastAPI(debug = True)
 app.mount(
     "/static", StaticFiles(directory="static"), name="static"
 )  # 重定向/static作为static目录的css/js获取路径
+app.mount(
+    "/music",StaticFiles(directory="music"),name="music"
+)
 templates = Jinja2Templates(directory="templates")
 @app.get('/')
 async def index(request:Request):
