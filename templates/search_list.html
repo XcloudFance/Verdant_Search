@@ -55,8 +55,6 @@
 					</div>
 					<div id="search_associate">
 						<ul>
-							<li>搜索预览1</li>
-							<li>搜索预览2</li>
 						</ul>
 					</div>
 				</div>
@@ -82,7 +80,9 @@
 			</div>
 		</div>
 	</body>
-	<script>		
+	<script>
+		var timer = null;
+			
 		function JsonToArray(stree){
 			let p = [];
 			for (let i=1;i<=stree.length;i++) {
@@ -113,6 +113,33 @@
 		document.getElementById('input_form_k').addEventListener("keyup",function(e){
 			if(e.key=="Enter"){
 				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+			}
+			//输入间隔
+			if(!timer){
+				//console.log('timer ok')
+				clearTimeout(timer)
+				timer = setTimeout(() => {
+					timer = null;
+					let xhr = null;
+					if (window.XMLHttpRequest){
+						xhr = new XMLHttpRequest();
+					}else if (window.ActiveXObject){
+						xhr = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+					
+					xhr.open('GET', '/keyword_think?keyword=' + document.getElementById("input_form_k").value, true);
+					xhr.onload = function () {
+						let dt = JSON.parse(xhr.response);
+						let elm = document.querySelector("#search_associate ul")
+						elm.innerHTML = "";
+						for(let i=0;i<dt.length;i++){
+							let fx = document.createElement("li");
+							fx.innerText = dt[i];
+							elm.appendChild(fx);
+						}
+					}
+					xhr.send();
+				}, 800);
 			}
 		});
 
