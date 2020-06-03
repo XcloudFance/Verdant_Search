@@ -55,8 +55,6 @@
 					</div>
 					<div id="search_associate">
 						<ul>
-							<li>搜索预览1</li>
-							<li>搜索预览2</li>
 						</ul>
 					</div>
 				</div>
@@ -82,7 +80,9 @@
 			</div>
 		</div>
 	</body>
-	<script>		
+	<script>
+		var timer = null;
+			
 		function JsonToArray(stree){
 			let p = [];
 			for (let i=1;i<=stree.length;i++) {
@@ -113,6 +113,33 @@
 		document.getElementById('input_form_k').addEventListener("keyup",function(e){
 			if(e.key=="Enter"){
 				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+			}
+			//输入间隔
+			if(!timer){
+				//console.log('timer ok')
+				clearTimeout(timer)
+				timer = setTimeout(() => {
+					timer = null;
+					let xhr = null;
+					if (window.XMLHttpRequest){
+						xhr = new XMLHttpRequest();
+					}else if (window.ActiveXObject){
+						xhr = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+					
+					xhr.open('GET', '/keyword_think?keyword=' + document.getElementById("input_form_k").value, true);
+					xhr.onload = function () {
+						let dt = JSON.parse(xhr.response);
+						let elm = document.querySelector("#search_associate ul")
+						elm.innerHTML = "";
+						for(let i=0;i<dt.length;i++){
+							let fx = document.createElement("li");
+							fx.innerText = dt[i];
+							elm.appendChild(fx);
+						}
+					}
+					xhr.send();
+				}, 800);
 			}
 		});
 
@@ -164,12 +191,40 @@
 					}
 					
 					dt.forEach((el) => {
-						//console.log(el);
+						console.log(el);
 						let l = document.createElement("li");
+						if(el.type == 'translation'){
+							let a = el.detail;
+							if(document.getElementById('traudio')==null){
+								let b = document.createElement('audio');
+								b.id = 'traudio';
+								document.getElementsByTagName('body')[0].appendChild(b);
+							}
+							console.log(a.split('\n'));
+							let b = a.split('\n');
+							l.className = 'result-translate';
+							let c = "";
+							for(let i=5;i<b.length;i++){
+								if(i+1>=b.length){
+									c += b[i];
+								}else{
+									c += b[i] + '\n';
+								}
+							}
+							
+							l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
+										'<div class="result-translate-content-left">'+
+										'<div class="result-translate-content-c1">' + b[0] + '</div>'+
+										'<div class="result-translate-content-c2">' + b[1] + " " + b[2] + " " + b[3] + " " + b[4] + '</div>'+
+										'<div class="result-translate-content-c3">' + c + '</div>'+
+										'</div>';
+						}else{
 							l.className = 'result-li';
 							l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
 										'<span class="url-green">'+ el.url + '</span>'+
 										'<div class="result-cont">' + el.detail + '</div>';
+						}
+						
 						v.appendChild(l)
 					});
 				}else{
@@ -193,6 +248,14 @@
 
 		window.onload = function(){
 			SetList(keyword,amount)
+		}
+
+		function tsAudio(urlx){
+			let a = document.getElementById('traudio');
+			a.pause();
+			a.url = '/music/' + urlx;
+			a.currentTime = 0;
+			a.play();
 		}
 	</script>
 </html>

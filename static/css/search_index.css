@@ -57,6 +57,7 @@
 	z-index: 12;
 	width: 430px;
 	height: auto;
+	display: none;
 }
 
 #search_associate ul{
