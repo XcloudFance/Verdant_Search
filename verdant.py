@@ -176,7 +176,7 @@ async def search(*,keyword,amount):
         #并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 :
             #开始对百度进行爬虫，给CDS布置任务
-            req = requests.post('http://localhost:1278/baidu_set?url='+keyword)
+            req = requests.post('http://localhost:1278/set?url='+keyword+'&type=search')
         return response_json
 
     else:
@@ -217,6 +217,7 @@ def thinking(*,keyword):
         ret.append(i[0])
     return ret
     
+
         
 if __name__ == '__main__':
     print(specfic_search('I am in schoolaedrawdawdrawdarfaweddgdfgerd'))

@@ -14,7 +14,7 @@ def getfromBaidu(word):
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:22.0) Gecko/20100101 Firefox/22.0'
         }
     baiduurl = 'http://www.baidu.com'
-    url = 'http://www.baidu.com.cn/s?wd=' + word + '&cl=3'
+    url = 'https://mijisou.com/?q=' + word
     html = requests.get(url=url,headers=headers)
     path = etree.HTML(html.content)
     #用k来控制爬取的页码范围

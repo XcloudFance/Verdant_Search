@@ -11,10 +11,10 @@ class CubeQL:
         req = requests.post('http://'+self.host+':'+self.port+'/get')
 
         return req.text
-    def set(self,url):
+    def set(self,url,typ):
         params = {'url':url}
         hea = {'accept':'application/json'}
-        req = requests.post('http://'+self.host+':'+self.port+'/set?url='+url,hea)
+        req = requests.post('http://'+self.host+':'+self.port+'/set?url='+url+'&typ='+typ,hea)
 
     def del_all(self):
         pass

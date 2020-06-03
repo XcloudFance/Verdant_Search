@@ -19,9 +19,12 @@ def gethtmurl(url):
     soup = BeautifulSoup(url, "html.parser")
     ret = []
     href_ = soup.find_all(name="a")
+    #print(href_)
     for each in href_:
-        if str(each.get("href"))[:4] == "http":
-            ret.append(each.get("href"))
+        #print(each.get('rel'))
+        if each.get("rel") == ["noopener" ,"noreferrer"]:
+            if each.get('href').find('mijisou.com')==-1:
+                ret.append(each.get("href"))
     return ret
 def mainly():
     #直接从CubeQL里面提取baiduCDS的内容，然后放进cylinder的爬虫队列内
@@ -40,5 +43,6 @@ def mainly():
     
 if __name__ == '__main__':
     #mainly()
-    word='a'
-    print((requests.get('http://cn.bing.com/search?q='+word,hea_ordinary).text))
+    word='Linux'
+    print(gethtmurl(requests.get('https://mijisou.com/?q='+word,hea_ordinary).text))
+    #print(gethtmurl(requests.get('https://mijisou.com/?q='+word,hea_ordinary).text))
