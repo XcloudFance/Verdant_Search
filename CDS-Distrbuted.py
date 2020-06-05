@@ -147,7 +147,18 @@ def weigh_judgement(url, urlcode):
 
 dictlist = {}
 
-
+def getsearchurl(keyword):
+    url = requests.get('https://mijisou.com/?q='+keyword+'&category_general=on&time_range=&language=zh-CN&pageno=1',hea_ordinary).text
+    soup = BeautifulSoup(url, "html.parser")
+    ret = []
+    href_ = soup.find_all(name="a")
+    #print(href_)
+    for each in href_:
+        #print(each.get('rel'))
+        if each.get("rel") == ["noopener" ,"noreferrer"]:
+            if each.get('href').find('mijisou.com')==-1:
+                ret.append(each.get("href"))
+    return ret
 def easier(url):
     while True:
         if url[len(url) - 1] == "/":
@@ -160,19 +171,21 @@ def easier(url):
 
 
 def mainly():
+    global cube
+    
     geturl = demjson.decode(cube.get())
     #geturl = [url]
     length = 0
-
+    print(geturl)
     while geturl != []:
         tmplist = geturl
         geturl = []
-        # print(tmplist)
-        # print(geturl)
         
         for i in tmplist:
             try:
                 # req = urllib.request.Request(url=i, headers=headers)
+                if i == []:
+                    continue
                 if i['typ'] == 'normal':
                
                     i = easier(i['content'])
@@ -200,7 +213,7 @@ def mainly():
                     )  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
                     for url_ in geturls:
                         #print(url_)
-                        cube.set(url_)
+                        cube.set(url_,typ = 'normal')
 
                     geturl = demjson.decode(cube.get())
                     #将geturls内的内容发到CubeQL
@@ -229,7 +242,7 @@ def mainly():
                         index = cursor.fetchone()
                         # print(index)
                         if index == None:
-                            cursor.execute("insert into search values(%s,%s)", (j, tablenum))
+                            cursor.execute("insert into search values(%s,%s,0)", (j, tablenum))
 
                         else:
                             # -- sort --
@@ -273,6 +286,16 @@ def mainly():
                             # --update
                     mysql.commit()
                     print(i, " :end")
+                # ---------------------------------------------
+                elif i['typ'] == 'search':
+                    i = i['content']
+                    urllist = getsearchurl(i)
+                    cube = CubeQL_Client.CubeQL()
+                    for j in urllist:
+                        cube.set(j,'normal')
+
+                    geturl = demjson.decode(cube.get())
+                    print(i, " :end")
             except:
                 print(i + " :error")
 
@@ -283,8 +306,8 @@ if __name__ == "__main__":
     # code = req.text
     # get_p_content(code)
     
-    cursor.execute('TRUNCATE TABLE search;')
-    cursor.execute('TRUNCATE TABLE content;')
+    #cursor.execute('TRUNCATE TABLE search;')
+    #cursor.execute('TRUNCATE TABLE content;')
     #mysql.commit()
     mainly()
 

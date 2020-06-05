@@ -17,14 +17,14 @@ async def get():
         if cylinder != []:
             ret.append(cylinder.pop())
     return ret
-    pass
+
 
 @app.post('/set')
 async def setting(*,url,typ):
     global cylinder
     if len(cylinder)>=limitation:
         return 
-    cylinder.append({'type':typ,'content':url})
+    cylinder.append({'typ':typ,'content':url})
     #cylinder = list(set(cylinder))
     pass
 
@@ -32,17 +32,17 @@ async def setting(*,url,typ):
 async def delete():
     cylinder = []
     return
-@app.post('/baidu_get')
-async def baiduget():
-    global baidu_cylinder
+@app.post('/just_get')
+async def justget():
+    global cylinder
+    #默认丢四个地址回去，以防不够
     ret = []
-    amount = 5
+    #如果内存过小的情况下，就自动将amount调大，limit调小
+    amount = 4
     for i in range(amount):
-        if baidu_cylinder != []:
-            ret.append(baidu_cylinder.pop())
+        if i<len(cylinder):
+            ret.append(cylinder[i])
     return ret
-    pass
-
 @app.post('/baidu_set')
 async def baiduset(*,url):
     global baidu_cylinder

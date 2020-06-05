@@ -15,7 +15,7 @@ hea_ordinary = {
     "Upgrade-Insecure-Requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
 }
-def gethtmurl(url):
+def getsearchurl(url):
     soup = BeautifulSoup(url, "html.parser")
     ret = []
     href_ = soup.find_all(name="a")
@@ -28,7 +28,7 @@ def gethtmurl(url):
     return ret
 def mainly():
     #直接从CubeQL里面提取baiduCDS的内容，然后放进cylinder的爬虫队列内
-    req = requests.post('/baidu_get')
+    req = requests.post('/get')
     que = demjson.decode(req.text)
     while que != []:
         word = que.pop()
@@ -44,5 +44,5 @@ def mainly():
 if __name__ == '__main__':
     #mainly()
     word='Linux'
-    print(gethtmurl(requests.get('https://mijisou.com/?q='+word,hea_ordinary).text))
+    print(gethtmurl(requests.get('https://mijisou.com/?q='+word+'&category_general=on&time_range=&language=zh-CN&pageno=1',hea_ordinary).text))
     #print(gethtmurl(requests.get('https://mijisou.com/?q='+word,hea_ordinary).text))

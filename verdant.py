@@ -13,6 +13,7 @@ import time
 import re
 from requests_html import requests
 from get_pronun import *
+import CubeQL_Client
 hea_ordinary = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate",
@@ -130,6 +131,14 @@ async def search(*,keyword,amount):
                 'music_USA':usatok,
                 'music_UK':uktok
             }
+        elif specialsearch[2] == 2:
+            response_json['1'] = {
+                'type':"translation",
+                'url':specialsearch[1],
+                'detail':specialsearch[0],
+                'title':keyword+"_有道翻译",
+
+            }
         length += 1
         pass
     if ret == None:
@@ -179,7 +188,8 @@ async def search(*,keyword,amount):
         #并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 :
             #开始对百度进行爬虫，给CDS布置任务
-            req = requests.post('http://localhost:1278/set?url='+keyword+'&type=search')
+            cube = CubeQL_Client.CubeQL()
+            cube.set(keyword,'search')
         return response_json
 
     else:
@@ -203,6 +213,11 @@ async def search(*,keyword,amount):
                 'title':res[3]
             }
         response_json['length'] = (length)
+        if length <= 10 :
+                #开始对百度进行爬虫，给CDS布置任务
+            cube = CubeQL_Client.CubeQL()
+            cube.set(keyword,'search')
+        
         return response_json
 
 @app.get('/keyword_think')
@@ -220,7 +235,11 @@ def thinking(*,keyword):
         ret.append(i[0])
     return ret
     
-
+@app.get('/website_added')
+def adding(*,website):
+    cursor.execute('update content set weigh = weigh + 1 where url = %s',(website))
+    mysql.commit()
+    
         
 if __name__ == '__main__':
     print(specfic_search('I am in schoolaedrawdawdrawdarfaweddgdfgerd'))

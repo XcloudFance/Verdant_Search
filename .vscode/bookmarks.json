@@ -3,18 +3,38 @@
 		"path": "$ROOTPATH$\\verdant.py",
 		"bookmarks": [
 			{
-				"line": 50,
+				"line": 51,
 				"column": 20,
 				"label": ""
 			},
 			{
-				"line": 118,
+				"line": 119,
 				"column": 5,
 				"label": ""
 			},
 			{
-				"line": 204,
+				"line": 214,
 				"column": 20,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\CDS-Distrbuted.py",
+		"bookmarks": [
+			{
+				"line": 149,
+				"column": 8,
+				"label": ""
+			},
+			{
+				"line": 188,
+				"column": 18,
+				"label": ""
+			},
+			{
+				"line": 289,
+				"column": 19,
 				"label": ""
 			}
 		]
