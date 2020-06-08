@@ -6,7 +6,7 @@
   "scripts": {
     "test": "python get_pronun.py",
     "run":"uvicorn verdant:app --reload",
-    "open":"uvicorn verdant:app --reload --port 8000",
+    "open":"uvicorn verdant:app --reload --port 8888",
     "cubeql":"uvicorn CubeQL:app --reload --port 1278",
     "spider":"python spider.py",
     "cds":"python cds-distrbuted.py",

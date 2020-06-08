@@ -49,7 +49,7 @@ def deal(keywords : list):
             ret.remove(tmp1[i])#用了一个特别骚的方法，直接删除index的话会导致for循环越界
     return ret
 
-def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
+async def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
     #try:
         re_list = ['([a-z]|[A-Z]|\s){1,}翻译','([a-z]|[A-Z]|\s){1,}','(.*)的英语']
         mode = -1
@@ -88,7 +88,7 @@ def specfic_search(word): #如果啥也没有就返回False，如果有就返回
         
 
 # -- fastapi initialization --
-app = FastAPI(debug = True) 
+app = FastAPI() 
 app.mount(
     "/static", StaticFiles(directory="static"), name="static"
 )  # 重定向/static作为static目录的css/js获取路径
@@ -117,8 +117,8 @@ async def search(*,keyword,amount):
     
     response_json = {}
     #在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
-    specialsearch = specfic_search(keyword)
-    print(specialsearch)
+    specialsearch = await specfic_search(keyword)
+    #print(specialsearch)
     
     if specialsearch != False:#单词翻译查询
         if specialsearch[2] == 0 or specialsearch[2] == 1:
@@ -221,7 +221,7 @@ async def search(*,keyword,amount):
         return response_json
 
 @app.get('/keyword_think')
-def thinking(*,keyword):
+async def thinking(*,keyword):
     limited = 7
     step = 0
     cursor.execute('select keyer from search where keyer like "'+keyword+'%" order by weigh desc' )
