@@ -30,6 +30,10 @@
 	
 }
 
+#loading_x{
+	color: rgb(86, 86, 86);
+}
+
 /* 返回结果 */
 .result-li{
 	padding: 2px 4px 0;
@@ -106,6 +110,14 @@
 .result-translate-content-c3{
 	white-space: break-spaces;
 	margin: 12px 6px 6px;
+}
+
+.result-translate-sound{
+    background: url(/static/img/sound.png) no-repeat;
+    height: 16px;
+    padding-left: 18px;
+    line-height: 16px;
+    padding-right: 12px;
 }
 
 /* 链接变绿 */

@@ -63,7 +63,7 @@
 		<div style="width: 100%;">
 			<div style="word-break: break-all;word-wrap: break-word;position: relative;border-top: 1px solid rgba(0,0,0,.15);">
 				<div class="result-content-left">
-					<span>搜索结果<span class="return-black"> (当前页共有 <span id="result_len">3</span> 条结果)</span> </span>
+					<span>搜索结果&nbsp;[<span id="loading_x">正在搜索</span>]&nbsp;<span class="return-black">&nbsp;(当前页共有 <span id="result_len">-</span> 条结果)</span>&nbsp;</span>
 					<div class="search-result-li">
 						<ol id="result_list_ol">
 							<li></li>
@@ -82,6 +82,8 @@
 	</body>
 	<script>
 		var timer = null;
+		var ldtimer = null;
+		var ldcount = 0;
 			
 		function JsonToArray(stree){
 			let p = [];
@@ -174,13 +176,17 @@
 			    xhr = new ActiveXObject("Microsoft.XMLHTTP");
 			}
 			
+			ldtimer = setInterval(() => {
+				lding();
+			}, 400);
+
 			xhr.open('GET', '/search?keyword=' + vl + '&amount=' + amount_, true);
 			xhr.onload = function () {
 				//document.getElementById('result_list_ol').innerHTML = '';
 				let v = document.getElementById("result_list_ol");
 				let dt1 = (JSON.parse(xhr.response));
 				
-				if(xhr.response != '{}'){
+				if(xhr.response != '{}' & dt1.length != 0){
 					let dt = JsonToArray(dt1);
 					document.getElementById('result_len').innerText = dt1.length;
 
@@ -191,7 +197,7 @@
 					}
 					
 					dt.forEach((el) => {
-						console.log(el);
+						//console.log(el);
 						let l = document.createElement("li");
 						if(el.type == 'translation'){
 							let a = el.detail;
@@ -200,7 +206,7 @@
 								b.id = 'traudio';
 								document.getElementsByTagName('body')[0].appendChild(b);
 							}
-							console.log(a.split('\n'));
+							//console.log(a.split('\n'));
 							let b = a.split('\n');
 							l.className = 'result-translate';
 							let c = "";
@@ -211,13 +217,48 @@
 									c += b[i] + '\n';
 								}
 							}
-							
-							l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
-										'<div class="result-translate-content-left">'+
-										'<div class="result-translate-content-c1">' + b[0] + '</div>'+
-										'<div class="result-translate-content-c2">' + b[1] + " " + b[2] + " " + b[3] + " " + b[4] + '</div>'+
-										'<div class="result-translate-content-c3">' + c + '</div>'+
-										'</div>';
+														
+							let x1 = document.createElement('h2');
+							x1.innerHTML = '<a href="'+ el.url +'">'+ el.title +'</a>';
+
+							l.appendChild(x1);
+
+							let x2 = document.createElement('div');
+							x2.className = 'result-translate-content-left';
+
+							let x2_1 = document.createElement('div');
+							x2_1.className = 'result-translate-content-c1';
+							x2_1.innerText = b[0];
+
+							let x2_2 = document.createElement('div');
+							x2_2.className = 'result-translate-content-c2';
+
+							let x2_2_uk = document.createElement('span');
+							x2_2_uk.className = 'result-translate-sound';
+							x2_2_uk.addEventListener('click',function(){
+								tsAudio(el.music_UK.toString())
+							})
+							x2_2_uk.innerText = b[1] + " " + b[2];
+
+							let x2_2_usa = document.createElement('span');
+							x2_2_usa.className = 'result-translate-sound';
+							x2_2_usa.addEventListener('click',function(){
+								tsAudio(el.music_USA.toString())
+							})
+							x2_2_usa.innerText = b[3] + " " + b[4];
+
+							x2_2.append(x2_2_uk)
+							x2_2.append(x2_2_usa)
+
+							let x3 = document.createElement('div');
+							x3.className = 'result-translate-content-c3';
+							x3.innerText = c;
+
+							x2.appendChild(x2_1)
+							x2.appendChild(x2_2)
+							x2.appendChild(x3)
+							l.appendChild(x2)
+
 						}else{
 							l.className = 'result-li';
 							l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
@@ -234,6 +275,9 @@
 								  '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
 					v.appendChild(l)
 				}
+
+				clearInterval(ldtimer);
+				document.getElementById("loading_x").innerText = "搜索完成"
 			}
 			xhr.send();
 		}
@@ -252,10 +296,20 @@
 
 		function tsAudio(urlx){
 			let a = document.getElementById('traudio');
-			a.pause();
-			a.url = '/music/' + urlx;
+			//a.pause();
+			a.src = '/music/' + urlx + '.mp3';
 			a.currentTime = 0;
 			a.play();
+		}
+
+		function lding(){
+			let a = document.getElementById("loading_x");
+			if(ldcount < 5){
+				a.innerText += ".";
+			}else{
+				a.innerText = "正在搜索";
+			}
+			ldcount++
 		}
 	</script>
 </html>
