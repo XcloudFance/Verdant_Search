@@ -49,7 +49,7 @@ def deal(keywords : list):
             ret.remove(tmp1[i])#用了一个特别骚的方法，直接删除index的话会导致for循环越界
     return ret
 
-async def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
+def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
     #try:
         re_list = ['([a-z]|[A-Z]|\s){1,}翻译','([a-z]|[A-Z]|\s){1,}','(.*)的英语']
         mode = -1
@@ -117,7 +117,7 @@ async def search(*,keyword,amount):
     
     response_json = {}
     #在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
-    specialsearch = await specfic_search(keyword)
+    specialsearch = specfic_search(keyword)
     #print(specialsearch)
     
     if specialsearch != False:#单词翻译查询
@@ -188,6 +188,7 @@ async def search(*,keyword,amount):
         #并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 :
             #开始对百度进行爬虫，给CDS布置任务
+            print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword,'search')
         return response_json
@@ -215,6 +216,7 @@ async def search(*,keyword,amount):
         response_json['length'] = (length)
         if length <= 10 :
                 #开始对百度进行爬虫，给CDS布置任务
+            print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword,'search')
         

@@ -13,7 +13,12 @@
 				"label": ""
 			},
 			{
-				"line": 214,
+				"line": 122,
+				"column": 21,
+				"label": "翻译功能"
+			},
+			{
+				"line": 215,
 				"column": 20,
 				"label": ""
 			}
@@ -23,17 +28,12 @@
 		"path": "$ROOTPATH$\\CDS-Distrbuted.py",
 		"bookmarks": [
 			{
-				"line": 149,
+				"line": 163,
 				"column": 8,
 				"label": ""
 			},
 			{
-				"line": 188,
-				"column": 18,
-				"label": ""
-			},
-			{
-				"line": 289,
+				"line": 294,
 				"column": 19,
 				"label": ""
 			}

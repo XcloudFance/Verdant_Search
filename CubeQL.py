@@ -30,6 +30,7 @@ async def setting(*,url,typ):
 
 @app.post('/del')
 async def delete():
+    global cylinder
     cylinder = []
     return
 @app.post('/just_get')

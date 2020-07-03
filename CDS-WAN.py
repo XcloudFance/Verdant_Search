@@ -30,6 +30,7 @@ hea_ordinary = {
     "Cache-Control": "no-cache",
     "Connection": "keep-alive",
     "Cookie": "AspxAutoDetectCookieSupport=1",
+    "Host": "jyj.quanzhou.gov.cn",
     "Pragma": "no-cache",
     "Upgrade-Insecure-Requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
@@ -49,7 +50,7 @@ hea = {
 
 mysqlconfig = {}
 mysql = pymysql.connect(
-    host="localhost", port=3306, user="root", password="root", db="cylinder"
+    host="2.58.228.129", port=3306, user="root", password="e2ywipe", db="cylinder"
 )
 cursor = mysql.cursor()
 
@@ -150,21 +151,20 @@ dictlist = {}
 
 def getsearchurl(keyword):
     url = requests.get(
-        "http://mijisou.com/?q="
+        "https://mijisou.com/?q="
         + keyword
-        +'&category_general=on&time_range=&language=zh-CN&pageno=1',
+        + "&category_general=on&time_range=&language=zh-CN&pageno=1",
         hea_ordinary,
     ).text
-    print(url)
     soup = BeautifulSoup(url, "html.parser")
     ret = []
-    href_ = soup.find_all(name="span")
+    href_ = soup.find_all(name="a")
     # print(href_)
     for each in href_:
         # print(each.get('rel'))
-        if each.get("class") == ['url']:#["noopener", "noreferrer"]:
-            print(each.text)
-            
+        if each.get("rel") == ["noopener", "noreferrer"]:
+            if each.get("href").find("mijisou.com") == -1:
+                ret.append(each.get("href"))
     return ret
 
 
@@ -190,7 +190,7 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            try:
+            #try:
                 if i == []:
                     continue
                 if i["typ"] == "normal":
@@ -301,8 +301,8 @@ def mainly():
 
                     geturl = demjson.decode(cube.get())
                     print(i, " :end")
-            except:
-                print(i + " :error")
+            #except:
+            #    print(i + " :error")
 
 
 if __name__ == "__main__":
@@ -314,8 +314,9 @@ if __name__ == "__main__":
     # cursor.execute('TRUNCATE TABLE search;')
     # cursor.execute('TRUNCATE TABLE content;')
     # mysql.commit()
-    #mainly()
-    print(getsearchurl('due'))
+    print(getsearchurl('project'))
+    mainly()
+
     # print(easier('https://baidu.com//'))
     # 直接不用redis了，直接用我自己写的数据库
     print("End!")
