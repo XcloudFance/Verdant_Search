@@ -21,6 +21,13 @@ import redis
 import CubeQL_Client
 import threading
 
+'''
+这边的CDS-WAN指的是公网情况的爬虫
+将typ值为normal的cubeql数据用爬虫进行爬取
+如果typ值为search则对其他搜索引擎获取其中内容，再者使用爬虫进行获取信息后收入数据库
+与此同时，如果数据库有同样的URL，数据库会自动进行判重
+'''
+
 cube = CubeQL_Client.CubeQL()
 
 hea_ordinary = {
@@ -49,6 +56,7 @@ hea = {
 }
 
 mysqlconfig = {}
+# 公网IP 2.58.228.129
 mysql = pymysql.connect(
     host="2.58.228.129", port=3306, user="root", password="e2ywipe", db="cylinder"
 )
@@ -190,7 +198,7 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            #try:
+            try:
                 if i == []:
                     continue
                 if i["typ"] == "normal":
@@ -198,8 +206,8 @@ def mainly():
                     i = easier(i["content"])
                     req = requests.get(i, hea)
                     req.encoding = req.apparent_encoding  # 这是个坑，每个网站都有不同的编码机制
-                    if req.apparent_encoding.find("ISO") != -1:
-                        req.encoding = "utf-8"
+                    
+
                     if i in dictlist:
                         continue
                     if i.find(".png") != -1:
@@ -301,8 +309,8 @@ def mainly():
 
                     geturl = demjson.decode(cube.get())
                     print(i, " :end")
-            #except:
-            #    print(i + " :error")
+            except:
+                print(i + " :error")
 
 
 if __name__ == "__main__":
@@ -313,8 +321,9 @@ if __name__ == "__main__":
 
     # cursor.execute('TRUNCATE TABLE search;')
     # cursor.execute('TRUNCATE TABLE content;')
+    
     # mysql.commit()
-    print(getsearchurl('project'))
+    #print(getsearchurl('project'))
     mainly()
 
     # print(easier('https://baidu.com//'))

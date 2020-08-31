@@ -1,9 +1,10 @@
 #搜索引擎部分
+from gevent import monkey
+from gevent.pywsgi import WSGIServer
+monkey.patch_all()
 import pymysql
-import fastapi
 import demjson
-from fastapi import FastAPI
-
+import json
 from starlette.responses import Response
 from starlette.requests import Request
 from starlette.staticfiles import StaticFiles
@@ -15,17 +16,15 @@ from requests_html import requests
 from get_pronun import *
 import asyncio
 import CubeQL_Client
+#flask定义
+import flask
+from flask import render_template,request
+app = flask.Flask(__name__,template_folder='./templates',static_url_path='')
+app.jinja_env.auto_reload = True
+#flask end
 
 
-def run2(fun):
-       event_loop = asyncio.get_event_loop()
-       try:
-              return_value = event_loop.run_until_complete(
-              fun
-              )
-              return ((return_value))
-       finally:
-              event_loop.close()
+
 hea_ordinary = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate",
@@ -61,7 +60,7 @@ def deal(keywords : list):
             ret.remove(tmp1[i])#用了一个特别骚的方法，直接删除index的话会导致for循环越界
     return ret
 
-async def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
+def specfic_search(word): #如果啥也没有就返回False，如果有就返回搜索后的结果
     #try:
         re_list = ['([a-z]|[A-Z]|\s){1,}翻译','([a-z]|[A-Z]|\s){1,}','(.*)的英语']
         mode = -1
@@ -99,25 +98,21 @@ async def specfic_search(word): #如果啥也没有就返回False，如果有就
      #   return False
         
 
-# -- fastapi initialization --
-app = FastAPI() 
-app.mount(
-    "/static", StaticFiles(directory="static"), name="static"
-)  # 重定向/static作为static目录的css/js获取路径
-app.mount(
-    "/music",StaticFiles(directory="music"),name="music"
-)
-templates = Jinja2Templates(directory="templates")
-@app.get('/')
-async def index(request:Request):
-    return templates.TemplateResponse("index.html", context={"request": request})
+
+@app.route('/')
+def index():
+    return  render_template('index2.html')
 
 
-@app.get('/searchlist')
-async def searchlist(request:Request):
-    return templates.TemplateResponse("search_list.html", context={"request": request,'keyword':'233'})
-@app.get('/search')
-async def search(*,keyword,amount):
+
+@app.route('/searchlist')
+def searchlist():
+    return render_template('search_list.html')
+
+@app.route('/search',methods=['GET'])
+def search():
+    amount = request.args.get('amount')
+    keyword = request.args.get('keyword')
     mysql.ping(reconnect=True)
     if keyword == ' ':
         return {}
@@ -130,7 +125,7 @@ async def search(*,keyword,amount):
     response_json = {}
     #在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
     
-    specialsearch = await specfic_search(keyword)
+    specialsearch = specfic_search(keyword)
     #print(specialsearch)
     
     if specialsearch != False:#单词翻译查询
@@ -204,7 +199,8 @@ async def search(*,keyword,amount):
             print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword,'search')
-        return response_json
+        #print(demjson.encode(response_json))
+        return json.dumps(response_json)
 
     else:
         #新增关键词权值统计
@@ -233,10 +229,13 @@ async def search(*,keyword,amount):
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword,'search')
         
-        return response_json
+        return json.dumps(response_json)
 
-@app.get('/keyword_think')
-async def thinking(*,keyword):
+
+@app.route('/keyword_think',methods=['GET'])
+def thinking():
+    
+    keyword = request.args.get('keyword')
     limited = 7
     step = 0
     cursor.execute('select keyer from search where keyer like "'+keyword+'%" order by weigh desc' )
@@ -248,13 +247,7 @@ async def thinking(*,keyword):
             break
         
         ret.append(i[0])
-    return ret
-    
-@app.get('/website_added')
-def adding(*,website):
-    cursor.execute('update content set weigh = weigh + 1 where url = %s',(website))
-    mysql.commit()
-    
-        
+    return demjson.encode(ret)
 
-   # print(specfic_search('I am in schoolaedrawdawdrawdarfaweddgdfgerd'))
+http_server = WSGIServer(('0.0.0.0', 8000), app)
+http_server.serve_forever()

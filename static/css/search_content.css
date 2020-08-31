@@ -113,7 +113,7 @@
 }
 
 .result-translate-sound{
-    background: url(/static/img/sound.png) no-repeat;
+    background: url(../img/sound.png) no-repeat;
     height: 16px;
     padding-left: 18px;
     line-height: 16px;

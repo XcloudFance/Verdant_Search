@@ -3,22 +3,22 @@
 		"path": "$ROOTPATH$\\verdant.py",
 		"bookmarks": [
 			{
-				"line": 51,
+				"line": 63,
 				"column": 20,
 				"label": ""
 			},
 			{
-				"line": 119,
+				"line": 132,
 				"column": 5,
 				"label": ""
 			},
 			{
-				"line": 122,
+				"line": 135,
 				"column": 21,
 				"label": "翻译功能"
 			},
 			{
-				"line": 215,
+				"line": 228,
 				"column": 20,
 				"label": ""
 			}
@@ -35,6 +35,36 @@
 			{
 				"line": 294,
 				"column": 19,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\CDS-WAN.py",
+		"bookmarks": [
+			{
+				"line": 203,
+				"column": 40,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\CubeQL_Client.py",
+		"bookmarks": [
+			{
+				"line": 13,
+				"column": 26,
+				"label": ""
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$\\verdant_flask.py",
+		"bookmarks": [
+			{
+				"line": 22,
+				"column": 8,
 				"label": ""
 			}
 		]

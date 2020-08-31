@@ -18,14 +18,14 @@ def download_mp3(content : str):
     url="http://dict.youdao.com/dictvoice?type=0&audio="+content
     usatok = mktoken()
     uktok = mktoken()
-    path="./music/"+usatok+".mp3"
+    path="./static/music/"+usatok+".mp3"
     r = requests.get(url)
 
     with open(path,"wb") as f:
         f.write(r.content)
     f.close()
     url="http://dict.youdao.com/dictvoice?type=1&audio="+content
-    path="./music/"+uktok+".mp3"
+    path="./static/music/"+uktok+".mp3"
     r = requests.get(url)
 
     with open(path,"wb") as f:

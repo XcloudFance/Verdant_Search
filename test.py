@@ -34,3 +34,4 @@ def getfromBaidu(word):
 #主程序测试函数
 if __name__ == '__main__':
     print (getfromBaidu('drug'))
+    

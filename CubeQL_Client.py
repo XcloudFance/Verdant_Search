@@ -1,9 +1,9 @@
 from requests_html import requests
 import demjson
 class CubeQL:
-    #host = '127.0.0.1'
+    host = '2.58.228.129'
     port = '1278'
-    host = 'localhost'
+    #host = 'localhost'
     def __init__(self):
         pass
     def get(self):
