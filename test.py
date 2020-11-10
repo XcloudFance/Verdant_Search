@@ -17,6 +17,7 @@ def getfromBaidu(word):
     url = 'https://mijisou.com/?q=' + word
     html = requests.get(url=url,headers=headers)
     path = etree.HTML(html.content)
+    
     #用k来控制爬取的页码范围
     for k in range(1, 2):
         path = etree.HTML(requests.get(url, headers).content)

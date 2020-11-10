@@ -1,16 +1,17 @@
 {
   "name": "verdant_search",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "青荇搜索是一个用python+mysql实现的搜索引擎，目前还没有任何的优化233，就单纯为了实现搜索功能  \r 后期可能为了搜索增加redis优化",
   "main": "main.js",
   "scripts": {
     "test": "python get_pronun.py",
-    "run":"uvicorn verdant:app --reload",
+    "run":"uvicorn verdant_flask.py",
     "open":"uvicorn verdant:app --reload --port 8888",
     "cubeql":"uvicorn CubeQL:app --reload --port 1278",
     "spider":"python spider.py",
     "cds":"python cds-distrbuted.py",
-    "baidu":"python CDS-Baidu.py"
+    "baidu":"python CDS-Baidu.py",
+    "sort":"python sorting.py"
   },
   "repository": {
     "type": "git",

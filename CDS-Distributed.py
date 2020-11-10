@@ -47,10 +47,19 @@ hea = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 
+# -- read config --
+f = open("config.json", "r")
+js = demjson.decode(f.read())
+f.close()
+host = js["Spider"]["host"]
+port = js["Spider"]["port"]
+root = js["Spider"]["root"]
+password = js["Spider"]["password"]
+database = js["Spider"]["db"]
+# -- end of read config --
+
 mysqlconfig = {}
-mysql = pymysql.connect(
-    host="localhost", port=3306, user="root", password="root", db="cylinder"
-)
+mysql = pymysql.connect(host=host, port=int(port), user=root, password=password, db=database)
 cursor = mysql.cursor()
 
 
@@ -204,6 +213,8 @@ def mainly():
                         continue
                     if i.find(".png") != -1:
                         continue
+                    if req.status_code != 200: #0.12内容，如果网页不返回200，就不载入数据库
+                        continue 
                     code = req.text  # urllib.request.urlopen(req).read()
                     geturls = gethtmurl(code)
                     tmpcode = code
@@ -314,8 +325,8 @@ if __name__ == "__main__":
     # cursor.execute('TRUNCATE TABLE search;')
     # cursor.execute('TRUNCATE TABLE content;')
     # mysql.commit()
-    #mainly()
-    print(getsearchurl('due'))
+    mainly()
+    #print(getsearchurl('due'))
     # print(easier('https://baidu.com//'))
     # 直接不用redis了，直接用我自己写的数据库
     print("End!")
