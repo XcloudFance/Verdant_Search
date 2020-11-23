@@ -102,19 +102,19 @@
 		}
 		
 		var keyword = GetQueryString("keyword");
-		document.getElementById("input_form_k").value = keyword;
+		document.getElementById("input_form_k").value = decodeURIComponent(keyword);
 		var amount = GetQueryString("amount");
 		amount = amount!=null && typeof parseInt(amount)=="number" ? parseInt(amount) : 0;
 		const lastpg = amount - 10 <= 0 ? 0 : amount - 10;
 		const nextpg = amount + 10;
 		
 		document.getElementById("start_search").addEventListener("click",function(){
-			location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+			location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
 		});
 
 		document.getElementById('input_form_k').addEventListener("keyup",function(e){
 			if(e.key=="Enter"){
-				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+				location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
 			}
 			//输入间隔
 			if(!timer){
@@ -129,7 +129,7 @@
 						xhr = new ActiveXObject("Microsoft.XMLHTTP");
 					}
 					
-					xhr.open('GET', '/keyword_think?keyword=' + document.getElementById("input_form_k").value, true);
+					xhr.open('GET', '/keyword_think?keyword=' + encodeURIComponent(document.getElementById("input_form_k").value), true);
 					xhr.onload = function () {
 						let dt = JSON.parse(xhr.response);
 						let elm = document.querySelector("#search_associate ul")
