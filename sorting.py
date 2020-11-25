@@ -2,28 +2,39 @@
 '''
 这玩意儿用来搞数据库的排序，数据库需要动态排序
 '''
-import time,datetime
-
+import time,datetime,demjson
+# -- read config --
+f = open("config.json", "r")
+js = demjson.decode(f.read())
+f.close()
+host = js["Main"]["host"]
+port = js["Main"]["port"]
+root = js["Main"]["root"]
+password = js["Main"]["password"]
+database = js["Main"]["db"]
+# -- end of read config --
 
 while True:
     Datetmp =  datetime.datetime.strftime( datetime.datetime.now(),'%d')
     Hour = datetime.datetime.strftime( datetime.datetime.now(),'%H')
     Minu = datetime.datetime.strftime( datetime.datetime.now(),'%M')
     daterun = 0
-    if Hour!='2' or Minu!='0' or daterun==Datetmp:
+    #if Hour!='2' or Minu!='0' or daterun==Datetmp:
         #这一段就相当于时间要到达，且当日还会执行就要重新排序内容
-        continue
+    #    continue
     daterun = Datetmp
     import pymysql
     mysql = pymysql.connect(
-        host="localhost", port=3306, user="root", password="root", db="cylinder"
+        host=host, port=int(port), user=(root), password=password, db=database
     )
     cursor = mysql.cursor()
-    keyword = ','
+
+    #keyword = ','
     cursor.execute('select keyer from search')
     keywords = cursor.fetchall()
 
     for keyword in keywords:
+        #print(keyword[0])
         cursor.execute('select value from search where keyer = "'+keyword[0]+'"')
         tmp_list = {}
         index_list = cursor.fetchone()[0].split('|')
@@ -49,5 +60,6 @@ while True:
             else:
                 ret += index_list_[i]
         cursor.execute("update search set value = %s where keyer = %s",(ret, keyword[0]),)
-        mysql.commit()
+    mysql.commit()
         #print(i, " :end") 
+    break

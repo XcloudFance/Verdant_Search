@@ -44,22 +44,23 @@ hea_ordinary = {
     "Cache-Control": "no-cache",
     "Connection": "keep-alive",
     "Cookie": "AspxAutoDetectCookieSupport=1",
-    "Host": "jyj.quanzhou.gov.cn",
     "Pragma": "no-cache",
     "Upgrade-Insecure-Requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
-
-while True:
-    try:
-        mysql = pymysql.connect(
-            host=host, port=int(port), user=root, password=password, db=database
-        )
-    except:
-        time.sleep(1)
-        continue
-    break
-cursor = mysql.cursor()
+mysql,cursor = None,None
+def mysql_initation():
+    global mysql,cursor
+    while True:
+        try:
+            mysql = pymysql.connect(
+                host=host, port=int(port), user=root, password=password, db=database
+            )
+        except:
+            time.sleep(1)
+            continue
+        break
+    cursor = mysql.cursor()
 
 
 def sort_by_value(d):
@@ -83,7 +84,8 @@ def deal2(website: str):
     return "/redirect?_=" + website
 
 def reping():
-    global mysql
+    global mysql,cursor
+    #print(1)
     try:
         mysql.ping(reconnect=True)
         cursor.execute('')
@@ -97,8 +99,10 @@ def reping():
                 time.sleep(1)
                 continue
             break
+        cursor = mysql.cursor()
 def specfic_search(word):  # 如果啥也没有就返回False，如果有就返回搜索后的结果
     try:
+       
         re_list = ["([a-z]|[A-Z]|\s){1,}翻译", "([a-z]|[A-Z]|\s){1,}", "(.*)的英语"]
         mode = -1
         tmp = -1
@@ -113,6 +117,7 @@ def specfic_search(word):  # 如果啥也没有就返回False，如果有就返�
                 mode = tmp
                 break
         if mode == -1:
+            #print(-1)
             return False
             # try
         # print(mode)
@@ -153,9 +158,10 @@ def searchlist():
 
 @app.route("/search", methods=["GET"])
 def search():
+
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
-    mysql.ping(reconnect=True)
+    reping()
     if keyword == " ":
         return {}
     amount = int(amount)
@@ -172,6 +178,7 @@ def search():
 
     if specialsearch != False:  # 单词翻译查询
         if specialsearch[2] == 0 or specialsearch[2] == 1:
+            #maybe，这个地方需要重做，因为每次搜索一个单词就需要去爬虫一次，或者用一个特别大的库去存特定单词的音也不是不行
             usatok, uktok = download_mp3(keyword)
             response_json["1"] = {
                 "type": "translation",
@@ -204,7 +211,7 @@ def search():
             index_list = fetch[0].split("|")
             for j in index_list:
                 if j in match_weigh:
-                    match_weigh[j] += 1
+                    match_weigh[j] += 10
                 else:
                     match_weigh[j] = 1
 
@@ -306,8 +313,14 @@ def redirected():
     mysql.commit()
     return redirect(website)
 
+#可能需要防SQL注入，因为每一个点都是通过直接连接sql的,可能需要base64
+
 @app.route("/getwebsite",methods=['GET'])
 def getsite():
     pass
-http_server = WSGIServer(("0.0.0.0", 8000), app)
-http_server.serve_forever()
+
+if __name__ == '__main__':
+    mysql_initation()
+    http_server = WSGIServer(("0.0.0.0", 8888), app)
+    http_server.serve_forever()
+

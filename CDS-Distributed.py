@@ -312,6 +312,104 @@ def mainly():
 
                     geturl = demjson.decode(cube.get())
                     print(i, " :end")
+                elif i['typ'] == 'fromsearch':
+                    i = easier(i["content"])
+                    req = requests.get(i, hea)
+                    req.encoding = req.apparent_encoding
+                    if req.apparent_encoding.find("ISO") != -1:
+                        req.encoding = "utf-8"
+                    if i in dictlist:
+                        continue
+                    if i.find(".png") != -1:
+                        continue
+                    if req.status_code != 200: #0.12内容，如果网页不返回200，就不载入数据库
+                        continue 
+                    code = req.text  # urllib.request.urlopen(req).read()
+                    geturls = gethtmurl(code)
+                    tmpcode = code
+                    # 取body做为内容
+                    maincontent = get_keywords(code) + " " + get_p_content(code)
+                    title = get_title(code)
+                    dictlist[
+                        i
+                    ] = (
+                        maincontent
+                    )
+                    for url_ in geturls:
+                        cube.set(url_, typ="fromsearch")
+
+                    geturl = demjson.decode(cube.get())
+                    # 将geturls内的内容发到CubeQL
+                    wordlist = list(set(Cut(maincontent) + Cut(title)))
+                    cursor.execute("select count(*) as value from content")
+                    my_weigh = weigh_judgement(i, code)+20  # 这里和上面不同，因为这个是从搜索引擎出来的，所以分数有加成
+                    tablenum = str(cursor.fetchone()[0]) 
+                    cursor.execute(
+                        "insert into content values ("
+                        + tablenum
+                        + ",%s,%s,%s,"
+                        + str(my_weigh)
+                        + ")",
+                        (i, dictlist[i], title),
+                    )
+                    mysql.commit()
+                    # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
+                    # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
+                    # 判断这个关键词存不存在
+                    for j in wordlist:
+                        cursor.execute(
+                            "select value from search where keyer = %s", (j,)
+                        )
+                        index = cursor.fetchone()
+                        # print(index)
+                        if index == None:
+                            cursor.execute(
+                                "insert into search values(%s,%s,0)", (j, tablenum)
+                            )
+
+                        else:
+                            # -- sort --
+                            # 如果没有就得对其进行排序，从头搜到尾，用降序的形式实现这序列
+                            # 首先先将原序列变成一个列表才方便操作
+                            index_list = index[0].split("|")
+                            # print(index_list)
+                            index_list = [x for x in index_list if x != ""]
+                            for k in range(len(index_list)):
+                                # 取出每个地址的权值
+                                # print('select weigh from content where id = '+index_list[k])
+                                cursor.execute(
+                                    "select weigh from content where id = "
+                                    + index_list[k]
+                                )
+                                the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
+                                if my_weigh >= the_weigh:
+                                    index_list.insert(k, tablenum)
+                                    break
+                                elif k == len(index_list) - 1:
+                                    index_list.insert(k + 1, tablenum)
+                                    index_list = [x for x in index_list if x != ""]
+                                    break
+                                    # 如果没有比自己小的值就放在最后面
+
+                            # 然后再生成一次字符串表
+                            # 不能去重，会被set改顺序
+                            tmp_list = list(set(index_list))
+                            tmp_list.sort(key=index_list.index)
+                            index_list = tmp_list
+                            for k in range(len(index_list)):
+                                if k == 0:
+                                    index_list_ = index_list[k]
+                                else:
+                                    index_list_ += "|" + index_list[k]
+
+                            # -- sort --
+                            cursor.execute(
+                                "update search set value = %s where keyer = %s",
+                                (index_list_, j),
+                            )
+                            # --update
+                    mysql.commit()
+                    print(i, " :end")
             except:
                 print(i + " :error")
 
