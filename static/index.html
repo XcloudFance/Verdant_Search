@@ -51,7 +51,7 @@
 
 		document.getElementById('input_form_k').addEventListener("keyup",function(e){
 			if(e.key=="Enter"){
-				location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+				location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
 				//console.log(e,e.target.value)
 			}
 			//输入间隔
@@ -67,7 +67,7 @@
 						xhr = new ActiveXObject("Microsoft.XMLHTTP");
 					}
 					
-					xhr.open('GET', '/keyword_think?keyword=' + document.getElementById("input_form_k").value, true);
+					xhr.open('GET', '/keyword_think?keyword=' + encodeURIComponent(document.getElementById("input_form_k").value), true);
 					xhr.onload = function () {
 						let dt = JSON.parse(xhr.response);
 						let elm = document.querySelector("#search_associate ul")
@@ -84,7 +84,7 @@
 		});
 		
 		document.getElementById('start_search').addEventListener("click",function(e){
-			location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
+			location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
 		})
 	</script>
 </html>

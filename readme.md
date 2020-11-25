@@ -6,6 +6,9 @@
 1. 实现了对数据库内关键词的网页动态排序
 2. 将后端改成了flask，其他的仍然使用fastapi
 
+## 0.1.2 更新
+对分布式爬虫爬取的statuscode出现404仍然收录的问题进行优化  
+增加了搜索结果网页排序和权值增加（重定向）
 
 ## User-agent
 Mozilla/5.0 (compatible;VerdantSpider/1.0)

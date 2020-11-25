@@ -1,343 +1,315 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <title>keyword - 青荇搜索</title>
-    <!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:500" rel="stylesheet"/> -->
-    <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            line-height: 21px;
-        }
-        
-        h1,
-        h2 {
-            font: 19px 'Segoe UI', Arial, Helvetica, Sans-Serif;
-            color: #600092;
-        }
-        
-        html,
-        body,
-        p,
-        img,
-        ol,
-        ul,
-        li,
-        form,
-        table,
-        tr,
-        th,
-        td {
-            border: 0;
-            border-collapse: collapse;
-            border-spacing: 0;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        
-        h2 {
-            margin: 3px;
-        }
-    </style>
-    <!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet"/>
+	<head>
+		<meta charset="utf-8">
+		<title>keyword - 青荇搜索</title>
+		<!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:500" rel="stylesheet"/> -->
+		<style>
+			html,body { height: 100%;margin: 0; padding: 0;line-height: 21px;}
+			h1,h2{font: 19px 'Segoe UI',Arial,Helvetica,Sans-Serif;color: #600092;}
+			html, body, p, img, ol, ul, li, form, table, tr, th, td {
+				border: 0;
+				border-collapse: collapse;
+				border-spacing: 0;
+				list-style: none;
+				margin: 0;
+				padding: 0;
+			}
+			
+			h2{margin: 3px;}
+		</style>
+		<!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet"/>
 		<style>
 			body,h1,h2,h3,h4,h5,h6,a,span,div,p,span,label,input{
 				font-family: "Noto Sans SC","PingFang SC","Lantinghei SC","Microsoft YaHei",arial,"\5b8b\4f53",sans-serif, tahoma,Arial, Helvetica, sans-serif;
 				font-weight: 400;
 			}
 		</style> -->
-    <style>
-        * {
-            font-family: -apple-system, "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
-        }
-    </style>
-    <link href="css/search_content.css" rel="stylesheet" />
-    <link href="css/search_index.css" rel="stylesheet" />
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-</head>
-
-<body>
-    <div style="width: 100%;height: 60px;">
-        <div style="padding-top: 8px;">
-            <div style="width: 130px;float: left;margin: 4px;">
-                <div style="width: 110px;height: 36px;display: table;margin: 0 auto;margin-top: 3px;">
-                    <a src='/'><img src="img/c_青荇搜索_1.jpg" /></a>
-                </div>
-            </div>
-            <div class="search-input-w search-input-w-box" style="width: 590px;top: 27.2%;">
-                <div class="search-input-w-box-left">
-                    <span style="width: 428px;display: inline-block;">
+		<style>
+			*{
+				font-family: -apple-system, "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Source Han Sans CN", "Source Han Sans SC", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+			}
+		</style>
+		<link href="css/search_content.css" rel="stylesheet"/>
+		<link href="css/search_index.css" rel="stylesheet"/>
+		<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+	</head>
+	<body>
+		<div style="width: 100%;height: 60px;">
+			<div style="padding-top: 8px;">
+				<div style="width: 130px;float: left;margin: 4px;">
+					<div style="width: 110px;height: 36px;display: table;margin: 0 auto;margin-top: 3px;">
+						<img src="img/c_青荇搜索_1.jpg"/>
+					</div>
+				</div>
+				<div class="search-input-w search-input-w-box" style="width: 590px;top: 27.2%;">
+					<div class="search-input-w-box-left">
+						<span style="width: 428px;display: inline-block;">
 							<input id="input_form_k" type="text"/>
 						</span>
-                </div>
-                <div>
-                    <span style="width: 160px;display: inline-block;">
+					</div>
+					<div>
+						<span style="width: 160px;display: inline-block;">
 							<input class="form-button" id="start_search" type="button" value="搜索"/>
 						</span>
-                </div>
-                <div id="search_associate">
-                    <ul>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div style="width: 100%;">
-        <div style="word-break: break-all;word-wrap: break-word;position: relative;border-top: 1px solid rgba(0,0,0,.15);">
-            <div class="result-content-left">
-                <span>搜索结果&nbsp;[<span id="loading_x">正在搜索</span>]&nbsp;<span class="return-black">&nbsp;(当前页共有 <span id="result_len">-</span> 条结果)</span>&nbsp;</span>
-                <div class="search-result-li">
-                    <ol id="result_list_ol">
-                        <li></li>
-                    </ol>
-                    <div class="corl-v">
-                        <a href="/">上一页</a>
-                        <a href="/">下一页</a>
-                    </div>
-                </div>
-            </div>
-            <div class="result-content-right">
-                <span>推荐</span>
-            </div>
-        </div>
-    </div>
-</body>
-<script>
-    var timer = null;
-    var ldtimer = null;
-    var ldcount = 0;
+					</div>
+					<div id="search_associate">
+						<ul>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div style="width: 100%;">
+			<div style="word-break: break-all;word-wrap: break-word;position: relative;border-top: 1px solid rgba(0,0,0,.15);">
+				<div class="result-content-left">
+					<span>搜索结果&nbsp;[<span id="loading_x">正在搜索</span>]&nbsp;<span class="return-black">&nbsp;(当前页共有 <span id="result_len">-</span> 条结果)</span>&nbsp;</span>
+					<div class="search-result-li">
+						<ol id="result_list_ol">
+							<li></li>
+						</ol>
+						<div class="corl-v">
+							<a href="/">上一页</a>
+							<a href="/">下一页</a>
+						</div>
+					</div>
+				</div>
+				<div class="result-content-right">
+					<span>推荐</span>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		var timer = null;
+		var ldtimer = null;
+		var ldcount = 0;
+			
+		function JsonToArray(stree){
+			let p = [];
+			for (let i=1;i<=stree.length;i++) {
+				p.push(stree[i.toString()])
+			}
+			return p
+		}
+		
+		function GetQueryString(name) {
+			let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			let r = window.location.search.substr(1).match(reg);
+			if (r != null)
+				return decodeURIComponent(r[2]);
+			return null;
+		}
+		
+		var keyword = GetQueryString("keyword");
+		document.getElementById("input_form_k").value = decodeURIComponent(keyword);
+		var amount = GetQueryString("amount");
+		amount = amount!=null && typeof parseInt(amount)=="number" ? parseInt(amount) : 0;
+		const lastpg = amount - 10 <= 0 ? 0 : amount - 10;
+		const nextpg = amount + 10;
+		
+		document.getElementById("start_search").addEventListener("click",function(){
+			location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+		});
 
-    function JsonToArray(stree) {
-        let p = [];
-        for (let i = 1; i <= stree.length; i++) {
-            p.push(stree[i.toString()])
-        }
-        return p
-    }
+		document.getElementById('input_form_k').addEventListener("keyup",function(e){
+			if(e.key=="Enter"){
+				location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+			}
+			//输入间隔
+			if(!timer){
+				//console.log('timer ok')
+				clearTimeout(timer)
+				timer = setTimeout(() => {
+					timer = null;
+					let xhr = null;
+					if (window.XMLHttpRequest){
+						xhr = new XMLHttpRequest();
+					}else if (window.ActiveXObject){
+						xhr = new ActiveXObject("Microsoft.XMLHTTP");
+					}
+					
+					xhr.open('GET', '/keyword_think?keyword=' + encodeURIComponent(document.getElementById("input_form_k").value), true);
+					xhr.onload = function () {
+						let dt = JSON.parse(xhr.response);
+						let elm = document.querySelector("#search_associate ul")
+						elm.innerHTML = "";
+						for(let i=0;i<dt.length;i++){
+							let fx = document.createElement("li");
+							fx.innerText = dt[i];
+							elm.appendChild(fx);
+						}
+					}
+					xhr.send();
+				}, 800);
+			}
+		});
 
-    function GetQueryString(name) {
-        let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-        let r = window.location.search.substr(1).match(reg);
-        if (r != null)
-            return decodeURIComponent(r[2]);
-        return null;
-    }
+		if(keyword!=null){
+			document.querySelector("title").innerText = keyword + " - 青荇搜索";
+		}else{
+			document.querySelector("title").innerText = "青荇搜索";
+		}
+		
+		{
+			let px = document.querySelector(".corl-v").querySelectorAll("a");
+			px[0].href = 'searchlist?keyword=' + keyword + '&amount=' + lastpg;
+			px[1].href = 'searchlist?keyword=' + keyword + '&amount=' + nextpg;
+		}
+		
+		function SetList(vl,amount_){
+			let v = document.getElementById("result_list_ol");
+			if(keyword==null){
+				let l = document.createElement("li");
+					l.className = 'result-li';
+					l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>'+
+								  '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
+					v.appendChild(l)
+				return false
+			}
+			
+			amount_ = parseInt(amount_) ==NaN ? 0: parseInt(amount_);
+			let xhr = null;
+			if (window.XMLHttpRequest){
+			    xhr = new XMLHttpRequest();
+			}else if (window.ActiveXObject){
+			    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			
+			ldtimer = setInterval(() => {
+				lding();
+			}, 400);
 
-    var keyword = GetQueryString("keyword");
-    document.getElementById("input_form_k").value = keyword;
-    var amount = GetQueryString("amount");
-    amount = amount != null && typeof parseInt(amount) == "number" ? parseInt(amount) : 0;
-    const lastpg = amount - 10 <= 0 ? 0 : amount - 10;
-    const nextpg = amount + 10;
+			xhr.open('GET', '/search?keyword=' + vl + '&amount=' + amount_, true);
+			xhr.onload = function () {
+				//document.getElementById('result_list_ol').innerHTML = '';
+				let v = document.getElementById("result_list_ol");
+				let dt1 = (JSON.parse(xhr.response));
+				
+				if(xhr.response != '{}' & dt1.length != 0){
+					let dt = JsonToArray(dt1);
+					document.getElementById('result_len').innerText = dt1.length;
 
-    document.getElementById("start_search").addEventListener("click", function() {
-        location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
-    });
+					if(dt1.length < 10){
+						let px = document.querySelector(".corl-v").querySelectorAll("a");
+						px[1].href = "";
+						px[1].style.display = "none";
+					}
+					
+					dt.forEach((el) => {
+						//console.log(el);
+						let l = document.createElement("li");
+						if(el.type == 'translation'){
+							let a = el.detail;
+							if(document.getElementById('traudio')==null){
+								let b = document.createElement('audio');
+								b.id = 'traudio';
+								document.getElementsByTagName('body')[0].appendChild(b);
+							}
+							//console.log(a.split('\n'));
+							let b = a.split('\n');
+							l.className = 'result-translate';
+							let c = "";
+							for(let i=5;i<b.length;i++){
+								if(i+1>=b.length){
+									c += b[i];
+								}else{
+									c += b[i] + '\n';
+								}
+							}
+														
+							let x1 = document.createElement('h2');
+							x1.innerHTML = '<a href="'+ el.url +'">'+ el.title +'</a>';
 
-    document.getElementById('input_form_k').addEventListener("keyup", function(e) {
-        if (e.key == "Enter") {
-            location.href = "searchlist" + "?keyword=" + document.getElementById("input_form_k").value;
-        }
-        //输入间隔
-        if (!timer) {
-            //console.log('timer ok')
-            clearTimeout(timer)
-            timer = setTimeout(() => {
-                timer = null;
-                let xhr = null;
-                if (window.XMLHttpRequest) {
-                    xhr = new XMLHttpRequest();
-                } else if (window.ActiveXObject) {
-                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
-                }
+							l.appendChild(x1);
 
-                xhr.open('GET', '/keyword_think?keyword=' + document.getElementById("input_form_k").value, true);
-                xhr.onload = function() {
-                    let dt = JSON.parse(xhr.response);
-                    let elm = document.querySelector("#search_associate ul")
-                    elm.innerHTML = "";
-                    for (let i = 0; i < dt.length; i++) {
-                        let fx = document.createElement("li");
-                        fx.innerText = dt[i];
-                        elm.appendChild(fx);
-                    }
-                }
-                xhr.send();
-            }, 800);
-        }
-    });
+							let x2 = document.createElement('div');
+							x2.className = 'result-translate-content-left';
 
-    if (keyword != null) {
-        document.querySelector("title").innerText = keyword + " - 青荇搜索";
-    } else {
-        document.querySelector("title").innerText = "青荇搜索";
-    }
+							let x2_1 = document.createElement('div');
+							x2_1.className = 'result-translate-content-c1';
+							x2_1.innerText = b[0];
 
-    {
-        let px = document.querySelector(".corl-v").querySelectorAll("a");
-        px[0].href = 'searchlist?keyword=' + keyword + '&amount=' + lastpg;
-        px[1].href = 'searchlist?keyword=' + keyword + '&amount=' + nextpg;
-    }
+							let x2_2 = document.createElement('div');
+							x2_2.className = 'result-translate-content-c2';
 
-    function SetList(vl, amount_) {
-        let v = document.getElementById("result_list_ol");
-        if (keyword == null) {
-            let l = document.createElement("li");
-            l.className = 'result-li';
-            l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>' +
-                '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
-            v.appendChild(l)
-            return false
-        }
+							let x2_2_uk = document.createElement('span');
+							x2_2_uk.className = 'result-translate-sound';
+							x2_2_uk.addEventListener('click',function(){
+								tsAudio(el.music_UK.toString())
+							})
+							x2_2_uk.innerText = b[1] + " " + b[2];
 
-        amount_ = parseInt(amount_) == NaN ? 0 : parseInt(amount_);
-        let xhr = null;
-        if (window.XMLHttpRequest) {
-            xhr = new XMLHttpRequest();
-        } else if (window.ActiveXObject) {
-            xhr = new ActiveXObject("Microsoft.XMLHTTP");
-        }
+							let x2_2_usa = document.createElement('span');
+							x2_2_usa.className = 'result-translate-sound';
+							x2_2_usa.addEventListener('click',function(){
+								tsAudio(el.music_USA.toString())
+							})
+							x2_2_usa.innerText = b[3] + " " + b[4];
 
-        ldtimer = setInterval(() => {
-            lding();
-        }, 400);
+							x2_2.append(x2_2_uk)
+							x2_2.append(x2_2_usa)
 
-        xhr.open('GET', '/search?keyword=' + vl + '&amount=' + amount_, true);
-        xhr.onload = function() {
-            //document.getElementById('result_list_ol').innerHTML = '';
-            let v = document.getElementById("result_list_ol");
-            let dt1 = (JSON.parse(xhr.response));
+							let x3 = document.createElement('div');
+							x3.className = 'result-translate-content-c3';
+							x3.innerText = c;
 
-            if (xhr.response != '{}' & dt1.length != 0) {
-                let dt = JsonToArray(dt1);
-                document.getElementById('result_len').innerText = dt1.length;
+							x2.appendChild(x2_1)
+							x2.appendChild(x2_2)
+							x2.appendChild(x3)
+							l.appendChild(x2)
 
-                if (dt1.length < 10) {
-                    let px = document.querySelector(".corl-v").querySelectorAll("a");
-                    px[1].href = "";
-                    px[1].style.display = "none";
-                }
+						}else{
+							l.className = 'result-li';
+							l.innerHTML = '<h2><a href="'+ el.url +'">'+ el.title +'</a></h2>'+
+										'<span class="url-green">'+ el.url + '</span>'+
+										'<div class="result-cont">' + el.detail + '</div>';
+						}
+						
+						v.appendChild(l)
+					});
+				}else{
+					document.getElementById('result_len').innerText = '0';
+					let l = document.createElement("li");
+					l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>'+
+								  '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
+					v.appendChild(l)
+				}
 
-                dt.forEach((el) => {
-                    //console.log(el);
-                    let l = document.createElement("li");
-                    if (el.type == 'translation') {
-                        let a = el.detail;
-                        if (document.getElementById('traudio') == null) {
-                            let b = document.createElement('audio');
-                            b.id = 'traudio';
-                            document.getElementsByTagName('body')[0].appendChild(b);
-                        }
-                        //console.log(a.split('\n'));
-                        let b = a.split('\n');
-                        l.className = 'result-translate';
-                        let c = "";
-                        for (let i = 5; i < b.length; i++) {
-                            if (i + 1 >= b.length) {
-                                c += b[i];
-                            } else {
-                                c += b[i] + '\n';
-                            }
-                        }
+				clearInterval(ldtimer);
+				document.getElementById("loading_x").innerText = "搜索完成"
+			}
+			xhr.send();
+		}
 
-                        let x1 = document.createElement('h2');
-                        x1.innerHTML = '<a href="' + el.url + '">' + el.title + '</a>';
+		document.getElementById('input_form_k').addEventListener('focusin',function(){
+			document.getElementById('search_associate').style.display = "block"
+		});
+		
+		document.getElementById('input_form_k').addEventListener('focusout',function(){
+			document.getElementById('search_associate').style.display = "none"
+		});
 
-                        l.appendChild(x1);
+		window.onload = function(){
+			SetList(keyword,amount)
+		}
 
-                        let x2 = document.createElement('div');
-                        x2.className = 'result-translate-content-left';
+		function tsAudio(urlx){
+			let a = document.getElementById('traudio');
+			//a.pause();
+			a.src = '/music/' + urlx + '.mp3';
+			a.currentTime = 0;
+			a.play();
+		}
 
-                        let x2_1 = document.createElement('div');
-                        x2_1.className = 'result-translate-content-c1';
-                        x2_1.innerText = b[0];
-
-                        let x2_2 = document.createElement('div');
-                        x2_2.className = 'result-translate-content-c2';
-
-                        let x2_2_uk = document.createElement('span');
-                        x2_2_uk.className = 'result-translate-sound';
-                        x2_2_uk.addEventListener('click', function() {
-                            tsAudio(el.music_UK.toString())
-                        })
-                        x2_2_uk.innerText = b[1] + " " + b[2];
-
-                        let x2_2_usa = document.createElement('span');
-                        x2_2_usa.className = 'result-translate-sound';
-                        x2_2_usa.addEventListener('click', function() {
-                            tsAudio(el.music_USA.toString())
-                        })
-                        x2_2_usa.innerText = b[3] + " " + b[4];
-
-                        x2_2.append(x2_2_uk)
-                        x2_2.append(x2_2_usa)
-
-                        let x3 = document.createElement('div');
-                        x3.className = 'result-translate-content-c3';
-                        x3.innerText = c;
-
-                        x2.appendChild(x2_1)
-                        x2.appendChild(x2_2)
-                        x2.appendChild(x3)
-                        l.appendChild(x2)
-
-                    } else {
-                        l.className = 'result-li';
-                        l.innerHTML = '<h2><a href="' + el.url + '">' + el.title + '</a></h2>' +
-                            '<span class="url-green">' + el.url + '</span>' +
-                            '<div class="result-cont">' + el.detail + '</div>';
-                    }
-
-                    v.appendChild(l)
-                });
-            } else {
-                document.getElementById('result_len').innerText = '0';
-                let l = document.createElement("li");
-                l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>' +
-                    '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
-                v.appendChild(l)
-            }
-
-            clearInterval(ldtimer);
-            document.getElementById("loading_x").innerText = "搜索完成"
-        }
-        xhr.send();
-    }
-
-    document.getElementById('input_form_k').addEventListener('focusin', function() {
-        document.getElementById('search_associate').style.display = "block"
-    });
-
-    document.getElementById('input_form_k').addEventListener('focusout', function() {
-        document.getElementById('search_associate').style.display = "none"
-    });
-
-    window.onload = function() {
-        SetList(keyword, amount)
-    }
-
-    function tsAudio(urlx) {
-        let a = document.getElementById('traudio');
-        //a.pause();
-        a.src = '/music/' + urlx + '.mp3';
-        a.currentTime = 0;
-        a.play();
-    }
-
-    function lding() {
-        let a = document.getElementById("loading_x");
-        if (ldcount < 5) {
-            a.innerText += ".";
-        } else {
-            a.innerText = "正在搜索";
-        }
-        ldcount++
-    }
-</script>
-
+		function lding(){
+			let a = document.getElementById("loading_x");
+			if(ldcount < 5){
+				a.innerText += ".";
+			}else{
+				a.innerText = "正在搜索";
+			}
+			ldcount++
+		}
+	</script>
 </html>
