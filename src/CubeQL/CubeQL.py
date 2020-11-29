@@ -44,7 +44,7 @@ async def justget():
         if i<len(cylinder):
             ret.append(cylinder[i])
     return ret
-@app.post('/baidu_set')
+@app.post('/filter_set')
 async def baiduset(*,url):
     global baidu_cylinder
     if len(baidu_cylinder)>limitation:
@@ -52,7 +52,7 @@ async def baiduset(*,url):
     baidu_cylinder.append(url)
     baidu_cylinder = list(set(baidu_cylinder))
     pass
-@app.post('/baidu_del')
+@app.post('/filter_get')
 async def baidudel():
     baidu_cylinder = []
     pass

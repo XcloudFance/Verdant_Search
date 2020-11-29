@@ -161,6 +161,7 @@ def search():
 
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
+    print(keyword)
     reping()
     if keyword == " ":
         return {}

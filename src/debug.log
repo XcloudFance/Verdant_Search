@@ -10,3 +10,7 @@
 [1124/112451.222:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
 [1124/112619.571:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
 [1124/112657.354:ERROR:directory_reader_win.cc(43)] FindFirstFile: 系统找不到指定的路径。 (0x3)
+[1129/134611.731:ERROR:process_reader_win.cc(123)] NtOpenThread: {无法访问} 过程已请求访问一对象，但未给访问权限。 (0xc0000022)
+[1129/134611.733:ERROR:exception_snapshot_win.cc(99)] thread ID 16260 not found in process
+[1129/134611.755:ERROR:process_reader_win.cc(123)] NtOpenThread: {无法访问} 过程已请求访问一对象，但未给访问权限。 (0xc0000022)
+[1129/134611.756:ERROR:exception_snapshot_win.cc(99)] thread ID 13412 not found in process

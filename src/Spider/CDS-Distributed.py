@@ -20,6 +20,7 @@ import random
 import redis
 import CubeQL_Client
 import threading
+from CDS_Selenium import *
 
 cube = CubeQL_Client.CubeQL()
 
@@ -194,7 +195,11 @@ def mainly():
     geturl = demjson.decode(cube.get())
     length = 0
     print(geturl)
-    while geturl != []:
+    while True:
+        if geturl == []:
+            geturl = demjson.decode(cube.get())
+
+            continue
         tmplist = geturl
         geturl = []
 
@@ -305,12 +310,7 @@ def mainly():
                 # ---------------------------------------------
                 elif i["typ"] == "search":
                     i = i["content"]
-                    urllist = getsearchurl(i) #将搜索引擎的结果扒下来，然后给他放CubeQL的爬虫队列
-                    cube = CubeQL_Client.CubeQL()
-                    for j in urllist:
-                        cube.set(j, "normal")
-
-                    geturl = demjson.decode(cube.get())
+                    mijisou(i)
                     print(i, " :end")
                 elif i['typ'] == 'fromsearch':
                     i = easier(i["content"])
