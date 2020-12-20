@@ -152,6 +152,11 @@ def weigh_judgement(url, urlcode):
         if url == i:
             weigh += int(weigh_json[i])
     weigh += random.randint(1, 4)
+    # 判断是否为主页
+    slide = len(url.split('/'))
+    if slide > 10:
+        slide = 10
+    weigh += 10-slide
     return weigh
 
 
@@ -204,12 +209,19 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            try:
+            #try:
                 if i == []:
                     continue
+                # 用来判断这个url有没有被爬过，通过cubeql里面的filter
+
                 if i["typ"] == "normal":
 
                     i = easier(i["content"])
+                    # 用来判断这个url有没有被爬过，通过cubeql里面的filter
+
+                    if cube.filter_contain(i) == '1':
+                        continue
+
                     req = requests.get(i, hea)
                     req.encoding = req.apparent_encoding  # 这是个坑，每个网站都有不同的编码机制
                     if req.apparent_encoding.find("ISO") != -1:
@@ -249,7 +261,9 @@ def mainly():
                         + ")",
                         (i, dictlist[i], title),
                     )
+
                     mysql.commit()
+                    cube.filter_set(i) #插入过滤器
                     # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
                     # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
                     # 判断这个关键词存不存在
@@ -410,8 +424,8 @@ def mainly():
                             # --update
                     mysql.commit()
                     print(i, " :end")
-            except:
-                print(i + " :error")
+            #except:
+            #    print(i + " :error")
 
 
 if __name__ == "__main__":
@@ -420,9 +434,9 @@ if __name__ == "__main__":
     # code = req.text
     # get_p_content(code)
 
-    # cursor.execute('TRUNCATE TABLE search;')
-    # cursor.execute('TRUNCATE TABLE content;')
-    # mysql.commit()
+    #cursor.execute('TRUNCATE TABLE search;')
+    #cursor.execute('TRUNCATE TABLE content;')
+    #mysql.commit()
     mainly()
     #print(getsearchurl('due'))
     # print(easier('https://baidu.com//'))

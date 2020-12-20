@@ -1,4 +1,7 @@
 from fastapi import FastAPI
+from pybloom_live import ScalableBloomFilter, BloomFilter
+bloom = ScalableBloomFilter(initial_capacity=1000)
+
 app = FastAPI(debug=True)
 cylinder = []
 baidu_cylinder = []
@@ -46,14 +49,26 @@ async def justget():
     return ret
 @app.post('/filter_set')
 async def baiduset(*,url):
-    global baidu_cylinder
-    if len(baidu_cylinder)>limitation:
-        return
-    baidu_cylinder.append(url)
-    baidu_cylinder = list(set(baidu_cylinder))
-    pass
-@app.post('/filter_get')
-async def baidudel():
-    baidu_cylinder = []
-    pass
+    bloom.add(url)
+
+
+@app.post('/filter_contain')
+async def baidudel(*,url):
+    
+    if url in bloom:
+        return '1'
+    else:
+        return '0'
+
+@app.get('/save')
+async def save():
+    f = open('bloom_temp.bin','wb')
+    bloom.tofile(f)
+    f.close()
+
+@app.get('/read')
+async def read():
+    f = open('bloom_temp.bin','rb')
+    bloom = bloom.fromfile(f)
+    f.close()
 #port = 1278

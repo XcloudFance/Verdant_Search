@@ -18,9 +18,9 @@ class CubeQL:
         return req.text
     def set(self,url,typ):
         hea = {'accept':'application/json'}
-        req = requests.post('http://'+self.host+':'+self.port+'/set?url='+url+'&typ='+typ,hea)
+        req = requests.post('http://'+self.host+':'+self.port+'/set?url='+url+'&typ='+typ)
     def filter_set(self,url):
-        req = requests.post('http://'+self.host+':'+self.port+'/filter_set?url='+url,hea)
+        req = requests.post('http://'+self.host+':'+self.port+'/filter_set?url='+url)
     def filter_contain(self,url):
         req = requests.post('http://'+self.host+':'+self.port+'/filter_contain?url'+url)
         return req.text
