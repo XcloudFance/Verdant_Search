@@ -10,7 +10,7 @@
 		<link href="css/search_index.css" rel="stylesheet"/>
 	</head>
 	<body>
-		<div style="position: relative;padding-bottom: 0;height: 100%;min-height: 600px;">	
+		<div id="app" style="position: relative;padding-bottom: 0;height: 100%;min-height: 600px;">	
 			<div style="width: 590px;top: 27.2%;position: inherit;z-index: 10;margin: 0 auto;">
 				<div style="display: table;margin: 0 auto;padding: 8px;margin-bottom: 24px;">
 					<img style="height:72px" src="img/verdant1.png"/>
@@ -38,16 +38,24 @@
 	</body>
 	<script>
 		var timer = null;
+		var rkey = [];
 
 		document.getElementById('input_form_k').addEventListener('focusin',function(){
 			document.getElementById('form_focus').style.filter = "brightness(0.75)"
 			document.getElementById('search_associate').style.display = "block"
 		});
 		
-		document.getElementById('input_form_k').addEventListener('focusout',function(){
+		document.getElementById('form_focus').addEventListener("click",function(){
 			document.getElementById('form_focus').style.filter = "brightness(1)"
 			document.getElementById('search_associate').style.display = "none"
 		});
+
+		function hrefg(index){
+			document.getElementById("input_form_k").value = rkey[index];
+			setTimeout(() => {
+				gourl();
+			}, 30);
+		};
 
 		document.getElementById('input_form_k').addEventListener("keyup",function(e){
 			if(e.key=="Enter"){
@@ -74,17 +82,25 @@
 						elm.innerHTML = "";
 						for(let i=0;i<dt.length;i++){
 							let fx = document.createElement("li");
+							fx.addEventListener("click",function(){
+								hrefg(i);
+							})
 							fx.innerText = dt[i];
 							elm.appendChild(fx);
 						}
+						rkey = dt;
 					}
 					xhr.send();
 				}, 800);
 			}
 		});
 		
-		document.getElementById('start_search').addEventListener("click",function(e){
+		document.getElementById('start_search').addEventListener("click",function(){
+			gourl();
+		});
+
+		function gourl(){
 			location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
-		})
+		};
 	</script>
 </html>

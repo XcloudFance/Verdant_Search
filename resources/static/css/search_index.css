@@ -1,3 +1,24 @@
+::-webkit-scrollbar {
+	width: .5rem;
+	height: .5rem;
+	background: hsla(0, 0%, 100%, 0.6);
+}
+		
+::-webkit-scrollbar-track {
+	border-radius: 0;
+}
+		
+::-webkit-scrollbar-thumb {
+	border-radius: 0;
+	background-color: rgba(95, 95, 95, .4);
+	transition: all .2s;
+	float: right;
+		
+	&:hover {
+		background-color: rgba(95, 95, 95, .7);
+	}
+}
+
 .form-focus{
 	height: 100%;
 	width: 100%;

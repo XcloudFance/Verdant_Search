@@ -62,7 +62,7 @@
 </head>
 
 <body>
-    <div style="width: 100%;height: 60px;">
+    <div style="width: 100%;height: 60px;border-bottom: 1px solid rgba(0,0,0,.15);display: inline-block;">
         <div style="padding-top: 8px;">
             <div style="width: 130px;float: left;margin: 4px;">
                 <div style="width: 110px;height: 36px;display: table;margin: 0 auto;margin-top: 3px;">
@@ -87,8 +87,8 @@
             </div>
         </div>
     </div>
-    <div style="width: 100%;">
-        <div style="word-break: break-all;word-wrap: break-word;position: relative;border-top: 1px solid rgba(0,0,0,.15);">
+    <div id="result_div" style="width: 100%;display: flex;">
+        <div style="word-break: break-all;word-wrap: break-word;position: relative;">
             <div class="result-content-left">
                 <span>搜索结果&nbsp;[<span id="loading_x">正在搜索</span>]&nbsp;<span class="return-black">&nbsp;(当前页共有 <span id="result_len">-</span> 条结果)</span>&nbsp;</span>
                 <div class="search-result-li">
@@ -111,6 +111,7 @@
     var timer = null;
     var ldtimer = null;
     var ldcount = 0;
+    var rkey = [];
 
     function JsonToArray(stree) {
         let p = [];
@@ -128,6 +129,13 @@
         return null;
     }
 
+    function hrefg(index){
+        document.getElementById("input_form_k").value = rkey[index];
+        setTimeout(() => {
+            gourl();
+        }, 30);
+    };
+
     var keyword = GetQueryString("keyword");
     document.getElementById("input_form_k").value = decodeURIComponent(keyword);
     var amount = GetQueryString("amount");
@@ -136,12 +144,12 @@
     const nextpg = amount + 10;
 
     document.getElementById("start_search").addEventListener("click", function() {
-        location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+        gourl();
     });
 
     document.getElementById('input_form_k').addEventListener("keyup", function(e) {
         if (e.key == "Enter") {
-            location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+            gourl();
         }
         //输入间隔
         if (!timer) {
@@ -163,14 +171,23 @@
                     elm.innerHTML = "";
                     for (let i = 0; i < dt.length; i++) {
                         let fx = document.createElement("li");
+                        fx.addEventListener("click",function(){
+                            console.log(1)
+                            hrefg(i);
+						})
                         fx.innerText = dt[i];
                         elm.appendChild(fx);
                     }
+                    rkey = dt;
                 }
                 xhr.send();
             }, 800);
         }
     });
+
+    function gourl(){
+        location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+    };
 
     if (keyword != null) {
         document.querySelector("title").innerText = keyword + " - 青荇搜索";
@@ -208,103 +225,115 @@
         }, 400);
 
         xhr.open('GET', '/search?keyword=' + encodeURIComponent(vl) + '&amount=' + amount_, true);
-        xhr.onload = function() {
-            //document.getElementById('result_list_ol').innerHTML = '';
-            let v = document.getElementById("result_list_ol");
-            let dt1 = (JSON.parse(xhr.response));
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4) { //完成了才调用，没完成调用也没意思
+                if (xhr.status == 200) { //http状态码 - 成功时调用这个函数
+                    let v = document.getElementById("result_list_ol");
+                    let dt1 = (JSON.parse(xhr.response));
+                    
+                    if(xhr.response != '{}' & dt1.length != 0) {
+                        let dt = JsonToArray(dt1);
+                        document.getElementById('result_len').innerText = dt1.length;
 
-            if (xhr.response != '{}' & dt1.length != 0) {
-                let dt = JsonToArray(dt1);
-                document.getElementById('result_len').innerText = dt1.length;
-
-                if (dt1.length < 10) {
-                    let px = document.querySelector(".corl-v").querySelectorAll("a");
-                    px[1].href = "";
-                    px[1].style.display = "none";
-                }
-
-                dt.forEach((el) => {
-                    //console.log(el);
-                    let l = document.createElement("li");
-                    if (el.type == 'translation') {
-                        let a = el.detail;
-                        if (document.getElementById('traudio') == null) {
-                            let b = document.createElement('audio');
-                            b.id = 'traudio';
-                            document.getElementsByTagName('body')[0].appendChild(b);
+                        if (dt1.length < 10) {
+                            let px = document.querySelector(".corl-v").querySelectorAll("a");
+                            px[1].href = "";
+                            px[1].style.display = "none";
                         }
-                        //console.log(a.split('\n'));
-                        let b = a.split('\n');
-                        l.className = 'result-translate';
-                        let c = "";
-                        for (let i = 5; i < b.length; i++) {
-                            if (i + 1 >= b.length) {
-                                c += b[i];
+
+                        dt.forEach((el) => {
+                            //console.log(el);
+                            let l = document.createElement("li");
+                            //判断翻译
+                            if (el.type == 'translation') {
+                                let a = el.detail;
+                                if (document.getElementById('traudio') == null) {
+                                    let b = document.createElement('audio');
+                                    b.id = 'traudio';
+                                    document.getElementsByTagName('body')[0].appendChild(b);
+                                }
+                                //console.log(a.split('\n'));
+                                let b = a.split('\n');
+                                l.className = 'result-translate';
+                                let c = "";
+                                for (let i = 5; i < b.length; i++) {
+                                    if (i + 1 >= b.length) {
+                                        c += b[i];
+                                    } else {
+                                        c += b[i] + '\n';
+                                    }
+                                }
+
+                                let x1 = document.createElement('h2');
+                                x1.innerHTML = '<a href="' + el.url + '">' + el.title + '</a>';
+
+                                l.appendChild(x1);
+
+                                let x2 = document.createElement('div');
+                                x2.className = 'result-translate-content-left';
+
+                                let x2_1 = document.createElement('div');
+                                x2_1.className = 'result-translate-content-c1';
+                                x2_1.innerText = b[0];
+
+                                let x2_2 = document.createElement('div');
+                                x2_2.className = 'result-translate-content-c2';
+
+                                let x2_2_uk = document.createElement('span');
+                                x2_2_uk.className = 'result-translate-sound';
+                                x2_2_uk.addEventListener('click', function() {
+                                    tsAudio(el.music_UK.toString())
+                                })
+                                x2_2_uk.innerText = b[1] + " " + b[2];
+
+                                let x2_2_usa = document.createElement('span');
+                                x2_2_usa.className = 'result-translate-sound';
+                                x2_2_usa.addEventListener('click', function() {
+                                    tsAudio(el.music_USA.toString())
+                                })
+                                x2_2_usa.innerText = b[3] + " " + b[4];
+
+                                x2_2.append(x2_2_uk)
+                                x2_2.append(x2_2_usa)
+
+                                let x3 = document.createElement('div');
+                                x3.className = 'result-translate-content-c3';
+                                x3.innerText = c;
+
+                                x2.appendChild(x2_1)
+                                x2.appendChild(x2_2)
+                                x2.appendChild(x3)
+                                l.appendChild(x2)
+
                             } else {
-                                c += b[i] + '\n';
+                                l.className = 'result-li';
+                                l.innerHTML = '<h2><a href="' + el.url + '">' + el.title + '</a></h2>' +
+                                    '<span class="url-green">' + el.url + '</span>' +
+                                    '<div class="result-cont">' + el.detail + '</div>';
                             }
-                        }
 
-                        let x1 = document.createElement('h2');
-                        x1.innerHTML = '<a href="' + el.url + '">' + el.title + '</a>';
-
-                        l.appendChild(x1);
-
-                        let x2 = document.createElement('div');
-                        x2.className = 'result-translate-content-left';
-
-                        let x2_1 = document.createElement('div');
-                        x2_1.className = 'result-translate-content-c1';
-                        x2_1.innerText = b[0];
-
-                        let x2_2 = document.createElement('div');
-                        x2_2.className = 'result-translate-content-c2';
-
-                        let x2_2_uk = document.createElement('span');
-                        x2_2_uk.className = 'result-translate-sound';
-                        x2_2_uk.addEventListener('click', function() {
-                            tsAudio(el.music_UK.toString())
-                        })
-                        x2_2_uk.innerText = b[1] + " " + b[2];
-
-                        let x2_2_usa = document.createElement('span');
-                        x2_2_usa.className = 'result-translate-sound';
-                        x2_2_usa.addEventListener('click', function() {
-                            tsAudio(el.music_USA.toString())
-                        })
-                        x2_2_usa.innerText = b[3] + " " + b[4];
-
-                        x2_2.append(x2_2_uk)
-                        x2_2.append(x2_2_usa)
-
-                        let x3 = document.createElement('div');
-                        x3.className = 'result-translate-content-c3';
-                        x3.innerText = c;
-
-                        x2.appendChild(x2_1)
-                        x2.appendChild(x2_2)
-                        x2.appendChild(x3)
-                        l.appendChild(x2)
-
+                            v.appendChild(l)
+                        });
                     } else {
-                        l.className = 'result-li';
-                        l.innerHTML = '<h2><a href="' + el.url + '">' + el.title + '</a></h2>' +
-                            '<span class="url-green">' + el.url + '</span>' +
-                            '<div class="result-cont">' + el.detail + '</div>';
+                        document.getElementById('result_len').innerText = '0';
+                        let l = document.createElement("li");
+                        l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>' +
+                            '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
+                        v.appendChild(l)
                     }
 
-                    v.appendChild(l)
-                });
-            } else {
-                document.getElementById('result_len').innerText = '0';
-                let l = document.createElement("li");
-                l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>' +
-                    '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
-                v.appendChild(l)
+                    clearInterval(ldtimer);
+                    document.getElementById("loading_x").innerText = "搜索完成";
+                }else{
+                    clearInterval(ldtimer);
+                    document.getElementById("loading_x").innerText = "搜索失败";
+                    document.getElementById('result_len').innerText = '0';
+                    let l = document.createElement("li");
+                    l.innerHTML = '<li class="err_result"><h2><span>这页什么也没有哦!</span></h2>' +
+                        '<div class="result-cont">您可以尝试修改关键词获得其他搜索结果 _(:з」∠)_</div></li>';
+                    v.appendChild(l);
+                }
             }
-
-            clearInterval(ldtimer);
-            document.getElementById("loading_x").innerText = "搜索完成"
         }
         xhr.send();
     }
@@ -313,7 +342,7 @@
         document.getElementById('search_associate').style.display = "block"
     });
 
-    document.getElementById('input_form_k').addEventListener('focusout', function() {
+    document.getElementById('result_div').addEventListener("click",function(){
         document.getElementById('search_associate').style.display = "none"
     });
 
