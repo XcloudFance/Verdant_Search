@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from pybloom_live import ScalableBloomFilter, BloomFilter
 bloom = ScalableBloomFilter(initial_capacity=1000)
-
+from multiprocessing import Process #用多进程
 app = FastAPI(debug=True)
 cylinder = []
 baidu_cylinder = []
@@ -72,3 +72,10 @@ async def read():
     bloom = bloom.fromfile(f)
     f.close()
 #port = 1278
+
+#这边最新版本实现了一个分布式锁，依然存在内存中，savetimer会定期备份分布式锁的内存，防止出事，对内存要求更高了
+@app.get('/sqlget')
+async def sqlget():
+    
+    pass
+
