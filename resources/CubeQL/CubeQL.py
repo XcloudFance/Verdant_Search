@@ -65,12 +65,14 @@ async def save():
     f = open('bloom_temp.bin','wb')
     bloom.tofile(f)
     f.close()
-
+    return '{}'
 @app.get('/read')
 async def read():
     f = open('bloom_temp.bin','rb')
     bloom = bloom.fromfile(f)
     f.close()
+    return '{}'
+
 #port = 1278
 
 #这边最新版本实现了一个分布式锁，依然存在内存中，savetimer会定期备份分布式锁的内存，防止出事，对内存要求更高了
