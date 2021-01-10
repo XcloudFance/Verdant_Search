@@ -1,106 +1,127 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>青荇搜索 - 快速，简洁，无痕</title>
-		<link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet"/>
-		<style>
-			html,body { height: 100%;margin: 0; padding: 0;line-height: 0px;}
-		</style>
-		<link href="css/search_index.css" rel="stylesheet"/>
-	</head>
-	<body>
-		<div id="app" style="position: relative;padding-bottom: 0;height: 100%;min-height: 600px;">	
-			<div style="width: 590px;top: 27.2%;position: inherit;z-index: 10;margin: 0 auto;">
-				<div style="display: table;margin: 0 auto;padding: 8px;margin-bottom: 24px;">
-					<img style="height:72px" src="img/verdant1.png"/>
-				</div>
-				<div class="search-input-w-box">
-					<div class="search-input-w-box-left">
-						<span style="width: 430px;display: inline-block;">
+
+<head>
+
+    <meta charset="utf-8">
+    <script type="text/javascript">
+        window.$crisp = [];
+        window.CRISP_WEBSITE_ID = "09b39e43-0b7f-4b82-b6fd-2d1fa1d59244";
+        (function() {
+            d = document;
+            s = d.createElement("script");
+            s.src = "https://client.crisp.chat/l.js";
+            s.async = 1;
+            d.getElementsByTagName("head")[0].appendChild(s);
+        })();
+    </script>
+    <title>青荇搜索 - 快速，简洁，无痕</title>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet" />
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            line-height: 0px;
+        }
+    </style>
+    <link href="css/search_index.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app" style="position: relative;padding-bottom: 0;height: 100%;min-height: 600px;">
+        <div style="width: 590px;top: 27.2%;position: inherit;z-index: 10;margin: 0 auto;">
+            <div style="display: table;margin: 0 auto;padding: 8px;margin-bottom: 24px;">
+                <img style="height:72px" src="img/verdant1.png" />
+            </div>
+            <div class="search-input-w-box">
+                <div class="search-input-w-box-left">
+                    <span style="width: 430px;display: inline-block;">
 							<input id="input_form_k" type="text" style="width: 418px;" placeholder="您想搜索什么？" maxlength="255"/>
 						</span>
-					</div>
-					<div>
-						<span style="width: 160px;display: inline-block;">
+                </div>
+                <div>
+                    <span style="width: 160px;display: inline-block;">
 							<input class="form-button" id="start_search" type="button" value="搜索"/>
 						</span>
-					</div>
-					<div id="search_associate">
-						<ul>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="form-focus" id="form_focus" data-bm="24" style="background-image: url(img/qf3cu.jpg)"></div>
-			<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-		</div>
-	</body>
-	<script>
-		var timer = null;
-		var rkey = [];
+                </div>
+                <div id="search_associate">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-focus" id="form_focus" data-bm="24" style="background-image: url(img/qf3cu.jpg)"></div>
+        <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    </div>
+</body>
+<script>
+    var timer = null;
+    var rkey = [];
 
-		document.getElementById('input_form_k').addEventListener('focusin',function(){
-			document.getElementById('form_focus').style.filter = "brightness(0.75)"
-			document.getElementById('search_associate').style.display = "block"
-		});
-		
-		document.getElementById('form_focus').addEventListener("click",function(){
-			document.getElementById('form_focus').style.filter = "brightness(1)"
-			document.getElementById('search_associate').style.display = "none"
-		});
+    document.getElementById('input_form_k').addEventListener('focusin', function() {
+        document.getElementById('form_focus').style.filter = "brightness(0.75)"
+        document.getElementById('search_associate').style.display = "block"
+    });
 
-		function hrefg(index){
-			document.getElementById("input_form_k").value = rkey[index];
-			setTimeout(() => {
-				gourl();
-			}, 30);
-		};
+    document.getElementById('form_focus').addEventListener("click", function() {
+        document.getElementById('form_focus').style.filter = "brightness(1)"
+        document.getElementById('search_associate').style.display = "none"
+    });
 
-		document.getElementById('input_form_k').addEventListener("keyup",function(e){
-			if(e.key=="Enter"){
-				location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
-				//console.log(e,e.target.value)
-			}
-			//输入间隔
-			if(!timer){
-				//console.log('timer ok')
-				clearTimeout(timer)
-				timer = setTimeout(() => {
-					timer = null;
-					let xhr = null;
-					if (window.XMLHttpRequest){
-						xhr = new XMLHttpRequest();
-					}else if (window.ActiveXObject){
-						xhr = new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					
-					xhr.open('GET', '/keyword_think?keyword=' + encodeURIComponent(document.getElementById("input_form_k").value), true);
-					xhr.onload = function () {
-						let dt = JSON.parse(xhr.response);
-						let elm = document.querySelector("#search_associate ul")
-						elm.innerHTML = "";
-						for(let i=0;i<dt.length;i++){
-							let fx = document.createElement("li");
-							fx.addEventListener("click",function(){
-								hrefg(i);
-							})
-							fx.innerText = dt[i];
-							elm.appendChild(fx);
-						}
-						rkey = dt;
-					}
-					xhr.send();
-				}, 800);
-			}
-		});
-		
-		document.getElementById('start_search').addEventListener("click",function(){
-			gourl();
-		});
+    function hrefg(index) {
+        document.getElementById("input_form_k").value = rkey[index];
+        setTimeout(() => {
+            gourl();
+        }, 30);
+    };
 
-		function gourl(){
-			location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
-		};
-	</script>
+    document.getElementById('input_form_k').addEventListener("keyup", function(e) {
+        if (e.key == "Enter") {
+            location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+            //console.log(e,e.target.value)
+        }
+        //输入间隔
+        if (!timer) {
+            //console.log('timer ok')
+            clearTimeout(timer)
+            timer = setTimeout(() => {
+                timer = null;
+                let xhr = null;
+                if (window.XMLHttpRequest) {
+                    xhr = new XMLHttpRequest();
+                } else if (window.ActiveXObject) {
+                    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+
+                xhr.open('GET', '/keyword_think?keyword=' + encodeURIComponent(document.getElementById("input_form_k").value), true);
+                xhr.onload = function() {
+                    let dt = JSON.parse(xhr.response);
+                    let elm = document.querySelector("#search_associate ul")
+                    elm.innerHTML = "";
+                    for (let i = 0; i < dt.length; i++) {
+                        let fx = document.createElement("li");
+                        fx.addEventListener("click", function() {
+                            hrefg(i);
+                        })
+                        fx.innerText = dt[i];
+                        elm.appendChild(fx);
+                    }
+                    rkey = dt;
+                }
+                xhr.send();
+            }, 800);
+        }
+    });
+
+    document.getElementById('start_search').addEventListener("click", function() {
+        gourl();
+    });
+
+    function gourl() {
+        location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+    };
+</script>
+
 </html>
