@@ -45,23 +45,6 @@
                     <span style="width: 160px;display: inline-block;">
 							<input class="form-button" id="start_search" type="button" value="搜索"/>
 						</span>
-<<<<<<< HEAD
-					</div>
-					<div id="search_associate">
-						<ul>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="form-focus" id="form_focus" data-bm="24" style="background-image: url(img/qf3cu.jpg)"></div>
-			<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
-		</div>
-	</body>
-	<script>
-		var timer = null;
-		var rkey = [];
-		var sis = "";
-=======
                 </div>
                 <div id="search_associate">
                     <ul>
@@ -76,6 +59,7 @@
 <script>
     var timer = null;
     var rkey = [];
+    var sis = "";
 
     document.getElementById('input_form_k').addEventListener('focusin', function() {
         document.getElementById('form_focus').style.filter = "brightness(0.75)"
@@ -87,104 +71,61 @@
         document.getElementById('search_associate').style.display = "none"
     });
 
-    function hrefg(index) {
-        document.getElementById("input_form_k").value = rkey[index];
-        setTimeout(() => {
-            gourl();
-        }, 30);
+    function gourl() {
+        location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
     };
 
-    document.getElementById('input_form_k').addEventListener("keyup", function(e) {
-        if (e.key == "Enter") {
-            location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
-            //console.log(e,e.target.value)
+    function hrefg(index) {
+        document.getElementById("input_form_k").value = rkey[index];
+        setTimeout(gourl, 30);
+    };
+
+    document.getElementById('start_search').addEventListener("click", function() {
+        gourl();
+    });
+
+    document.getElementById('input_form_k').addEventListener("keyup",function(e){
+        let tmp_ = encodeURIComponent(document.getElementById("input_form_k").value);
+        if(e.key=="Enter"){
+            gourl();
         }
         //输入间隔
-        if (!timer) {
+        if(sis != tmp_){
             //console.log('timer ok')
             clearTimeout(timer)
             timer = setTimeout(() => {
-                timer = null;
                 let xhr = null;
-                if (window.XMLHttpRequest) {
+                if (window.XMLHttpRequest){
                     xhr = new XMLHttpRequest();
-                } else if (window.ActiveXObject) {
+                }else if (window.ActiveXObject){
                     xhr = new ActiveXObject("Microsoft.XMLHTTP");
                 }
->>>>>>> 696ab020120557c44fff20e9e322092855498c7b
-
-                xhr.open('GET', '/keyword_think?keyword=' + encodeURIComponent(document.getElementById("input_form_k").value), true);
-                xhr.onload = function() {
+                
+                xhr.open('GET', '/keyword_think?keyword=' + tmp_, true);
+                xhr.onload = function () {
                     let dt = JSON.parse(xhr.response);
                     let elm = document.querySelector("#search_associate ul")
                     elm.innerHTML = "";
-                    for (let i = 0; i < dt.length; i++) {
+                    for(let i=0;i<dt.length;i++){
                         let fx = document.createElement("li");
-                        fx.addEventListener("click", function() {
+                        fx.addEventListener("click",function(){
                             hrefg(i);
                         })
                         fx.innerText = dt[i];
                         elm.appendChild(fx);
                     }
                     rkey = dt;
+                    sis = tmp_;
+                    timer = null;
                 }
                 xhr.send();
-            }, 800);
+            }, 250);
         }
     });
-
-    document.getElementById('start_search').addEventListener("click", function() {
+    
+    document.getElementById('start_search').addEventListener("click",function(){
         gourl();
     });
 
-<<<<<<< HEAD
-		document.getElementById('input_form_k').addEventListener("keyup",function(e){
-			let tmp_ = encodeURIComponent(document.getElementById("input_form_k").value);
-			if(e.key=="Enter"){
-				gourl();
-			}
-			//输入间隔
-			if(sis != tmp_){
-				//console.log('timer ok')
-				clearTimeout(timer)
-				timer = setTimeout(() => {
-					let xhr = null;
-					if (window.XMLHttpRequest){
-						xhr = new XMLHttpRequest();
-					}else if (window.ActiveXObject){
-						xhr = new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					
-					xhr.open('GET', '/keyword_think?keyword=' + tmp_, true);
-					xhr.onload = function () {
-						let dt = JSON.parse(xhr.response);
-						let elm = document.querySelector("#search_associate ul")
-						elm.innerHTML = "";
-						for(let i=0;i<dt.length;i++){
-							let fx = document.createElement("li");
-							fx.addEventListener("click",function(){
-								hrefg(i);
-							})
-							fx.innerText = dt[i];
-							elm.appendChild(fx);
-						}
-						rkey = dt;
-						sis = tmp_;
-						timer = null;
-					}
-					xhr.send();
-				}, 250);
-			}
-		});
-		
-		document.getElementById('start_search').addEventListener("click",function(){
-			gourl();
-		});
-=======
-    function gourl() {
-        location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
-    };
 </script>
->>>>>>> 696ab020120557c44fff20e9e322092855498c7b
-
 </html>
