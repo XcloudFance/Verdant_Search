@@ -1,7 +1,7 @@
 jieba==0.39
 PyMySQL==0.9.3
 demjson==2.2.4
-requests==2.19.1
+requests==2.20.0
 starlette==0.12.9
 beautifulsoup4==4.9.0
 fastapi==0.54.1

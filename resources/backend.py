@@ -247,6 +247,9 @@ def search():
             print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
+        #这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
+        if length != 0:
+            pass
         # print(demjson.encode(response_json))
         return json.dumps(response_json)
 
