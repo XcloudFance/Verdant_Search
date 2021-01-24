@@ -123,6 +123,7 @@
     var ldtimer = null;
     var ldcount = 0;
     var rkey = [];
+    var sis = "";
 
     function JsonToArray(stree) {
         let p = [];
@@ -159,23 +160,22 @@
     });
 
     document.getElementById('input_form_k').addEventListener("keyup", function(e) {
+        let tmp_ = encodeURIComponent(document.getElementById("input_form_k").value);
         if (e.key == "Enter") {
             gourl();
         }
         //输入间隔
-        if (!timer) {
+        if (!timer && sis != tmp_) {
             //console.log('timer ok')
             clearTimeout(timer)
             timer = setTimeout(() => {
-                timer = null;
                 let xhr = null;
                 if (window.XMLHttpRequest) {
                     xhr = new XMLHttpRequest();
                 } else if (window.ActiveXObject) {
                     xhr = new ActiveXObject("Microsoft.XMLHTTP");
                 }
-
-                xhr.open('GET', '/keyword_think?keyword=' + encodeURIComponent(document.getElementById("input_form_k").value), true);
+                xhr.open('GET', '/keyword_think?keyword=' + tmp_, true);
                 xhr.onload = function() {
                     let dt = JSON.parse(xhr.response);
                     let elm = document.querySelector("#search_associate ul")
@@ -183,16 +183,17 @@
                     for (let i = 0; i < dt.length; i++) {
                         let fx = document.createElement("li");
                         fx.addEventListener("click", function() {
-                            console.log(1)
                             hrefg(i);
                         })
                         fx.innerText = dt[i];
                         elm.appendChild(fx);
                     }
                     rkey = dt;
+                    sis = tmp_;
+                    timer = null;
                 }
                 xhr.send();
-            }, 800);
+            }, 250);
         }
     });
 
