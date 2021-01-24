@@ -4,10 +4,10 @@
         "port": "1278"
     },
     "Main": {
-        "host": "192.168.29.130",
-        "port": "3306",
-        "root": "root",
-        "password": "mypwd",
+        "host": "localhost",
+        "port": "5432",
+        "root": "postgres",
+        "password": "123456",
         "db": "cylinder"
     },
     "Spider": {

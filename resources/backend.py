@@ -5,6 +5,10 @@ from gevent.pywsgi import WSGIServer
 
 monkey.patch_all()
 import pymysql
+
+## -- postgresql  --
+import psycopg2
+
 import demjson
 import json
 from starlette.responses import Response
@@ -49,7 +53,7 @@ hea_ordinary = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 mysql,cursor = None,None
-def mysql_initation():
+def mysql_initation():# 保证一定可以连到数据库
     global mysql,cursor
     while True:
         try:
@@ -62,6 +66,19 @@ def mysql_initation():
         break
     cursor = mysql.cursor()
 
+def postgresql_initation():#这边是postgres的版本
+    global mysql,cursor
+    mysql = psycopg2.connect(host=host, port=int(port), user=root, password=password, database=database)
+    cursor = mysql.cursor()
+
+    while False:
+        try:
+            mysql = psycopg2.connect(host=host, port=int(port), user=root, password=password, database=database)
+        except:
+            time.sleep(1)
+            continue
+        break
+    #cursor = mysql.cursor()
 
 def sort_by_value(d):
     items = d.items()
@@ -84,6 +101,8 @@ def deal2(website: str):
     return "/redirect?_=" + website
 
 def reping():
+    return
+
     global mysql,cursor
     #print(1)
     try:
@@ -168,9 +187,9 @@ def search():
     amount = int(amount)
     end_amount = int(amount) + 10
     length = 0
-    cursor.execute("select value from search where keyer = %s", (keyword))
+    cursor.execute("select value from search where keyer = %s;", (keyword,))
     ret = cursor.fetchone()
-
+    
     response_json = {}
     # 在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
 
@@ -256,7 +275,7 @@ def search():
     else:
         # 新增关键词权值统计
         cursor.execute(
-            "update search set weigh = weigh + 1 where keyer = %s", (keyword)
+            "update search set weigh = weigh + 1 where keyer = %s", (keyword,)
         )
         mysql.commit()
         index_list = ret[0].split("|")
@@ -291,11 +310,7 @@ def thinking():
     keyword = str(request.args.get("keyword"))
     limited = 7
     step = 0
-    cursor.execute(
-        'select keyer from search where keyer like "'
-        + keyword
-        + '%" order by weigh desc'
-    )
+    cursor.execute("select keyer from search where keyer like %s order by weigh desc",(keyword+'%',))
     # desc为逆序排序，like就是匹配字符串的前缀
     ret = []
     for i in cursor.fetchall():
@@ -323,8 +338,9 @@ def redirected():
 def getsite():
     pass
 
+
 if __name__ == '__main__':
-    mysql_initation()
+    #mysql_initation()
+    postgresql_initation()
     http_server = WSGIServer(("0.0.0.0", 8888), app)
     http_server.serve_forever()
-
