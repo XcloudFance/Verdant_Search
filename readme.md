@@ -119,8 +119,8 @@ asyncio
 │  │  ├─img  
 │  │  └─music  
 │  ├─templates  
-│  └─__pycache __ 
-└─sql  
+│  └─__pycache __  
+└─sql   
 
 docs : 定期存放文档
 
@@ -164,7 +164,7 @@ python backend.py
 
 在spider目录下运行（不运行也可以打开青荇搜索）
 
-python CDS_Distributed.py
+python CDS-Distributed.py
 
 
 

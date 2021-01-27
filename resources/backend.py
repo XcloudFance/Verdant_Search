@@ -52,9 +52,11 @@ hea_ordinary = {
     "Upgrade-Insecure-Requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
-mysql,cursor = None,None
-def mysql_initation():# 保证一定可以连到数据库
-    global mysql,cursor
+mysql, cursor = None, None
+
+
+def mysql_initation():  # 保证一定可以连到数据库
+    global mysql, cursor
     while True:
         try:
             mysql = pymysql.connect(
@@ -66,19 +68,29 @@ def mysql_initation():# 保证一定可以连到数据库
         break
     cursor = mysql.cursor()
 
-def postgresql_initation():#这边是postgres的版本
-    global mysql,cursor
-    mysql = psycopg2.connect(host=host, port=int(port), user=root, password=password, database=database)
+
+def postgresql_initation():  # 这边是postgres的版本
+    global mysql, cursor
+    mysql = psycopg2.connect(
+        host=host, port=int(port), user=root, password=password, database=database
+    )
     cursor = mysql.cursor()
 
     while False:
         try:
-            mysql = psycopg2.connect(host=host, port=int(port), user=root, password=password, database=database)
+            mysql = psycopg2.connect(
+                host=host,
+                port=int(port),
+                user=root,
+                password=password,
+                database=database,
+            )
         except:
             time.sleep(1)
             continue
         break
-    #cursor = mysql.cursor()
+    # cursor = mysql.cursor()
+
 
 def sort_by_value(d):
     items = d.items()
@@ -100,14 +112,15 @@ def deal(keywords: list):
 def deal2(website: str):
     return "/redirect?_=" + website
 
+
 def reping():
     return
 
-    global mysql,cursor
-    #print(1)
+    global mysql, cursor
+    # print(1)
     try:
         mysql.ping(reconnect=True)
-        cursor.execute('')
+        cursor.execute("")
     except:
         while True:
             try:
@@ -119,9 +132,11 @@ def reping():
                 continue
             break
         cursor = mysql.cursor()
+
+
 def specfic_search(word):  # 如果啥也没有就返回False，如果有就返回搜索后的结果
     try:
-       
+
         re_list = ["([a-z]|[A-Z]|\s){1,}翻译", "([a-z]|[A-Z]|\s){1,}", "(.*)的英语"]
         mode = -1
         tmp = -1
@@ -136,7 +151,7 @@ def specfic_search(word):  # 如果啥也没有就返回False，如果有就返�
                 mode = tmp
                 break
         if mode == -1:
-            #print(-1)
+            # print(-1)
             return False
             # try
         # print(mode)
@@ -177,7 +192,7 @@ def searchlist():
 
 @app.route("/search", methods=["GET"])
 def search():
-    
+
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
     print(keyword)
@@ -189,7 +204,7 @@ def search():
     length = 0
     cursor.execute("select value from search where keyer = %s;", (keyword,))
     ret = cursor.fetchone()
-    
+
     response_json = {}
     # 在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
 
@@ -198,7 +213,7 @@ def search():
 
     if specialsearch != False:  # 单词翻译查询
         if specialsearch[2] == 0 or specialsearch[2] == 1:
-            #maybe，这个地方需要重做，因为每次搜索一个单词就需要去爬虫一次，或者用一个特别大的库去存特定单词的音也不是不行
+            # maybe，这个地方需要重做，因为每次搜索一个单词就需要去爬虫一次，或者用一个特别大的库去存特定单词的音也不是不行
             usatok, uktok = download_mp3(keyword)
             response_json["1"] = {
                 "type": "translation",
@@ -266,7 +281,7 @@ def search():
             print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
-        #这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
+        # 这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
         if length != 0:
             pass
         # print(demjson.encode(response_json))
@@ -310,7 +325,10 @@ def thinking():
     keyword = str(request.args.get("keyword"))
     limited = 7
     step = 0
-    cursor.execute("select keyer from search where keyer like %s order by weigh desc",(keyword+'%',))
+    cursor.execute(
+        "select keyer from search where keyer like %s order by weigh desc",
+        (keyword + "%",),
+    )
     # desc为逆序排序，like就是匹配字符串的前缀
     ret = []
     for i in cursor.fetchall():
@@ -328,19 +346,21 @@ def redirected():
     website = str(request.args.get("_"))  # 获取网址
     # 数据库操作
     print(website)
-    cursor.execute("update content set weigh = weigh + 1 where url = %s" ,(website))
+    cursor.execute("update content set weigh = weigh + 1 where url = %s", (website,))
     mysql.commit()
     return redirect(website)
 
-#可能需要防SQL注入，因为每一个点都是通过直接连接sql的,可能需要base64
 
-@app.route("/getwebsite",methods=['GET'])
+# 可能需要防SQL注入，因为每一个点都是通过直接连接sql的,可能需要base64
+
+
+@app.route("/getwebsite", methods=["GET"])
 def getsite():
     pass
 
 
-if __name__ == '__main__':
-    #mysql_initation()
+if __name__ == "__main__":
+    # mysql_initation()
     postgresql_initation()
     http_server = WSGIServer(("0.0.0.0", 8888), app)
     http_server.serve_forever()

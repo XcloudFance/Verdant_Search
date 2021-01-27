@@ -20,6 +20,7 @@ import random
 import redis
 import CubeQL_Client
 import threading
+import psycopg2
 from CDS_Selenium import *
 
 cube = CubeQL_Client.CubeQL()
@@ -49,7 +50,7 @@ hea = {
 }
 
 # -- read config --
-f = open("config.json", "r")
+f = open("./../config.json", "r")  # 取上一级的config.json
 js = demjson.decode(f.read())
 f.close()
 host = js["Spider"]["host"]
@@ -58,12 +59,45 @@ root = js["Spider"]["root"]
 password = js["Spider"]["password"]
 database = js["Spider"]["db"]
 # -- end of read config --
+mysql,cursor = None,None
+#-- mysql --
+def mysql_initation():  # 保证一定可以连到数据库
+    global mysql, cursor
+    while True:
+        try:
+            mysql = pymysql.connect(
+                host=host, port=int(port), user=root, password=password, db=database
+            )
+        except:
+            time.sleep(1)
+            continue
+        break
+    cursor = mysql.cursor()
 
-mysqlconfig = {}
-mysql = pymysql.connect(host=host, port=int(port), user=root, password=password, db=database)
-cursor = mysql.cursor()
+# -- postgres --
+def postgresql_initation():  # 这边是postgres的版本
+    global mysql, cursor
+    mysql = psycopg2.connect(
+        host=host, port=int(port), user=root, password=password, database=database
+    )
+    cursor = mysql.cursor()
 
+    while False:
+        try:
+            mysql = psycopg2.connect(
+                host=host,
+                port=int(port),
+                user=root,
+                password=password,
+                database=database,
+            )
+        except:
+            time.sleep(1)
+            continue
+        break
+    # cursor = mysql.cursor()
 
+# -- end postgres -- 
 def togbk(string):
     return string.encode("gbk")
 
@@ -153,10 +187,10 @@ def weigh_judgement(url, urlcode):
             weigh += int(weigh_json[i])
     weigh += random.randint(1, 4)
     # 判断是否为主页
-    slide = len(url.split('/'))
+    slide = len(url.split("/"))
     if slide > 10:
         slide = 10
-    weigh += 10-slide
+    weigh += 10 - slide
     return weigh
 
 
@@ -167,7 +201,7 @@ def getsearchurl(keyword):
     url = requests.get(
         "http://mijisou.com/?q="
         + keyword
-        +'&category_general=on&time_range=&language=zh-CN&pageno=1',
+        + "&category_general=on&time_range=&language=zh-CN&pageno=1",
         hea_ordinary,
     ).text
     print(url)
@@ -177,13 +211,13 @@ def getsearchurl(keyword):
     # print(href_)
     for each in href_:
         # print(each.get('rel'))
-        if each.get("class") == ['url']:#["noopener", "noreferrer"]:
+        if each.get("class") == ["url"]:  # ["noopener", "noreferrer"]:
             print(each.text)
-            
+
     return ret
 
 
-def easier(url):
+def simplify(url):
     while True:
         if url[len(url) - 1] == "/":
             url = url[: len(url) - 1]
@@ -212,37 +246,32 @@ def mainly():
             #try:
                 if i == []:
                     continue
-                # 用来判断这个url有没有被爬过，通过cubeql里面的filter
 
                 if i["typ"] == "normal":
+                    destination_URI = simplify(i["content"])
 
-                    i = easier(i["content"])
                     # 用来判断这个url有没有被爬过，通过cubeql里面的filter
-
-                    if cube.filter_contain(i) == '1':
+                    if cube.filter_contain(destination_URI) == "1":
                         continue
 
-                    req = requests.get(i, hea)
+                    req = requests.get(destination_URI, hea)
                     req.encoding = req.apparent_encoding  # 这是个坑，每个网站都有不同的编码机制
                     if req.apparent_encoding.find("ISO") != -1:
                         req.encoding = "utf-8"
-                    if i in dictlist:
+                    if destination_URI in dictlist:
                         continue
-                    if i.find(".png") != -1:
+                    if destination_URI.find(".png") != -1:
                         continue
-                    if req.status_code != 200: #0.12内容，如果网页不返回200，就不载入数据库
-                        continue 
+                    if req.status_code != 200:  # 0.12内容，如果网页不返回200，就不载入数据库
+                        continue
                     code = req.text  # urllib.request.urlopen(req).read()
                     geturls = gethtmurl(code)
-                    tmpcode = code
                     # 取body做为内容
                     maincontent = get_keywords(code) + " " + get_p_content(code)
                     title = get_title(code)
                     dictlist[
-                        i
-                    ] = (
-                        maincontent
-                    )  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
+                        destination_URI
+                    ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
                     for url_ in geturls:
                         # print(url_)
                         cube.set(url_, typ="normal")
@@ -251,7 +280,7 @@ def mainly():
                     # 将geturls内的内容发到CubeQL
                     wordlist = list(set(Cut(maincontent) + Cut(title)))
                     cursor.execute("select count(*) as value from content")
-                    my_weigh = weigh_judgement(i, code)  # 把权值保存到变量，一会儿要用
+                    my_weigh = weigh_judgement(destination_URI, code)  # 把权值保存到变量，一会儿要用
                     tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
                     cursor.execute(
                         "insert into content values ("
@@ -259,18 +288,16 @@ def mainly():
                         + ",%s,%s,%s,"
                         + str(my_weigh)
                         + ")",
-                        (i, dictlist[i], title),
+                        (destination_URI, dictlist[destination_URI], title),
                     )
 
                     mysql.commit()
-                    cube.filter_set(i) #插入过滤器
+                    cube.filter_set(destination_URI)  # 插入过滤器
                     # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
                     # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
                     # 判断这个关键词存不存在
                     for j in wordlist:
-                        cursor.execute(
-                            "select value from search where keyer = %s", (j,)
-                        )
+                        cursor.execute("select value from search where keyer = %s", (j,))
                         index = cursor.fetchone()
                         # print(index)
                         if index == None:
@@ -289,8 +316,7 @@ def mainly():
                                 # 取出每个地址的权值
                                 # print('select weigh from content where id = '+index_list[k])
                                 cursor.execute(
-                                    "select weigh from content where id = "
-                                    + index_list[k]
+                                    "select weigh from content where id = " + index_list[k]
                                 )
                                 the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
                                 if my_weigh >= the_weigh:
@@ -320,35 +346,35 @@ def mainly():
                             )
                             # --update
                     mysql.commit()
-                    print(i, " :end")
+                    print(destination_URI, " :end")
                 # ---------------------------------------------
                 elif i["typ"] == "search":
-                    i = i["content"]
-                    mijisou(i)
-                    print(i, " :end")
-                elif i['typ'] == 'fromsearch':
-                    i = easier(i["content"])
-                    req = requests.get(i, hea)
+                    destination_URI = i["content"]
+                    mijisou(destination_URI)
+                    print(destination_URI, " :end")
+                elif i["typ"] == "fromsearch":
+                    destination_URI = simplify(i["content"])
+                    
+                    # 用来判断这个url有没有被爬过，通过cubeql里面的filter
+                    if cube.filter_contain(destination_URI) == "1":
+                        continue
+
+                    req = requests.get(destination_URI, hea)
                     req.encoding = req.apparent_encoding
                     if req.apparent_encoding.find("ISO") != -1:
                         req.encoding = "utf-8"
-                    if i in dictlist:
+                    if destination_URI in dictlist:
                         continue
-                    if i.find(".png") != -1:
+                    if destination_URI.find(".png") != -1:
                         continue
-                    if req.status_code != 200: #0.12内容，如果网页不返回200，就不载入数据库
-                        continue 
+                    if req.status_code != 200:  # 0.12内容，如果网页不返回200，就不载入数据库
+                        continue
                     code = req.text  # urllib.request.urlopen(req).read()
                     geturls = gethtmurl(code)
-                    tmpcode = code
                     # 取body做为内容
                     maincontent = get_keywords(code) + " " + get_p_content(code)
                     title = get_title(code)
-                    dictlist[
-                        i
-                    ] = (
-                        maincontent
-                    )
+                    dictlist[destination_URI] = maincontent
                     for url_ in geturls:
                         cube.set(url_, typ="fromsearch")
 
@@ -356,24 +382,24 @@ def mainly():
                     # 将geturls内的内容发到CubeQL
                     wordlist = list(set(Cut(maincontent) + Cut(title)))
                     cursor.execute("select count(*) as value from content")
-                    my_weigh = weigh_judgement(i, code)+20  # 这里和上面不同，因为这个是从搜索引擎出来的，所以分数有加成
-                    tablenum = str(cursor.fetchone()[0]) 
+                    my_weigh = (
+                        weigh_judgement(destination_URI, code) + 20
+                    )  # 这里和上面不同，因为这个是从搜索引擎出来的，所以分数有加成
+                    tablenum = str(cursor.fetchone()[0])
                     cursor.execute(
                         "insert into content values ("
                         + tablenum
                         + ",%s,%s,%s,"
                         + str(my_weigh)
                         + ")",
-                        (i, dictlist[i], title),
+                        (destination_URI, dictlist[destination_URI], title),
                     )
                     mysql.commit()
                     # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
                     # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
                     # 判断这个关键词存不存在
                     for j in wordlist:
-                        cursor.execute(
-                            "select value from search where keyer = %s", (j,)
-                        )
+                        cursor.execute("select value from search where keyer = %s", (j,))
                         index = cursor.fetchone()
                         # print(index)
                         if index == None:
@@ -392,8 +418,7 @@ def mainly():
                                 # 取出每个地址的权值
                                 # print('select weigh from content where id = '+index_list[k])
                                 cursor.execute(
-                                    "select weigh from content where id = "
-                                    + index_list[k]
+                                    "select weigh from content where id = " + index_list[k]
                                 )
                                 the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
                                 if my_weigh >= the_weigh:
@@ -423,10 +448,9 @@ def mainly():
                             )
                             # --update
                     mysql.commit()
-                    print(i, " :end")
+                    print(destination_URI, " :end")
             #except:
-            #    print(i + " :error")
-
+            #    print(destination_URI, " :error")
 
 if __name__ == "__main__":
     print("Start!")
@@ -434,11 +458,12 @@ if __name__ == "__main__":
     # code = req.text
     # get_p_content(code)
 
-    #cursor.execute('TRUNCATE TABLE search;')
-    #cursor.execute('TRUNCATE TABLE content;')
-    #mysql.commit()
+    # cursor.execute('TRUNCATE TABLE search;')
+    # cursor.execute('TRUNCATE TABLE content;')
+    # mysql.commit()
+    postgresql_initation()
     mainly()
-    #print(getsearchurl('due'))
-    # print(easier('https://baidu.com//'))
+    # print(getsearchurl('due'))
+    # print(simplify('https://baidu.com//'))
     # 直接不用redis了，直接用我自己写的数据库
     print("End!")
