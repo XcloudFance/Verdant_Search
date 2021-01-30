@@ -346,6 +346,7 @@ def redirected():
     website = str(request.args.get("_"))  # 获取网址
     # 数据库操作
     print(website)
+    #这地方有问题，如果重定向了一个数据库都没有的网页，那不就tm出事了，所以这边得采取更成熟的行为
     cursor.execute("update content set weigh = weigh + 1 where url = %s", (website,))
     mysql.commit()
     return redirect(website)

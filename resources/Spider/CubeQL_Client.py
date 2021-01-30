@@ -11,6 +11,7 @@ class CubeQL:
         self.host = js['CubeQL_Client']['host']
         self.port = js['CubeQL_Client']['port']
         pass
+
     def get(self):
         #print(self.host,self.port)
         req = requests.post('http://'+self.host+':'+self.port+'/get')
@@ -22,7 +23,7 @@ class CubeQL:
     def filter_set(self,url):
         req = requests.post('http://'+self.host+':'+self.port+'/filter_set?url='+url)
     def filter_contain(self,url):
-        req = requests.post('http://'+self.host+':'+self.port+'/filter_contain?url'+url)
+        req = requests.post('http://'+self.host+':'+self.port+'/filter_contain?url='+url)
         return req.text
     def del_all(self):
         pass

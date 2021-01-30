@@ -41,7 +41,7 @@ hea = {
     "Accept-Encoding": "gzip, deflate",
     "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
     "Cache-Control": "no-cache",
-    "Connection": "keep-alive",
+    "Connection": "close",
     "Cookie": "AspxAutoDetectCookieSupport=1",
     # "Host": "jyj.quanzhou.gov.cn",
     "Pragma": "no-cache",
@@ -243,7 +243,7 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            #try:
+            try:
                 if i == []:
                     continue
 
@@ -252,6 +252,7 @@ def mainly():
 
                     # 用来判断这个url有没有被爬过，通过cubeql里面的filter
                     if cube.filter_contain(destination_URI) == "1":
+                        print(1)
                         continue
 
                     req = requests.get(destination_URI, hea)
@@ -449,8 +450,8 @@ def mainly():
                             # --update
                     mysql.commit()
                     print(destination_URI, " :end")
-            #except:
-            #    print(destination_URI, " :error")
+            except:
+                print(destination_URI, " :error")
 
 if __name__ == "__main__":
     print("Start!")

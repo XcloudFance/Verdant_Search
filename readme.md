@@ -30,14 +30,16 @@
 - 实现了bloomfilter布隆过滤器的实现，让筛选直接从mysql中脱离，接下来要实现mysql分库存储数据，减轻负担
 - 并且实现了一个定时保存器
 - 对其他搜索引擎的爬虫使用了selenium
-## 0.1.4 预计更新 2020/02/01
+## 0.1.4 更新 2020/01/30
 
 - 增加了crisp API方便用户提交意见
 - 实现了postgresql的转移（从mysql）
-- 增加了对bing的结果爬虫
+- 增加了对bing的结果爬虫（没实现）
 - 解决了之前对搜素联想词的机制优化，现在只要输入一个新字符就会发送请求
 
+- 修复了爬虫和cubeql的已知bug
 
+  
 
 ## User-agent
 Mozilla/5.0 (compatible;VerdantSpider/1.0)
