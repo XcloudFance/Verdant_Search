@@ -256,9 +256,8 @@ def mainly():
                         continue
 
                     req = requests.get(destination_URI, hea)
-                    req.encoding = req.apparent_encoding  # 这是个坑，每个网站都有不同的编码机制
-                    if req.apparent_encoding.find("ISO") != -1:
-                        req.encoding = "utf-8"
+                    req.encoding = 'utf-8'
+                    
                     if destination_URI in dictlist:
                         continue
                     if destination_URI.find(".png") != -1:
