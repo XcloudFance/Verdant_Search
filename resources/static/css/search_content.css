@@ -18,17 +18,16 @@
 
 /* 搜索结果 */
 .result-cont{
+	color:#666;
 	text-overflow: ellipsis;
-	font-size: 13px;
+	font-size: 15px;
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 3;
 	overflow: hidden;
 }
 
-.search-result-li{
-	
-}
+.search-result-li{}
 
 #loading_x{
 	color: rgb(86, 86, 86);
@@ -48,7 +47,7 @@
 }
 
 .result-li h2 a{
-	color: #001ba0;
+	color: #001fbb;
 	text-decoration: none;
 	border-bottom: 0px solid black;
 	transition: all .04s ease;
