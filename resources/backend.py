@@ -206,28 +206,30 @@ def search():
     ret = cursor.fetchone()
 
     response_json = {}
+    ifsearch = False
     # 在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
+    if amount == 0:
+        #0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
+        ifsearch = specfic_search(keyword)
+        # print(ifsearch)
 
-    specialsearch = specfic_search(keyword)
-    # print(specialsearch)
-
-    if specialsearch != False:  # 单词翻译查询
-        if specialsearch[2] == 0 or specialsearch[2] == 1:
+    if ifsearch != False:  # 单词翻译查询
+        if ifsearch[2] == 0 or ifsearch[2] == 1:
             # maybe，这个地方需要重做，因为每次搜索一个单词就需要去爬虫一次，或者用一个特别大的库去存特定单词的音也不是不行
             usatok, uktok = download_mp3(keyword)
             response_json["1"] = {
                 "type": "translation",
-                "url": specialsearch[1],
-                "detail": specialsearch[0],
+                "url": ifsearch[1],
+                "detail": ifsearch[0],
                 "title": keyword + "_有道翻译",
                 "music_USA": usatok,
                 "music_UK": uktok,
             }
-        elif specialsearch[2] == 2:
+        elif ifsearch[2] == 2:
             response_json["1"] = {
                 "type": "translation",
-                "url": specialsearch[1],
-                "detail": specialsearch[0],
+                "url": ifsearch[1],
+                "detail": ifsearch[0],
                 "title": keyword + "_有道翻译",
             }
         length += 1
