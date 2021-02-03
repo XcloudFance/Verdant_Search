@@ -1,0 +1,1 @@
+pip3 install fastapi flask starlette pybloom_live jieba gevent asyncio psycopg2 -i https://pypi.douban.com/simple
