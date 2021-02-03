@@ -313,7 +313,7 @@
                             } else {
                                 l.className = 'result-li';
                                 l.innerHTML = '<h2><a href="' + el.url + '">' + el.title + '</a></h2>' +
-                                    '<span class="url-green">' + el.url + '</span>' +
+                                    '<span class="url-green">' + urlcut(el.url) + '</span>' +
                                     '<div class="result-cont">' + el.detail + '</div>';
                             }
 
@@ -371,6 +371,10 @@
             a.innerText = "正在搜索";
         }
         ldcount++
+    }
+
+    function urlcut(url){
+        return url.substr(12);
     }
 </script>
 
