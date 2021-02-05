@@ -22,6 +22,7 @@ import CubeQL_Client
 import threading
 import psycopg2
 from CDS_Selenium import *
+import time
 
 cube = CubeQL_Client.CubeQL()
 
@@ -45,7 +46,7 @@ hea = {
     "Cookie": "AspxAutoDetectCookieSupport=1",
     # "Host": "jyj.quanzhou.gov.cn",
     "Pragma": "no-cache",
-    "Upgrade-Insecure-Requests": "1",
+    
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 
@@ -237,7 +238,7 @@ def mainly():
     while True:
         if geturl == []:
             geturl = demjson.decode(cube.get())
-
+            time.sleep(5) #延迟5s再接受
             continue
         tmplist = geturl
         geturl = []
@@ -251,9 +252,7 @@ def mainly():
                     destination_URI = simplify(i["content"])
 
                     # 用来判断这个url有没有被爬过，通过cubeql里面的filter
-                    if cube.filter_contain(destination_URI) == "1":
-                        print(1)
-                        continue
+                    #0.1.5已经废除在爬虫使用这个逻辑，改到cubeql了
 
                     req = requests.get(destination_URI, hea)
                     req.encoding = 'utf-8'
@@ -292,7 +291,6 @@ def mainly():
                     )
 
                     mysql.commit()
-                    cube.filter_set(destination_URI)  # 插入过滤器
                     # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
                     # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
                     # 判断这个关键词存不存在

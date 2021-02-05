@@ -27,7 +27,11 @@ async def setting(*,url,typ):
     global cylinder
     if len(cylinder)>=limitation:
         return 
+    if url in bloom:
+        print('bloom filter responsed!')
+        return #直接在这边加过滤器
     cylinder.append({'typ':typ,'content':url})
+    bloom.add(url)
     #cylinder = list(set(cylinder))
     pass
 
