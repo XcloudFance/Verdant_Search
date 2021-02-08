@@ -202,7 +202,7 @@ def search():
     amount = int(amount)
     end_amount = int(amount) + 10
     length = 0
-    cursor.execute("select value from search where keyer = %s;", (keyword,))
+    cursor.execute("select value from search where keyer ~* %s;", (keyword,))
     ret = cursor.fetchone()
 
     response_json = {}
@@ -241,7 +241,7 @@ def search():
         match_weigh = {}
         tmp_index_list = {}
         for i in res_:
-            cursor.execute("select value from search where keyer = %s", (i,))
+            cursor.execute("select value from search where keyer ~* %s", (i,))
             fetch = cursor.fetchone()
             if fetch == None:
                 continue
@@ -292,7 +292,7 @@ def search():
     else:
         # 新增关键词权值统计
         cursor.execute(
-            "update search set weigh = weigh + 1 where keyer = %s", (keyword,)
+            "update search set weigh = weigh + 1 where keyer ~* %s", (keyword,)
         )
         mysql.commit()
         index_list = ret[0].split("|")

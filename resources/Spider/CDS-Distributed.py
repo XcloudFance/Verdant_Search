@@ -24,6 +24,12 @@ import psycopg2
 from CDS_Selenium import *
 import time
 
+# -- selenium --
+chrome_options = webdriver.ChromeOptions()
+prefs={"profile.managed_default_content_settings.images":2}
+chrome_options.add_experimental_option("prefs",prefs)
+# -- end selenium --
+
 cube = CubeQL_Client.CubeQL()
 
 hea_ordinary = {
@@ -102,6 +108,11 @@ def postgresql_initation():  # 这边是postgres的版本
 def togbk(string):
     return string.encode("gbk")
 
+def get_url_code(url):
+    driver = webdriver.Chrome(chrome_options=chrome_options)
+    driver.get(url)
+
+    return driver.page_source
 
 def delcssjs(code):
     while code.find("<style>") != -1:
@@ -116,7 +127,7 @@ def delcssjs(code):
     return code
 
 
-def gethtmurl(url):
+def get_url(url):
     soup = BeautifulSoup(url, "html.parser")
     ret = []
     href_ = soup.find_all(name="a")
@@ -199,12 +210,12 @@ dictlist = {}
 
 
 def getsearchurl(keyword):
-    url = requests.get(
+    url = get_url_code(
         "http://mijisou.com/?q="
         + keyword
         + "&category_general=on&time_range=&language=zh-CN&pageno=1",
         hea_ordinary,
-    ).text
+    )
     print(url)
     soup = BeautifulSoup(url, "html.parser")
     ret = []
@@ -254,17 +265,15 @@ def mainly():
                     # 用来判断这个url有没有被爬过，通过cubeql里面的filter
                     #0.1.5已经废除在爬虫使用这个逻辑，改到cubeql了
 
-                    req = requests.get(destination_URI, hea)
-                    req.encoding = 'utf-8'
+ 
                     
                     if destination_URI in dictlist:
                         continue
                     if destination_URI.find(".png") != -1:
                         continue
-                    if req.status_code != 200:  # 0.12内容，如果网页不返回200，就不载入数据库
-                        continue
-                    code = req.text  # urllib.request.urlopen(req).read()
-                    geturls = gethtmurl(code)
+
+                    code = get_url_code(destination_URI)
+                    geturls = get_url(code)#获取该页面的所有子链接
                     # 取body做为内容
                     maincontent = get_keywords(code) + " " + get_p_content(code)
                     title = get_title(code)
@@ -347,6 +356,7 @@ def mainly():
                     print(destination_URI, " :end")
                 # ---------------------------------------------
                 elif i["typ"] == "search":
+                    continue
                     destination_URI = i["content"]
                     mijisou(destination_URI)
                     print(destination_URI, " :end")
@@ -357,18 +367,14 @@ def mainly():
                     if cube.filter_contain(destination_URI) == "1":
                         continue
 
-                    req = requests.get(destination_URI, hea)
-                    req.encoding = req.apparent_encoding
-                    if req.apparent_encoding.find("ISO") != -1:
-                        req.encoding = "utf-8"
+
                     if destination_URI in dictlist:
                         continue
                     if destination_URI.find(".png") != -1:
                         continue
-                    if req.status_code != 200:  # 0.12内容，如果网页不返回200，就不载入数据库
-                        continue
-                    code = req.text  # urllib.request.urlopen(req).read()
-                    geturls = gethtmurl(code)
+
+                    code = get_url_code(destination_URI)
+                    geturls = get_url(code)
                     # 取body做为内容
                     maincontent = get_keywords(code) + " " + get_p_content(code)
                     title = get_title(code)
