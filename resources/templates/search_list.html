@@ -2,6 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="webkit">
     <script type="text/javascript">
         window.$crisp = [];
         window.CRISP_WEBSITE_ID = "09b39e43-0b7f-4b82-b6fd-2d1fa1d59244";
@@ -14,7 +16,7 @@
         })();
     </script>
     <title>keyword - 青荇搜索</title>
-    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+    <link rel="shortcut icon" type="image/png" href="https://i.loli.net/2021/02/10/lFnaXCt7QmxrML4.png">
     <style>
         html,
         body {
@@ -68,22 +70,20 @@
 <body>
     <div style="width: 100%;height: 60px;border-bottom: 1px solid rgba(0,0,0,.15);display: inline-block;">
         <div style="padding-top: 8px;">
-            <div style="width: 130px;float: left;margin: 4px;">
+            <div class="logo">
                 <div style="width: 110px;height: 36px;display: table;margin: 0 auto;margin-top: 3px;">
-                    <img src="img/c_青荇搜索_1.jpg" />
+                    <img src="https://i.loli.net/2021/02/10/TMWZNFryAoYRzd9.jpg" />
                 </div>
             </div>
-            <div class="search-input-w search-input-w-box" style="width: 590px;top: 27.2%;">
+            <div class="search-input-w search-input-w-box search-input-w-box-top">
                 <div class="search-input-w-box-left">
-                    <span style="width: 428px;display: inline-block;">
-							<input id="input_form_k" type="text"/>
-						</span>
+                    <span style="width: 100%;display: inline-block;">
+						<input id="input_form_k" type="text"/>
+					</span>
                 </div>
-                <div>
-                    <span style="width: 160px;display: inline-block;">
-							<input class="form-button" id="start_search" type="button" value="搜索"/>
-						</span>
-                </div>
+                <span style="width: 160px;display: inline-block;">
+                    <input class="form-button" id="start_search" type="button" value="搜索" autocomplete="off"/>
+                </span>
                 <div id="search_associate">
                     <ul>
                     </ul>
@@ -116,7 +116,10 @@
     var ldtimer = null;
     var ldcount = 0;
     var rkey = [];
-    var sis = "";
+    var inputi = {
+        focus: false,
+        now: -1
+    }
 
     function JsonToArray(stree) {
         let p = [];
@@ -155,20 +158,25 @@
     document.getElementById('input_form_k').addEventListener("keyup", function(e) {
         let tmp_ = encodeURIComponent(document.getElementById("input_form_k").value);
         if (e.key == "Enter") {
-            gourl();
+            if(inputi.now != -1){
+                hrefg(inputi.now);
+            }else{
+                gourl();
+            }
         }
         //输入间隔
-        if (!timer && sis != tmp_) {
+        if (e.key.indexOf("Arrow") == -1 && tmp_.length > 0) {
             //console.log('timer ok')
             clearTimeout(timer)
             timer = setTimeout(() => {
+                let tmp_2 = encodeURIComponent(document.getElementById("input_form_k").value);
                 let xhr = null;
                 if (window.XMLHttpRequest) {
                     xhr = new XMLHttpRequest();
                 } else if (window.ActiveXObject) {
                     xhr = new ActiveXObject("Microsoft.XMLHTTP");
                 }
-                xhr.open('GET', '/keyword_think?keyword=' + tmp_, true);
+                xhr.open('GET', '/keyword_think?keyword=' + tmp_2, true);
                 xhr.onload = function() {
                     let dt = JSON.parse(xhr.response);
                     let elm = document.querySelector("#search_associate ul")
@@ -177,16 +185,21 @@
                         let fx = document.createElement("li");
                         fx.addEventListener("click", function() {
                             hrefg(i);
-                        })
+                        });
+                        fx.addEventListener("mouseenter",function(){
+                            inputi.now = i;
+                            SelectAssociate(i,false);
+                        });
                         fx.innerText = dt[i];
                         elm.appendChild(fx);
                     }
+                    inputi.now = -1;
+                    SelectAssociate(inputi.now,true);
                     rkey = dt;
-                    sis = tmp_;
                     timer = null;
                 }
                 xhr.send();
-            }, 250);
+            }, 500);
         }
     });
 
@@ -343,13 +356,69 @@
         xhr.send();
     }
 
-    document.getElementById('input_form_k').addEventListener('focusin', function() {
-        document.getElementById('search_associate').style.display = "block"
+    document.getElementById('input_form_k').addEventListener('focus', function() {
+        document.getElementById('search_associate').style.display = "block";
+        inputi.focus = true;
+        SelectAssociate(inputi.now,true);
     });
 
     document.getElementById('result_div').addEventListener("click", function() {
-        document.getElementById('search_associate').style.display = "none"
+        document.getElementById('search_associate').style.display = "none";
+        inputi.focus = false;
+        inputi.now = -1;
+        SelectAssociate(inputi.now,true);
     });
+
+    document.getElementById("result_div").addEventListener("mouseup",function(){
+        document.getElementById('search_associate').style.display = "none";
+        inputi.focus = false;
+        inputi.now = -1;
+        SelectAssociate(inputi.now,true);
+    });
+
+    document.addEventListener("keyup",function(e){
+        let keys = e.key;
+        if(keys.indexOf("Arrow") != -1){
+            if(keys == "ArrowDown"){
+                if(inputi.now + 1 < rkey.length){
+                    inputi.now = inputi.now + 1;
+                }
+            }else{
+                if(inputi.now - 1 > -1){
+                    inputi.now = inputi.now - 1;
+                }
+            }
+            SelectAssociate(inputi.now,true);
+        }
+    });
+
+    function SelectAssociate(i,u){
+        let elm = document.querySelectorAll("#search_associate ul li");
+        if(i == -1){
+            for (let index = 0; index < elm.length; index++) {
+                let element = elm[index];
+                if(element.classList.contains("search-associate-select")){
+                    element.classList.remove("search-associate-select");
+                }
+            }
+        }else{
+            for (let index = 0; index < elm.length; index++) {
+                let element = elm[index];
+                if(index == i){
+                    if(!element.classList.contains("search-associate-select")){
+                        element.classList.add("search-associate-select");
+                    }
+                    if(u){
+                        document.getElementById("input_form_k").value = rkey[i];
+                    }
+                }else{
+                    if(element.classList.contains("search-associate-select")){
+                        element.classList.remove("search-associate-select");
+                    }
+                }
+            }
+        }
+    }
 
     window.onload = function() {
         SetList(keyword, amount)

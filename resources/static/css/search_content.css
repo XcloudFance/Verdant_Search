@@ -1,3 +1,25 @@
+@media (min-width: 720px) {
+	.search-input-w-box-top{
+		width: 100%;
+		top: 27.2%;
+		max-width: 52rem;
+	}
+}
+
+@media (min-width: 1280px) {
+	.search-input-w-box-top{
+		width: 100%;
+		top: 27.2%;
+		max-width: 45rem;
+	}
+}
+
+.logo{
+	width: 130px;
+	float: left;
+	margin: 4px;
+}
+
 .result-content-left{
 	padding-left: 142px;
 	width: 560px;
@@ -112,7 +134,7 @@
 }
 
 .result-translate-sound{
-    background: url(../img/sound.png) no-repeat;
+    background: url("https://i.loli.net/2021/02/10/6gmfjBtKlTVwDGJ.png") no-repeat;
     height: 16px;
     padding-left: 18px;
     line-height: 16px;
