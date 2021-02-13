@@ -52,9 +52,17 @@ hea_ordinary = {
     "Upgrade-Insecure-Requests": "1",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
+
 mysql, cursor = None, None
+page_Count:int = 0
 
 
+def ordered_set(old_list): #有序去重
+    new_list = list(set(old_list))
+    new_list.sort(key=old_list.index)
+    return new_list
+
+    
 def mysql_initation():  # 保证一定可以连到数据库
     global mysql, cursor
     while True:
@@ -189,10 +197,14 @@ def index():
 def searchlist():
     return render_template("search_list.html")
 
-
+@app.route('/return_count',methods=['GET'])
+def return_count():
+    return page_Count
+    
 @app.route("/search", methods=["GET"])
 def search():
-
+    global page_Count
+    page_Count += 1
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
     print(keyword)
@@ -203,7 +215,19 @@ def search():
     end_amount = int(amount) + 10
     length = 0
     cursor.execute("select value from search where keyer ~* %s;", (keyword,))
-    ret = cursor.fetchone()
+    res = cursor.fetchall()
+
+
+
+    fetch = []
+    for j in res:
+        fetch += j[0].split('|')
+
+
+    index_list = ordered_set(fetch)
+    if end_amount > len(index_list):
+        end_amount = len(index_list)
+    index_list = index_list[amount:end_amount]
 
     response_json = {}
     ifsearch = False
@@ -234,7 +258,7 @@ def search():
             }
         length += 1
         pass
-    if ret == None:
+    if index_list == []:
         # 试试分词
         # 对结果进行分词,同样也对有空格的结果进行分词
         res_ = deal(Cut(keyword))
@@ -242,11 +266,17 @@ def search():
         tmp_index_list = {}
         for i in res_:
             cursor.execute("select value from search where keyer ~* %s", (i,))
-            fetch = cursor.fetchone()
-            if fetch == None:
+            res = cursor.fetchall()
+            if res == []:
                 continue
+
+            fetch = []
+            for j in res:
+                fetch += j
+            fetch = ordered_set(fetch)
+ 
             index_list = fetch[0].split("|")
-            for j in index_list:
+            for j in index_list:# 这边match_weigh里面每一项对应tf*idf的权值加成，关键词匹配度越高，排名越前
                 if j in match_weigh:
                     match_weigh[j] += 10
                 else:
@@ -278,7 +308,7 @@ def search():
         response_json["length"] = length
         # 如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
-        if length <= 10:
+        if length <= 10 and amount == 0:
             # 开始对百度进行爬虫，给CDS布置任务
             print(length)
             cube = CubeQL_Client.CubeQL()
@@ -292,13 +322,9 @@ def search():
     else:
         # 新增关键词权值统计
         cursor.execute(
-            "update search set weigh = weigh + 1 where keyer ~* %s", (keyword,)
+            "update search set weigh = weigh + 1 where keyer = %s", (keyword,)
         )
         mysql.commit()
-        index_list = ret[0].split("|")
-        if end_amount > len(index_list):
-            end_amount = len(index_list)
-        index_list = index_list[amount:end_amount]
         # 取前几个
 
         for i in index_list:
