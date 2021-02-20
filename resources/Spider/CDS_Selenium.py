@@ -19,4 +19,3 @@ def mijisou(keyword):
 第一个是result-header,a标签的href是网址，内容是标题，带有高亮标签
 第二个是result-content, 内容有高亮标签，内容也是简介，可以直接存进database
 '''
-mijisou('a')
