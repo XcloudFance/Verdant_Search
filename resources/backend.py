@@ -127,18 +127,9 @@ def reping():
     global mysql, cursor
     # print(1)
     try:
-        mysql.ping(reconnect=True)
         cursor.execute("")
     except:
-        while True:
-            try:
-                mysql = pymysql.connect(
-                    host=host, port=int(port), user=root, password=password, db=database
-                )
-            except:
-                time.sleep(1)
-                continue
-            break
+        postgresql_initation
         cursor = mysql.cursor()
 
 
