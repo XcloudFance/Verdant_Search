@@ -54,15 +54,15 @@ hea_ordinary = {
 }
 
 mysql, cursor = None, None
-page_Count:int = 0
+page_Count: int = 0
 
 
-def ordered_set(old_list): #有序去重
+def ordered_set(old_list):  # 有序去重
     new_list = list(set(old_list))
     new_list.sort(key=old_list.index)
     return new_list
 
-    
+
 def mysql_initation():  # 保证一定可以连到数据库
     global mysql, cursor
     while True:
@@ -188,10 +188,12 @@ def index():
 def searchlist():
     return render_template("search_list.html")
 
-@app.route('/return_count',methods=['GET'])
+
+@app.route("/return_count", methods=["GET"])
 def return_count():
     return page_Count
-    
+
+
 @app.route("/search", methods=["GET"])
 def search():
     global page_Count
@@ -208,23 +210,18 @@ def search():
     cursor.execute("select value from search where keyer ~* %s;", (keyword,))
     res = cursor.fetchall()
 
-
-
     fetch = []
     for j in res:
-        fetch += j[0].split('|')
-
+        print(j)
+        fetch += j[0].split("|")  # 因为这里面只出现一个结果
 
     index_list = ordered_set(fetch)
-    if end_amount > len(index_list):
-        end_amount = len(index_list)
-    index_list = index_list[amount:end_amount]
 
     response_json = {}
     ifsearch = False
     # 在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
     if amount == 0:
-        #0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
+        # 0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
         ifsearch = specfic_search(keyword)
         # print(ifsearch)
 
@@ -252,6 +249,7 @@ def search():
     if index_list == []:
         # 试试分词
         # 对结果进行分词,同样也对有空格的结果进行分词
+        # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
         res_ = deal(Cut(keyword))
         match_weigh = {}
         tmp_index_list = {}
@@ -260,14 +258,11 @@ def search():
             res = cursor.fetchall()
             if res == []:
                 continue
-
             fetch = []
             for j in res:
-                fetch += j
-            fetch = ordered_set(fetch)
- 
-            index_list = fetch[0].split("|")
-            for j in index_list:# 这边match_weigh里面每一项对应tf*idf的权值加成，关键词匹配度越高，排名越前
+                fetch += j[0].split("|")
+            index_list = ordered_set(fetch)
+            for j in index_list:  # 这边match_weigh里面每一项对应tf*idf的权值加成，关键词匹配度越高，排名越前
                 if j in match_weigh:
                     match_weigh[j] += 10
                 else:
@@ -278,13 +273,12 @@ def search():
             tmp_index_list[i] = cursor.fetchone()[0] + match_weigh[i]
         index_list = sort_by_value(tmp_index_list)
         index_list.reverse()
-
         # 取前几个
         # 排序
         if end_amount > len(index_list):
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
-
+        print(index_list)
         for i in index_list:
             cursor.execute("select * from content where id = " + i)
             res = cursor.fetchone()
@@ -301,7 +295,6 @@ def search():
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 and amount == 0:
             # 开始对百度进行爬虫，给CDS布置任务
-            print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
         # 这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
@@ -311,6 +304,9 @@ def search():
         return json.dumps(response_json)
 
     else:
+        if end_amount > len(index_list):
+            end_amount = len(index_list)
+        index_list = index_list[amount:end_amount]
         # 新增关键词权值统计
         cursor.execute(
             "update search set weigh = weigh + 1 where keyer = %s", (keyword,)
@@ -365,7 +361,7 @@ def redirected():
     website = str(request.args.get("_"))  # 获取网址
     # 数据库操作
     print(website)
-    #这地方有问题，如果重定向了一个数据库都没有的网页，那不就tm出事了，所以这边得采取更成熟的行为
+    # 这地方有问题，如果重定向了一个数据库都没有的网页，那不就tm出事了，所以这边得采取更成熟的行为
     cursor.execute("update content set weigh = weigh + 1 where url = %s", (website,))
     mysql.commit()
     return redirect(website)

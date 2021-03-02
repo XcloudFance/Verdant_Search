@@ -24,6 +24,7 @@ import psycopg2
 from CDS_Selenium import *
 import time
 
+
 cube = CubeQL_Client.CubeQL()
 
 hea_ordinary = {
@@ -251,10 +252,11 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            try:
+            #try:
                 if i == []:
                     continue
                 if i['typ'] == 'search':
+                    i['content'] = urllib.parse.quote(i['content'])
                     i['content'] = 'http://cn.bing.com/search?q='+i['content']
 
                 destination_URI = simplify(i["content"])
@@ -355,8 +357,8 @@ def mainly():
                 print(destination_URI, " :end")
             # ---------------------------------------------
             
-            except:
-                print(destination_URI, " :error")
+            #except:
+            #   print(destination_URI, " :error")
 
 if __name__ == "__main__":
     print("Start!")
