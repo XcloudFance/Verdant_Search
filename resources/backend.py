@@ -129,7 +129,7 @@ def reping():
     try:
         cursor.execute("")
     except:
-        postgresql_initation
+        postgresql_initation()
         cursor = mysql.cursor()
 
 
@@ -153,10 +153,7 @@ def specfic_search(word):  # 如果啥也没有就返回False，如果有就返�
             # print(-1)
             return False
             # try
-        # print(mode)
-        # print(cmpres)
         content = cmpres.group()
-        # print(content)
         if mode == 1:
             content = content[: len(content)]
         if mode == 0:
@@ -286,7 +283,7 @@ def search():
             length += 1
             response_json[length] = {
                 "url": deal2(res[1]),
-                "detail": res[2],
+                "detail": res[2][:300],
                 "title": res[3],
                 "type": "normal",
             }
@@ -321,7 +318,7 @@ def search():
 
             response_json[length] = {
                 "url": deal2(res[1]),
-                "detail": res[2],
+                "detail": res[2][:300],#限制字数
                 "title": res[3],
             }
         response_json["length"] = length
@@ -354,6 +351,11 @@ def thinking():
         ret.append(i[0])
     return demjson.encode(ret)
 
+@app.route('/get_today_data')
+def get_today_data():
+    pass
+
+     
 
 @app.route("/redirect", methods=["GET"])
 def redirected():
@@ -377,6 +379,7 @@ def getsite():
 
 if __name__ == "__main__":
     # mysql_initation()
+    #jieba.enable_parallel(4)
     postgresql_initation()
     http_server = WSGIServer(("0.0.0.0", 8888), app)
     http_server.serve_forever()
