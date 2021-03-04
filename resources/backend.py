@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
+__version__ = '0.2.1'
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
 
@@ -121,17 +122,17 @@ def deal2(website: str):
     return "/redirect?_=" + website
 
 
-def reping():
-    return
+def postgresql_check_status(func):
+    def regular_checks(*args,**kwargs):
 
-    global mysql, cursor
-    # print(1)
-    try:
-        cursor.execute("")
-    except:
-        postgresql_initation()
-        cursor = mysql.cursor()
-
+        global mysql, cursor
+        # print(1)
+        try:
+            cursor.execute("")
+        except:
+            postgresql_initation()
+        return func(*args,**kwargs)
+    return regular_checks
 
 def specfic_search(word):  # 如果啥也没有就返回False，如果有就返回搜索后的结果
     try:
@@ -191,14 +192,14 @@ def return_count():
     return page_Count
 
 
-@app.route("/search", methods=["GET"])
+@app.route("/search", endpoint='search',methods=["GET"])
+@postgresql_check_status
 def search():
     global page_Count
     page_Count += 1
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
     print(keyword)
-    reping()
     if keyword == " ":
         return {}
     amount = int(amount)
@@ -331,9 +332,9 @@ def search():
         return json.dumps(response_json)
 
 
-@app.route("/keyword_think", methods=["GET"])
+@app.route("/keyword_think",endpoint='thinking', methods=["GET"])
+@postgresql_check_status
 def thinking():
-    reping()
     keyword = str(request.args.get("keyword"))
     limited = 7
     step = 0
@@ -347,8 +348,8 @@ def thinking():
         step += 1
         if step == limited:
             break
-
         ret.append(i[0])
+    print(ret)
     return demjson.encode(ret)
 
 @app.route('/get_today_data')
@@ -357,9 +358,9 @@ def get_today_data():
 
      
 
-@app.route("/redirect", methods=["GET"])
+@app.route("/redirect", endpoint='redirected',methods=["GET"])
+@postgresql_check_status
 def redirected():
-    reping()
     website = str(request.args.get("_"))  # 获取网址
     # 数据库操作
     print(website)
