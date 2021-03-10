@@ -24,6 +24,7 @@ import psycopg2
 from CDS_Selenium import *
 import time
 
+
 cube = CubeQL_Client.CubeQL()
 
 hea_ordinary = {
@@ -251,112 +252,113 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            try:
+            #try:
                 if i == []:
                     continue
                 if i['typ'] == 'search':
-                    i['typ'] = 'normal'
+                    i['content'] = urllib.parse.quote(i['content'])
                     i['content'] = 'http://cn.bing.com/search?q='+i['content']
 
-                if i["typ"] == "normal":
-                    destination_URI = simplify(i["content"])
+                destination_URI = simplify(i["content"])
 
-                    # 用来判断这个url有没有被爬过，通过cubeql里面的filter
-                    #0.1.5已经废除在爬虫使用这个逻辑，改到cubeql了
+                # 用来判断这个url有没有被爬过，通过cubeql里面的filter
+                #0.1.5已经废除在爬虫使用这个逻辑，改到cubeql了
 
- 
-                    
-                    if destination_URI in dictlist:
-                        continue
-                    if destination_URI.find(".png") != -1:
-                        continue
 
-                    code = get_url_code(destination_URI)
-                    geturls = list(set(get_url(code)))#获取该页面的所有子链接
-                    # 取body做为内容
-                    maincontent = get_keywords(code) + " " + get_p_content(code)
-                    title = get_title(code)
-                    dictlist[
-                        destination_URI
-                    ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
-                    for url_ in geturls:
-                        # print(url_)
-                        cube.set(url_, typ="normal")
-
-                    geturl = demjson.decode(cube.get())
-                    # 将geturls内的内容发到CubeQL
-                    wordlist = list(set(Cut(maincontent) + Cut(title)))
-                    cursor.execute("select count(*) as value from content")
-                    my_weigh = weigh_judgement(destination_URI, code)  # 把权值保存到变量，一会儿要用
-                    tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
-                    cursor.execute(
-                        "insert into content values ("
-                        + tablenum
-                        + ",%s,%s,%s,"
-                        + str(my_weigh)
-                        + ")",
-                        (destination_URI, dictlist[destination_URI], title),
-                    )
-
-                    mysql.commit()
-                    # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
-                    # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
-                    # 判断这个关键词存不存在
-                    for j in wordlist:
-                        cursor.execute("select value from search where keyer = %s", (j,))
-                        index = cursor.fetchone()
-                        # print(index)
-                        if index == None:
-                            cursor.execute(
-                                "insert into search values(%s,%s,0)", (j, tablenum)
-                            )
-
-                        else:
-                            # -- sort --
-                            # 如果没有就得对其进行排序，从头搜到尾，用降序的形式实现这序列
-                            # 首先先将原序列变成一个列表才方便操作
-                            index_list = index[0].split("|")
-                            # print(index_list)
-                            index_list = [x for x in index_list if x != ""]
-                            for k in range(len(index_list)):
-                                # 取出每个地址的权值
-                                # print('select weigh from content where id = '+index_list[k])
-                                cursor.execute(
-                                    "select weigh from content where id = " + index_list[k]
-                                )
-                                the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
-                                if my_weigh >= the_weigh:
-                                    index_list.insert(k, tablenum)
-                                    break
-                                elif k == len(index_list) - 1:
-                                    index_list.insert(k + 1, tablenum)
-                                    index_list = [x for x in index_list if x != ""]
-                                    break
-                                    # 如果没有比自己小的值就放在最后面
-
-                            # 然后再生成一次字符串表
-                            # 不能去重，会被set改顺序
-                            tmp_list = list(set(index_list))
-                            tmp_list.sort(key=index_list.index)
-                            index_list = tmp_list
-                            for k in range(len(index_list)):
-                                if k == 0:
-                                    index_list_ = index_list[k]
-                                else:
-                                    index_list_ += "|" + index_list[k]
-
-                            # -- sort --
-                            cursor.execute(
-                                "update search set value = %s where keyer = %s",
-                                (index_list_, j),
-                            )
-                            # --update
-                    mysql.commit()
-                    print(destination_URI, " :end")
-                # ---------------------------------------------
                 
-            except:
-                print(destination_URI, " :error")
+                if destination_URI in dictlist:
+                    continue
+                if destination_URI.find(".png") != -1:
+                    continue
+
+                code = get_url_code(destination_URI)
+                geturls = list(set(get_url(code)))#获取该页面的所有子链接
+                # 取body做为内容
+                maincontent = get_keywords(code) + " " + get_p_content(code)
+                title = get_title(code)
+                dictlist[
+                    destination_URI
+                ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
+                for url_ in geturls:
+                    # print(url_)
+                    cube.set(url_, typ="normal") #往cubeql里面加已经获取到的URI
+                
+                geturl = demjson.decode(cube.get())
+
+                if i['typ'] == 'search':#设置一个跳转，因为搜索引擎不需要收录需要搜素的关键词地址
+                    continue
+                wordlist = list(set(Cut(maincontent) + Cut(title)))
+                cursor.execute("select count(*) as value from content")
+                my_weigh = weigh_judgement(destination_URI, code)  # 把权值保存到变量，一会儿要用
+                tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
+                cursor.execute(
+                    "insert into content values ("
+                    + tablenum
+                    + ",%s,%s,%s,"
+                    + str(my_weigh)
+                    + ")",
+                    (destination_URI, dictlist[destination_URI], title),
+                )
+
+                mysql.commit()
+                # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
+                # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
+                # 判断这个关键词存不存在
+                for j in wordlist:
+                    cursor.execute("select value from search where keyer = %s", (j,))
+                    index = cursor.fetchone()
+                    # print(index)
+                    if index == None:
+                        cursor.execute(
+                            "insert into search values(%s,%s,0)", (j, tablenum)
+                        )
+
+                    else:
+                        # -- sort --
+                        # 如果没有就得对其进行排序，从头搜到尾，用降序的形式实现这序列
+                        # 首先先将原序列变成一个列表才方便操作
+                        index_list = index[0].split("|")
+                        # print(index_list)
+                        index_list = [x for x in index_list if x != ""]
+                        for k in range(len(index_list)):
+                            # 取出每个地址的权值
+                            # print('select weigh from content where id = '+index_list[k])
+                            cursor.execute(
+                                "select weigh from content where id = " + index_list[k]
+                            )
+                            the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
+                            if my_weigh >= the_weigh:
+                                index_list.insert(k, tablenum)
+                                break
+                            elif k == len(index_list) - 1:
+                                index_list.insert(k + 1, tablenum)
+                                index_list = [x for x in index_list if x != ""]
+                                break
+                                # 如果没有比自己小的值就放在最后面
+
+                        # 然后再生成一次字符串表
+                        # 不能去重，会被set改顺序
+                        tmp_list = list(set(index_list))
+                        tmp_list.sort(key=index_list.index)
+                        index_list = tmp_list
+                        for k in range(len(index_list)):
+                            if k == 0:
+                                index_list_ = index_list[k]
+                            else:
+                                index_list_ += "|" + index_list[k]
+
+                        # -- sort --
+                        cursor.execute(
+                            "update search set value = %s where keyer = %s",
+                            (index_list_, j),
+                        )
+                        # --update
+                mysql.commit()
+                print(destination_URI, " :end")
+            # ---------------------------------------------
+            
+            #except:
+            #   print(destination_URI, " :error")
 
 if __name__ == "__main__":
     print("Start!")
