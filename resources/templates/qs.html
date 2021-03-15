@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.1/echarts.min.js"></script>
+		<style>
+			body{
+				background-color: #f4f4f4;
+			}
+			
+			*{
+				font-family: Consolas, Helvetica, Arial, sans-serif;
+			}
+			
+			.titlei{
+				border-bottom: 0.2rem #009a12 solid;
+			}
+			
+			.card{
+				max-width: 1280px;
+				margin: 0 auto;
+				background-color: #ffffff;
+				padding: 0.8rem;
+				border-radius: 0.2rem;
+				margin: 0.5rem auto;
+			}
+			
+			.keywdc{
+				
+			}
+			
+			.keywdc *{
+				margin-right: 0.5rem;
+			}
+			
+			.keywdinput{
+				width: 8rem;
+				height: calc(2rem - 2px);
+				padding: 0 6px 0 6px;
+				border: 1px rgba(228,228,228,1) solid;
+				display: inline-block;
+				outline: none;
+				border-radius: 0.1rem;
+				transition: all .2s ease;
+				outline: none;
+			}
+			
+			.keywdinput:focus{
+				border: 1px rgba(100, 100, 100, 0.8) solid;
+			}
+			
+			.keywd{
+				padding: 0.2rem 0.6rem;
+				border-width: 1px;
+				border-style: solid;
+				border-color: #e4e4e4;
+				height: calc(1.6rem - 2px);
+				color: #5a5a5a;
+				width: 4rem;
+				border-left: 0.2rem #009a12 solid;
+				outline: none;
+			}
+			
+			.keywddel{
+				border-radius: 100%;
+				width: 0.5rem;
+				height: 0.5rem;
+			}
+			
+			.addkeywbtn{
+				height: 2rem;
+				transition: all 0.2s ease-in-out;
+				border: 1px rgba(228,228,228,1) solid;
+				cursor: pointer;
+				outline: none;
+			}
+			
+			.addkeywbtn:focus{
+				background-color: rgb(245, 245, 245);
+			}
+			
+			.addkeywbtn:active{
+				background-color: rgb(204, 204, 204);
+				/* box-shadow: 0 0px 1px 1px rgba(0,0,0,.2),0px 0px 0px 0 rgba(0,0,0,.14),0 1px 0px 0 rgba(0,0,0,.12); */
+			}
+		</style>
+	</head>
+	<body>
+		<div class="titlei card">
+			青荇趋势
+		</div>
+		<div class="card keywdc" style="display: flex;">
+			<span style="padding-top: 0.25rem;">关键词:</span> <div id="tag"></div> <input class="keywdinput" id="keywdinput"/> <button class="addkeywbtn" onclick="addki()">添加对比</button>
+		</div>
+		<div class="card">
+			<div id="main" style="width: 100%;height:700px;margin: 0 auto;"></div>
+		</div>
+	</body>
+	<script>
+		var chartDom = document.getElementById('main');
+		var myChart = echarts.init(chartDom);
+		var option;
+		
+		option = {
+		    tooltip: {
+		        trigger: 'axis',
+		        position: function (pt) {
+		            return [pt[0], '10%'];
+		        }
+		    },
+		    title: {
+		        left: 'center',
+		        text: '',
+		    },
+		    xAxis: {
+		        type: 'time',
+		        boundaryGap: false
+		    },
+		    yAxis: {
+		        type: 'value',
+		        boundaryGap: [0, '100%']
+		    },
+		    dataZoom: [{
+		        type: 'inside',
+		        start: 0,
+		        end: 100
+		    }, {
+		        start: 0,
+		        end: 100
+		    }],
+		    series: []
+		};
+		
+		myChart.setOption(option);
+		
+		function kichange(o){
+			if(o.target.value.length < 1){
+				delki(o)
+			}
+			let i = document.getElementById("tag");
+			k = i.querySelectorAll(".keywd");
+			let u = [];
+			for(let p = 0;p < k.length ;p++){
+				let ele = k[p];
+				if(ele.value.length > 0){
+					u.push(ele.value)
+				}
+			}
+			console.log(u);
+		}
+		
+		function kiinput(){
+			let i = document.getElementById("tag");
+			k = i.querySelectorAll(".keywd");
+			let u = [];
+			for(let p = 0;p < k.length ;p++){
+				let ele = k[p];
+				if(ele.value.length > 0){
+					u.push(ele.value)
+				}
+			}
+			console.log(u);
+			s(u);
+		}
+		
+		function delki(o){
+			o.path[1].removeChild(o.target);
+		}
+		
+		function addki(){
+			let kw = document.getElementById("keywdinput").value;
+			let o = document.createElement("input")
+			o.className = "keywd";
+			o.value = kw;
+			o.addEventListener("focusout",(e) =>{
+				kichange(e);
+			});
+			o.addEventListener("keydown",(e) => {
+				if(e.key == "Enter" || e.key == "enter"){
+					if(e.target.value.length < 1){
+						e.target.blur();
+					}
+					kichange(e);
+				}
+			});
+			document.getElementById("keywdinput").value = "";
+			
+			document.getElementById("tag").appendChild(o);
+			
+			kiinput();
+		}
+		
+		function s(x){
+			let ajaxRequest = null;
+			if (window.XMLHttpRequest){
+				ajaxRequest = new XMLHttpRequest();
+			}else if (window.ActiveXObject){
+				ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			
+			//请求获取列表
+			ajaxRequest.open('POST','/', true);
+			ajaxRequest.responseType = 'json';
+			ajaxRequest.setRequestHeader("Content-Type", "application/json");
+			ajaxRequest.onreadystatechange = function(){
+				if(ajaxRequest.readyState==4){
+					if(ajaxRequest.status==200){
+						//success(ajaxRequest.responseText);
+						console.log(ajaxRequest.response);
+						if(ajaxRequest.response.code == 200){
+							let data = ajaxRequest.response;
+							
+							let p = data.data;
+							let y = [];
+							
+							for(let i=0;i<p.length;i++){
+								y.push({
+									name: x[i],
+									type: 'line',
+									smooth: true,
+									symbol: 'none',
+									areaStyle: {},
+									data: p[i]
+								})
+							}
+							
+							myChart.setOption({
+								series: y
+							});
+						}
+					}else{
+						
+					}
+				}
+			};
+			let data = new Object();
+			data.post = x;
+			ajaxRequest.send(JSON.stringify(data));
+		}
+	</script>
+</html>
