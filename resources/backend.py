@@ -23,7 +23,7 @@ from requests_html import requests
 from get_pronun import *
 import asyncio
 import CubeQL_Client
-
+import datetime
 # flask定义
 import flask
 from flask import render_template, request, redirect
@@ -191,14 +191,30 @@ def searchlist():
 def return_count():
     return page_Count
 
+def prefix_zero(content):
+    if content<10:
+        return '0'+str(content)
+        
+def record_log(content):
+
+    now = datetime.datetime.now()
+    datenow = str(now.year) +'-'+ str(now.month) + '-' + str(now.day)
+    print(datenow)
+    
+
+    cursor.execute("insert into daily_logs values('0','"+content+"','"+datenow+"');")
+    mysql.commit()
+
 
 @app.route("/search", endpoint='search',methods=["GET"])
 @postgresql_check_status
 def search():
+    # -- everytime searching, record the history-- 
     global page_Count
     page_Count += 1
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
+    record_log(keyword)
     print(keyword)
     if keyword == " ":
         return {}
@@ -352,8 +368,16 @@ def thinking():
     print(ret)
     return demjson.encode(ret)
 
-@app.route('/get_today_data')
+@app.route('/get_today_data',methods=['POST'])
 def get_today_data():
+    keyword = request.args.get('keyword')
+    time_begin = request.args.get('time_begin')
+    time_end = request.args.get('time_end')
+
+    cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
+    res = cursor.fetchall()
+    print(res)
+
     pass
 
      

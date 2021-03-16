@@ -252,7 +252,7 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            #try:
+            try:
                 if i == []:
                     continue
                 if i['typ'] == 'search':
@@ -357,8 +357,8 @@ def mainly():
                 print(destination_URI, " :end")
             # ---------------------------------------------
             
-            #except:
-            #   print(destination_URI, " :error")
+            except:
+               print(destination_URI, " :error")
 
 if __name__ == "__main__":
     print("Start!")
