@@ -200,7 +200,7 @@
 			}
 			
 			//请求获取列表
-			ajaxRequest.open('POST','/', true);
+			ajaxRequest.open('POST','/get_today_data', true);
 			ajaxRequest.responseType = 'json';
 			ajaxRequest.setRequestHeader("Content-Type", "application/json");
 			ajaxRequest.onreadystatechange = function(){
@@ -208,10 +208,10 @@
 					if(ajaxRequest.status==200){
 						//success(ajaxRequest.responseText);
 						console.log(ajaxRequest.response);
-						if(ajaxRequest.response.code == 200){
+						if(ajaxRequest.response.Code == 200){
 							let data = ajaxRequest.response;
 							
-							let p = data.data;
+							let p = data.Data;
 							let y = [];
 							
 							for(let i=0;i<p.length;i++){
