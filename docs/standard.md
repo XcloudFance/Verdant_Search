@@ -58,7 +58,7 @@ POST /get_today_data
 
 request:
 ```json
-["关键词1","关键词2"]
+{"keyword":["关键词1","关键词2"]}
 ```
 
 response:
