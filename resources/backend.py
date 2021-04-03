@@ -31,16 +31,7 @@ from flask import render_template, request, redirect
 app = flask.Flask(__name__, template_folder="./templates", static_url_path="")
 app.jinja_env.auto_reload = True
 # flask end
-# -- read config --
-f = open("config.json", "r")
-js = demjson.decode(f.read())
-f.close()
-host = js["Main"]["host"]
-port = js["Main"]["port"]
-root = js["Main"]["root"]
-password = js["Main"]["password"]
-database = js["Main"]["db"]
-# -- end of read config --
+
 
 hea_ordinary = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -56,7 +47,20 @@ hea_ordinary = {
 
 mysql, cursor = None, None
 page_Count: int = 0
-
+js = {}
+host = port = password = database = root = ''
+def Get_Config():
+    global host,port,root,password,database,js
+    # -- read config --
+    f = open("config.json", "r")
+    js = demjson.decode(f.read())
+    f.close()
+    host = js["Main"]["host"]
+    port = js["Main"]["port"]
+    root = js["Main"]["root"]
+    password = js["Main"]["password"]
+    database = js["Main"]["db"]
+    # -- end of read config --
 
 def ordered_set(old_list):  # 有序去重
     new_list = list(set(old_list))
@@ -239,9 +243,10 @@ def search():
         ifsearch = specfic_search(keyword)
         # print(ifsearch)
 
-    if ifsearch != False:  # 单词翻译查询
+    if ifsearch != False and js['Main']['Whether_Translation'] == 1:  # 单词翻译查询
         if ifsearch[2] == 0 or ifsearch[2] == 1:
             # maybe，这个地方需要重做，因为每次搜索一个单词就需要去爬虫一次，或者用一个特别大的库去存特定单词的音也不是不行
+            # 或者，加一个多线程的思想，这边直接交给协程做，做好了用await等待加载完
             usatok, uktok = download_mp3(keyword)
             response_json["1"] = {
                 "type": "translation",
@@ -260,6 +265,7 @@ def search():
             }
         length += 1
         pass
+
     if index_list == []:
         # 试试分词
         # 对结果进行分词,同样也对有空格的结果进行分词
@@ -368,19 +374,18 @@ def thinking():
     print(ret)
     return demjson.encode(ret)
 
-@app.route('/get_today_data',methods=['POST'])
+@app.route('/get_today_data',methods=['GET','POST'])
 def get_today_data():
-    keyword = request.args.get('keyword')
-    time_begin = request.args.get('time_begin')
-    time_end = request.args.get('time_end')
-
-    cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
-    res = cursor.fetchall()
-    print(res)
-
-    pass
-
-     
+    if request.method == 'GET':
+        return render_template('qs.html')
+    else:
+        keyword = request.form.get('POST')
+        print(keyword,type(keyword))
+        return 'OK'
+        #cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
+        #res = cursor.fetchall()
+        #print(res)
+ 
 
 @app.route("/redirect", endpoint='redirected',methods=["GET"])
 @postgresql_check_status
@@ -397,9 +402,6 @@ def redirected():
 # 可能需要防SQL注入，因为每一个点都是通过直接连接sql的,可能需要base64
 
 
-@app.route("/getwebsite", methods=["GET"])
-def getsite():
-    pass
 
 
 if __name__ == "__main__":
