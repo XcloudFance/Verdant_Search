@@ -9,7 +9,7 @@
         "root": "postgres",
         "password": "123456",
         "db": "cylinder",
-        "Whether_Translation": 0
+        "Whether_Translation": 1
     },
     "Spider": {
         "host": "127.0.0.1",

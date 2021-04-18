@@ -31,10 +31,32 @@ class pssql_Handler:
             try:
                 self.cursor.execute("")
             except:
-                exit(0)
+                print('pssql error!')
             return func(*args,**kwargs)
         return regular_checks
-    def Accumulate_weight(Target_Word):
+
+    def increaseURLWeight(self,website):
         self.cursor.execute("update content set weigh = weigh + 1 where url = %s", (website,))
         self.pssql.commit()
-        
+
+    def increaseKeywordWeight(self,keyword):
+        self.cursor.execute(
+            "update search set weigh = weigh + 1 where keyer = %s", (keyword,)
+        )
+        self.pssql.commit()
+    def recordLog(self,content,nowdate):
+        self.cursor.execute("insert into daily_logs values('0','" + content + "','" + nowdate + "');")
+        self.pssql.commit()
+
+    def queryKeywordDescendingSort(self,keyword):
+        self.cursor.execute(
+            "select keyer from search where keyer like %s order by weigh desc",
+            (keyword + "%",),
+        )
+        return self.cursor.fetchall()
+    def queryKeyword(self,keyword):
+        self.cursor.execute("select value from search where keyer ~* %s;", (keyword,))
+        return self.cursor.fetchall()
+    def getKeywordWeight(self,keyword):
+        self.cursor.execute("select weigh from content where id = " + i)  # 拿到权值
+        return self.cursor.fetchone()

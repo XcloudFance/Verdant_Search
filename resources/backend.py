@@ -27,11 +27,11 @@ import datetime
 # flask定义
 import flask
 from flask import render_template, request, redirect
+from pssqlHandler import *
 
 app = flask.Flask(__name__, template_folder="./templates", static_url_path="")
 app.jinja_env.auto_reload = True
 # flask end
-
 
 hea_ordinary = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
@@ -45,10 +45,10 @@ hea_ordinary = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 
-mysql, cursor = None, None
 page_Count: int = 0
 js = {}
 host = port = password = database = root = ''
+
 def Get_Config():
     global host,port,root,password,database,js
     # -- read config --
@@ -62,47 +62,16 @@ def Get_Config():
     database = js["Main"]["db"]
     # -- end of read config --
 
+Get_Config()
+databaseHandler = pssql_Handler(host, port, root, password, database)
+
 def ordered_set(old_list):  # 有序去重
     new_list = list(set(old_list))
     new_list.sort(key=old_list.index)
     return new_list
 
 
-def mysql_initation():  # 保证一定可以连到数据库
-    global mysql, cursor
-    while True:
-        try:
-            mysql = pymysql.connect(
-                host=host, port=int(port), user=root, password=password, db=database
-            )
-        except:
-            time.sleep(1)
-            continue
-        break
-    cursor = mysql.cursor()
 
-
-def postgresql_initation():  # 这边是postgres的版本
-    global mysql, cursor
-    mysql = psycopg2.connect(
-        host=host, port=int(port), user=root, password=password, database=database
-    )
-    cursor = mysql.cursor()
-
-    while False:
-        try:
-            mysql = psycopg2.connect(
-                host=host,
-                port=int(port),
-                user=root,
-                password=password,
-                database=database,
-            )
-        except:
-            time.sleep(1)
-            continue
-        break
-    # cursor = mysql.cursor()
 
 
 def sort_by_value(d):
@@ -125,18 +94,6 @@ def deal(keywords: list):
 def deal2(website: str):
     return "/redirect?_=" + website
 
-
-def postgresql_check_status(func):
-    def regular_checks(*args,**kwargs):
-
-        global mysql, cursor
-        # print(1)
-        try:
-            cursor.execute("")
-        except:
-            postgresql_initation()
-        return func(*args,**kwargs)
-    return regular_checks
 
 def specfic_search(word):  # 如果啥也没有就返回False，如果有就返回搜索后的结果
     try:
@@ -206,12 +163,11 @@ def record_log(content):
     print(datenow)
     
 
-    cursor.execute("insert into daily_logs values('0','"+content+"','"+datenow+"');")
-    mysql.commit()
+    databaseHandler.recordLog(content,datenow)
 
 
 @app.route("/search", endpoint='search',methods=["GET"])
-@postgresql_check_status
+@databaseHandler.postgresql_check_status
 def search():
     # -- everytime searching, record the history-- 
     global page_Count
@@ -225,8 +181,7 @@ def search():
     amount = int(amount)
     end_amount = int(amount) + 10
     length = 0
-    cursor.execute("select value from search where keyer ~* %s;", (keyword,))
-    res = cursor.fetchall()
+    res = databaseHandler.queryKeyword(keyword)
 
     fetch = []
     for j in res:
@@ -274,8 +229,8 @@ def search():
         match_weigh = {}
         tmp_index_list = {}
         for i in res_:
-            cursor.execute("select value from search where keyer ~* %s", (i,))
-            res = cursor.fetchall()
+
+            res = databaseHandler.queryKeyword(keyword)
             if res == []:
                 continue
             fetch = []
@@ -289,8 +244,8 @@ def search():
                     match_weigh[j] = 1
 
         for i in match_weigh:
-            cursor.execute("select weigh from content where id = " + i)  # 拿到权值
-            tmp_index_list[i] = cursor.fetchone()[0] + match_weigh[i]
+            res = databaseHandler.getKeywordWeight(keyword)
+            tmp_index_list[i] = res[0] + match_weigh[i]
         index_list = sort_by_value(tmp_index_list)
         index_list.reverse()
         # 取前几个
@@ -328,10 +283,7 @@ def search():
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
         # 新增关键词权值统计
-        cursor.execute(
-            "update search set weigh = weigh + 1 where keyer = %s", (keyword,)
-        )
-        mysql.commit()
+        databaseHandler.increaseKeywordWeight(keyword)
         # 取前几个
 
         for i in index_list:
@@ -355,18 +307,15 @@ def search():
 
 
 @app.route("/keyword_think",endpoint='thinking', methods=["GET"])
-@postgresql_check_status
+@databaseHandler.postgresql_check_status
 def thinking():
     keyword = str(request.args.get("keyword"))
     limited = 7
     step = 0
-    cursor.execute(
-        "select keyer from search where keyer like %s order by weigh desc",
-        (keyword + "%",),
-    )
+
     # desc为逆序排序，like就是匹配字符串的前缀
     ret = []
-    for i in cursor.fetchall():
+    for i in databaseHandler.queryKeywordDescendingSort(keyword):
         step += 1
         if step == limited:
             break
@@ -388,14 +337,13 @@ def get_today_data():
  
 
 @app.route("/redirect", endpoint='redirected',methods=["GET"])
-@postgresql_check_status
+@databaseHandler.postgresql_check_status
 def redirected():
     website = str(request.args.get("_"))  # 获取网址
     # 数据库操作
     print(website)
-    # 这地方有问题，如果重定向了一个数据库都没有的网页，那不就tm出事了，所以这边得采取更成熟的行为
-    cursor.execute("update content set weigh = weigh + 1 where url = %s", (website,))
-    mysql.commit()
+    # 这地方有问题，重定向了一个数据库都没有的网页，所以这边得采取更成熟的行为
+    databaseHandler.increaseURLWeight(website)
     return redirect(website)
 
 
@@ -405,8 +353,10 @@ def redirected():
 
 
 if __name__ == "__main__":
+
     # mysql_initation()
     #jieba.enable_parallel(4)
-    postgresql_initation()
+
     http_server = WSGIServer(("0.0.0.0", 8888), app)
+
     http_server.serve_forever()
