@@ -1,5 +1,5 @@
 # verdant search
-目前为了考虑后端的负载量，将搜索引擎的后端改成了flask
+目前为了考虑后端的负载量，将搜索引擎的后端改成了flask  
 但是其临时存储结构CubeQL用了fastapi  
 官网: http://verdant.poi.ac
 ## Key Feature
