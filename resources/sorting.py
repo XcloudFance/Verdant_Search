@@ -3,6 +3,7 @@
 这玩意儿用来搞数据库的排序，数据库需要动态排序
 '''
 import time,datetime,demjson
+
 # -- read config --
 f = open("config.json", "r")
 js = demjson.decode(f.read())

@@ -7,6 +7,9 @@ from CubeQL_Client import CubeQL
 chrome_options = webdriver.ChromeOptions()
 prefs={"profile.managed_default_content_settings.images":2}
 chrome_options.add_experimental_option("prefs",prefs)
+
+chrome_options.add_experimental_option("excludeSwitches", ['enable-automation', 'enable-logging'])
+
 def mijisou(keyword):
     driver = webdriver.Chrome(chrome_options=chrome_options)
     driver.get(r'https://blog.csdn.net/weixin_42066185/article/details/81675726')

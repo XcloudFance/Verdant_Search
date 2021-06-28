@@ -226,11 +226,13 @@ def search():
         # 对结果进行分词,同样也对有空格的结果进行分词
         # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
         res_ = deal(Cut(keyword))
+        print(res_)
         match_weigh = {}
         tmp_index_list = {}
         for i in res_:
 
-            res = databaseHandler.queryKeyword(keyword)
+            res = databaseHandler.queryKeyword(i)
+            print(res)
             if res == []:
                 continue
             fetch = []
@@ -244,7 +246,7 @@ def search():
                     match_weigh[j] = 1
 
         for i in match_weigh:
-            res = databaseHandler.getKeywordWeight(keyword)
+            res = databaseHandler.getKeywordWeight(i)
             tmp_index_list[i] = res[0] + match_weigh[i]
         index_list = sort_by_value(tmp_index_list)
         index_list.reverse()
@@ -255,15 +257,12 @@ def search():
         index_list = index_list[amount:end_amount]
         print(index_list)
         for i in index_list:
-            cursor.execute("select * from content where id = " + i)
-            res = cursor.fetchone()
-
+            res = databaseHandler.getRecordDetails(i)
             length += 1
             response_json[length] = {
                 "url": deal2(res[1]),
                 "detail": res[2][:300],
-                "title": res[3],
-                "type": "normal",
+                "title": res[3]
             }
         response_json["length"] = length
         # 如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
@@ -287,8 +286,9 @@ def search():
         # 取前几个
 
         for i in index_list:
-            cursor.execute("select * from content where id = " + i)
-            res = cursor.fetchone()
+            
+            databaseHandler.cursor.execute("select * from content where id = " + i)
+            res = databaseHandler.cursor.fetchone()
             length += 1
 
             response_json[length] = {
