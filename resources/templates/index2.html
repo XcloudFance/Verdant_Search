@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="renderer" content="webkit">
     <script type="text/javascript">
         window.$crisp = [];
@@ -53,7 +54,7 @@
             </div>
         </div>
         <!-- https://i.loli.net/2021/02/02/48U9aOFPwejLNTn.jpg -->
-        <div class="form-focus" id="form_focus" data-bm="24" style="background-image: url('https://i.loli.net/2021/02/11/IVGuTnM7ZdS3LBO.jpg')"></div>
+        <div class="form-focus" id="form_focus" data-bm="24" style="background-image: url('https://i.loli.net/2021/02/02/48U9aOFPwejLNTn.jpg')"></div>
     </div>
 </body>
 <script>
@@ -68,7 +69,7 @@
         document.getElementById('form_focus').style.filter = "brightness(0.75)";
         document.getElementById('search_associate').style.display = "block";
         inputi.focus = true;
-        SelectAssociate(inputi.now,true);
+        SelectAssociate(inputi.now, true);
     });
 
     document.getElementById('form_focus').addEventListener("click", function() {
@@ -76,7 +77,7 @@
         document.getElementById('search_associate').style.display = "none";
         inputi.focus = false;
         inputi.now = -1;
-        SelectAssociate(inputi.now,true);
+        SelectAssociate(inputi.now, true);
     });
 
     function gourl() {
@@ -92,43 +93,43 @@
         gourl();
     });
 
-    document.getElementById('input_form_k').addEventListener("keyup",function(e){
+    document.getElementById('input_form_k').addEventListener("keyup", function(e) {
         let tp = document.getElementById("input_form_k").value;
-        if(e.key=="Enter"){
+        if (e.key == "Enter") {
             gourl();
         }
         //输入间隔
-        if(e.key.indexOf("Arrow") == -1 && tp.length > 0){
+        if (e.key.indexOf("Arrow") == -1 && tp.length > 0) {
             //console.log('timer ok')
             clearTimeout(timer)
             timer = setTimeout(() => {
                 let tmp_2 = encodeURIComponent(document.getElementById("input_form_k").value);
                 let xhr = null;
-                if (window.XMLHttpRequest){
+                if (window.XMLHttpRequest) {
                     xhr = new XMLHttpRequest();
-                }else if (window.ActiveXObject){
+                } else if (window.ActiveXObject) {
                     xhr = new ActiveXObject("Microsoft.XMLHTTP");
                 }
-                
+
                 xhr.open('GET', '/keyword_think?keyword=' + tmp_2, true);
-                xhr.onload = function () {
+                xhr.onload = function() {
                     let dt = JSON.parse(xhr.response);
                     let elm = document.querySelector("#search_associate ul")
                     elm.innerHTML = "";
-                    for(let i=0;i<dt.length;i++){
+                    for (let i = 0; i < dt.length; i++) {
                         let fx = document.createElement("li");
-                        fx.addEventListener("click",function(){
+                        fx.addEventListener("click", function() {
                             hrefg(i);
                         });
-                        fx.addEventListener("mouseenter",function(){
+                        fx.addEventListener("mouseenter", function() {
                             inputi.now = i;
-                            SelectAssociate(i,false);
+                            SelectAssociate(i, false);
                         });
                         fx.innerText = dt[i];
                         elm.appendChild(fx);
                     }
                     inputi.now = -1;
-                    SelectAssociate(inputi.now,true);
+                    SelectAssociate(inputi.now, true);
                     rkey = dt;
                     timer = null;
                 }
@@ -136,54 +137,54 @@
             }, 500);
         }
     });
-    
-    document.getElementById('start_search').addEventListener("click",function(){
+
+    document.getElementById('start_search').addEventListener("click", function() {
         gourl();
     });
 
-    document.addEventListener("keyup",function(e){
+    document.addEventListener("keyup", function(e) {
         let keys = e.key;
-        if(keys.indexOf("Arrow") != -1){
-            if(keys == "ArrowDown"){
-                if(inputi.now + 1 < rkey.length){
+        if (keys.indexOf("Arrow") != -1) {
+            if (keys == "ArrowDown") {
+                if (inputi.now + 1 < rkey.length) {
                     inputi.now = inputi.now + 1;
                 }
-            }else{
-                if(inputi.now - 1 > -1){
+            } else {
+                if (inputi.now - 1 > -1) {
                     inputi.now = inputi.now - 1;
                 }
             }
-            SelectAssociate(inputi.now,true);
+            SelectAssociate(inputi.now, true);
         }
     });
 
-    function SelectAssociate(i,u){
+    function SelectAssociate(i, u) {
         let elm = document.querySelectorAll("#search_associate ul li");
-        if(i == -1){
+        if (i == -1) {
             for (let index = 0; index < elm.length; index++) {
                 let element = elm[index];
-                if(element.classList.contains("search-associate-select")){
+                if (element.classList.contains("search-associate-select")) {
                     element.classList.remove("search-associate-select");
                 }
             }
-        }else{
+        } else {
             for (let index = 0; index < elm.length; index++) {
                 let element = elm[index];
-                if(index == i){
-                    if(!element.classList.contains("search-associate-select")){
+                if (index == i) {
+                    if (!element.classList.contains("search-associate-select")) {
                         element.classList.add("search-associate-select");
                     }
-                    if(u){
+                    if (u) {
                         document.getElementById("input_form_k").value = rkey[i];
                     }
-                }else{
-                    if(element.classList.contains("search-associate-select")){
+                } else {
+                    if (element.classList.contains("search-associate-select")) {
                         element.classList.remove("search-associate-select");
                     }
                 }
             }
         }
     }
-
 </script>
+
 </html>

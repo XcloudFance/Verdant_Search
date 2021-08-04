@@ -160,7 +160,7 @@ def record_log(content):
 
     now = datetime.datetime.now()
     datenow = str(now.year) +'-'+ str(now.month) + '-' + str(now.day)
-    print(datenow)
+    #print(datenow)
     
 
     databaseHandler.recordLog(content,datenow)
@@ -185,7 +185,7 @@ def search():
 
     fetch = []
     for j in res:
-        print(j)
+        #print(j)
         fetch += j[0].split("|")  # 因为这里面只出现一个结果
 
     index_list = ordered_set(fetch)
@@ -200,7 +200,6 @@ def search():
 
     if ifsearch != False and js['Main']['Whether_Translation'] == 1:  # 单词翻译查询
         if ifsearch[2] == 0 or ifsearch[2] == 1:
-            # maybe，这个地方需要重做，因为每次搜索一个单词就需要去爬虫一次，或者用一个特别大的库去存特定单词的音也不是不行
             # 或者，加一个多线程的思想，这边直接交给协程做，做好了用await等待加载完
             usatok, uktok = download_mp3(keyword)
             response_json["1"] = {
@@ -226,13 +225,13 @@ def search():
         # 对结果进行分词,同样也对有空格的结果进行分词
         # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
         res_ = deal(Cut(keyword))
-        print(res_)
+        #print(res_)
         match_weigh = {}
         tmp_index_list = {}
         for i in res_:
 
             res = databaseHandler.queryKeyword(i)
-            print(res)
+            #print(res)
             if res == []:
                 continue
             fetch = []
@@ -255,7 +254,7 @@ def search():
         if end_amount > len(index_list):
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
-        print(index_list)
+        #print(index_list)
         for i in index_list:
             res = databaseHandler.getRecordDetails(i)
             length += 1
@@ -299,7 +298,7 @@ def search():
         response_json["length"] = length
         if length <= 10:
             # 开始对百度进行爬虫，给CDS布置任务
-            print(length)
+            #print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
 
@@ -320,7 +319,7 @@ def thinking():
         if step == limited:
             break
         ret.append(i[0])
-    print(ret)
+    #print(ret)
     return demjson.encode(ret)
 
 @app.route('/get_today_data',methods=['GET','POST'])
@@ -329,7 +328,7 @@ def get_today_data():
         return render_template('qs.html')
     else:
         keyword = request.form.get('POST')
-        print(keyword,type(keyword))
+        #print(keyword,type(keyword))
         return 'OK'
         #cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
         #res = cursor.fetchall()
@@ -341,7 +340,7 @@ def get_today_data():
 def redirected():
     website = str(request.args.get("_"))  # 获取网址
     # 数据库操作
-    print(website)
+    #print(website)
     # 这地方有问题，重定向了一个数据库都没有的网页，所以这边得采取更成熟的行为
     databaseHandler.increaseURLWeight(website)
     return redirect(website)

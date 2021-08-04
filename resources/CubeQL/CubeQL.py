@@ -30,8 +30,11 @@ async def setting(*,url,typ):
     if url in bloom:
         print('bloom filter responsed!')
         return #直接在这边加过滤器
-    cylinder.append({'typ':typ,'content':url})
+    cylinder.insert(0,{'typ':typ,'content':url})
     bloom.add(url)
+    bloom.add("https://"+url)
+    bloom.add("http://"+url)
+    
     #cylinder = list(set(cylinder))
     pass
 
@@ -49,7 +52,7 @@ async def justget():
     amount = 4
     for i in range(amount):
         if i<len(cylinder):
-            ret.append(cylinder[i])
+            ret.insert(0,cylinder[i])
     return ret
 @app.post('/filter_set')
 async def baiduset(*,url):
