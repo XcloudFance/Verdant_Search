@@ -1,5 +1,6 @@
 import psycopg2
 import time
+import datetime 
 
 class pssql_Handler:
 
@@ -65,5 +66,20 @@ class pssql_Handler:
         self.cursor.execute("select weigh from content where id = " + keyword)
         return self.cursor.fetchone()
     def getRecordDetails(self,id):
-            self.cursor.execute("select * from content where id = " + id)
-            return self.cursor.fetchone()
+        self.cursor.execute("select * from content where id = " + id)
+        return self.cursor.fetchone()
+
+    def getKeywordTrend(self,keyword):#这边是青荇趋势的获取日期和对应的搜索权值
+        self.cursor.execute("select timerange from daily_logs where content = %s",(keyword,))
+        res = self.cursor.fetchall()
+        ret = []
+        tmp_dict = {}
+        for i in res:
+            date = str(i[0].year) + "-"+str(i[0].month)+ "-"+str(i[0].day)
+            if date in tmp_dict:
+                tmp_dict[date] += 1
+            else:
+                tmp_dict[date] = 1 
+        for j in tmp_dict:
+            ret.append([j,tmp_dict[j]])
+        return ret

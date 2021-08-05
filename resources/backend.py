@@ -327,13 +327,21 @@ def get_today_data():
     if request.method == 'GET':
         return render_template('qs.html')
     else:
-        keyword = request.form.get('POST')
-        #print(keyword,type(keyword))
-        return 'OK'
+        ret = {"Code":"200","Data":[]}
+        keyword = request.json.get('keyword')
+        for i in keyword:
+            ret['Data'].append(databaseHandler.getKeywordTrend(i))
+        
+
+        print(keyword,type(keyword))
+        return ret
         #cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
         #res = cursor.fetchall()
         #print(res)
  
+@app.route('/trend',methods=['GET'])
+def trend():
+    return render_template("qs.html")
 
 @app.route("/redirect", endpoint='redirected',methods=["GET"])
 @databaseHandler.postgresql_check_status
