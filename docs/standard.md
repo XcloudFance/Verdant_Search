@@ -77,3 +77,41 @@ response:
     ]
 }
 ```
+
+##### 插件系统
+
+原先服务器返回的搜索应该是这样的：
+
+```json
+{
+
+    1:{
+
+        "type":"translation",
+
+        "url":"xxx"
+
+    }
+
+}
+```
+
+type: translation/extension
+
+如果是translation就是翻译
+
+extension就是插件
+
+下面是extension的例子
+
+```json
+{
+    1:{
+        "type":"extension",
+        "url":"xxx",
+        "htmlcode":"xxx",
+        "height":280
+    }
+}
+```
+
