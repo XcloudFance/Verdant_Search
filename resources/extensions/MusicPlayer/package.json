@@ -1,0 +1,9 @@
+{
+  "name": "MusicPlayer",
+  "version": "1.0",
+  "author": "huyao",
+  "intro": "It is the first extension for VerdantSearch.",
+  "command": [
+    "echo helloworld!"
+  ]
+}

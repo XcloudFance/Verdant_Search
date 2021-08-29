@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
-__version__ = '0.2.1'
+__version__ = '0.2.'
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
 
-monkey.patch_all()
+#monkey.patch_all()
 import pymysql
 
 ## -- postgresql  --
@@ -60,6 +60,7 @@ def Get_Config():
     root = js["Main"]["root"]
     password = js["Main"]["password"]
     database = js["Main"]["db"]
+    extensions_path = js["Main"]["extensions"]
     # -- end of read config --
 
 Get_Config()
@@ -267,7 +268,7 @@ def search():
         # 如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 and amount == 0:
-            # 开始对百度进行爬虫，给CDS布置任务
+            # 开始对百度进行爬虫，给CDS布置任务rrrr
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
         # 这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
@@ -359,11 +360,12 @@ def redirected():
 
 
 
+
 if __name__ == "__main__":
 
     # mysql_initation()
     #jieba.enable_parallel(4)
 
-    http_server = WSGIServer(("0.0.0.0", 8888), app)
+    http_server = WSGIServer(("0.0.0.0", 7777), app)
 
     http_server.serve_forever()

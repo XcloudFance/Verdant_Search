@@ -7,9 +7,10 @@
         "host": "localhost",
         "port": "5432",
         "root": "postgres",
-        "password": "123456",
+        "password": "1234567",
         "db": "cylinder",
-        "Whether_Translation": 1
+        "Whether_Translation": 1,
+        "extensions": "./extensions"
     },
     "Spider": {
         "host": "127.0.0.1",
