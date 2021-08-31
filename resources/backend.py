@@ -28,6 +28,7 @@ import datetime
 import flask
 from flask import render_template, request, redirect
 from pssqlHandler import *
+import os
 
 app = flask.Flask(__name__, template_folder="./templates", static_url_path="")
 app.jinja_env.auto_reload = True
@@ -47,10 +48,10 @@ hea_ordinary = {
 
 page_Count: int = 0
 js = {}
-host = port = password = database = root = ''
-
+host = port = password = database = root = extensions_path = ''
+extensions_config = {}
 def Get_Config():
-    global host,port,root,password,database,js
+    global host,port,root,password,database,js,extensions_path,extensions_config
     # -- read config --
     f = open("config.json", "r")
     js = demjson.decode(f.read())
@@ -61,6 +62,19 @@ def Get_Config():
     password = js["Main"]["password"]
     database = js["Main"]["db"]
     extensions_path = js["Main"]["extensions"]
+    paths = os.listdir(extensions_path)
+    print('Initializing the extension system...')
+    for i in paths:
+        f = open(extensions_path+'/'+i+'/package.json','r+')
+        content = f.read()
+        f.close()
+        extensions_config[i] = demjson.decode(content)
+        if not os.path.exists(extensions_path+'/'+i+'/index.html'):
+            os.system('git clone '+ extensions_config[i]['respositary'])
+            #if the project is not completed, fork it from github
+            
+    print('Finished')
+
     # -- end of read config --
 
 Get_Config()
