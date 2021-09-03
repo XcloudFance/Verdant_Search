@@ -1,0 +1,9 @@
+{
+    "test":{
+        "title":"my first exntension",
+        "keyword_re":"",
+        "route":"/coding",
+        "url":"http://poi.ac",
+        "height":100
+    }
+}

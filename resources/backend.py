@@ -50,6 +50,9 @@ page_Count: int = 0
 js = {}
 host = port = password = database = root = extensions_path = ''
 extensions_config = {}
+
+
+
 def Get_Config():
     global host,port,root,password,database,js,extensions_path,extensions_config
     # -- read config --
@@ -72,13 +75,20 @@ def Get_Config():
         if not os.path.exists(extensions_path+'/'+i+'/index.html'):
             os.system('git clone '+ extensions_config[i]['respositary'])
             #if the project is not completed, fork it from github
-            
+        for j in extensions_config[i]['command']:
+            os.system(j) 
     print('Finished')
 
     # -- end of read config --
 
-Get_Config()
-databaseHandler = pssql_Handler(host, port, root, password, database)
+if __name__ == "__main__":
+    Get_Config()
+    databaseHandler = pssql_Handler(host, port, root, password, database)
+    # mysql_initation()
+    #jieba.enable_parallel(4)
+    http_server = WSGIServer(("0.0.0.0", 7777), app)
+
+    http_server.serve_forever()
 
 def ordered_set(old_list):  # 有序去重
     new_list = list(set(old_list))
@@ -372,14 +382,9 @@ def redirected():
 # 可能需要防SQL注入，因为每一个点都是通过直接连接sql的,可能需要base64
 
 
+@app.route('/extensions',endpoint='extensions',methods=['GET'])
+def extensions():
+    return 
 
 
 
-if __name__ == "__main__":
-
-    # mysql_initation()
-    #jieba.enable_parallel(4)
-
-    http_server = WSGIServer(("0.0.0.0", 7777), app)
-
-    http_server.serve_forever()
