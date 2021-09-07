@@ -81,14 +81,8 @@ def Get_Config():
 
     # -- end of read config --
 
-if __name__ == "__main__":
-    Get_Config()
-    databaseHandler = pssql_Handler(host, port, root, password, database)
-    # mysql_initation()
-    #jieba.enable_parallel(4)
-    http_server = WSGIServer(("0.0.0.0", 7777), app)
-
-    http_server.serve_forever()
+Get_Config()
+databaseHandler = pssql_Handler(host, port, root, password, database)
 
 def ordered_set(old_list):  # 有序去重
     new_list = list(set(old_list))
@@ -384,7 +378,15 @@ def redirected():
 
 @app.route('/extensions',endpoint='extensions',methods=['GET'])
 def extensions():
-    return 
+    #directory
+    pass
+    #return 
 
+if __name__ == "__main__":
+    # mysql_initation()
+    #jieba.enable_parallel(4)
+    http_server = WSGIServer(("0.0.0.0", 7777), app)
+
+    http_server.serve_forever()
 
 

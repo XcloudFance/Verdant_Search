@@ -7,7 +7,7 @@
         "host": "localhost",
         "port": "5432",
         "root": "postgres",
-        "password": "1234567",
+        "password": "123456",
         "db": "cylinder",
         "Whether_Translation": 1,
         "extensions": "./extensions"
