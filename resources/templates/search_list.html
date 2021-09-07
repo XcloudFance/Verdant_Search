@@ -1,40 +1,26 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="renderer" content="webkit">
-
     <title>keyword - 青荇搜索</title>
     <link rel="shortcut icon" type="image/png" href="https://i.loli.net/2021/02/10/lFnaXCt7QmxrML4.png">
     <style>
-        html,
-        body {
+        html,body {
             height: 100%;
             margin: 0;
             padding: 0;
             line-height: 21px;
         }
         
-        h1,
-        h2 {
+        h1,h2 {
             font: 19px 'Segoe UI', Arial, Helvetica, Sans-Serif;
             color: #600092;
         }
         
-        html,
-        body,
-        p,
-        img,
-        ol,
-        ul,
-        li,
-        form,
-        table,
-        tr,
-        th,
-        td {
+        html,body,p,img,ol,ul,li,form,table,tr,th,td {
             border: 0;
             border-collapse: collapse;
             border-spacing: 0;
@@ -59,7 +45,6 @@
     <link href="css/search_content.css" rel="stylesheet" />
     <link href="css/search_index.css" rel="stylesheet" />
 </head>
-
 <body>
     <div style="width: 100%;border-bottom: 1px solid rgba(0,0,0,.15);display: inline-block;">
         <div style="padding-top: 8px;">
@@ -74,7 +59,7 @@
 						<input id="input_form_k" type="text"/>
 					</span>
                 </div>
-                <span style="width: 160px;display: inline-block;">
+                <span class="form-button-box">
                     <input class="form-button" id="start_search" type="button" value="搜索" autocomplete="off"/>
                 </span>
                 <div id="search_associate">
@@ -414,7 +399,7 @@
     }
 
     window.onload = function() {
-        SetList(keyword, amount)
+        SetList(keyword, amount);
     }
 
     function tsAudio(urlx) {
@@ -439,5 +424,4 @@
         return url.substr(12);
     }
 </script>
-
 </html>

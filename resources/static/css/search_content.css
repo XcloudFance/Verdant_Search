@@ -1,10 +1,4 @@
-@media (max-width: 640px) {
-	.search-input-w-box-top{
-		width: calc(100% - 8px)!important;
-		max-width: 48rem;
-		margin: 4px 4px 8px 4px !important;
-	}
-
+@media (max-width: 720px) {
 	.logo{
 		display: contents;
 	}
