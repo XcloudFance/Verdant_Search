@@ -2,7 +2,8 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title></title>
+		<title>青荇趋势</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.1/echarts.min.js"></script>
 		<style>
 			body{
@@ -91,10 +92,11 @@
 			青荇趋势
 		</div>
 		<div class="card keywdc" style="display: flex;">
-			<span style="padding-top: 0.25rem;">关键词:</span> <div id="tag"></div> <input class="keywdinput" id="keywdinput"/> <button class="addkeywbtn" onclick="addki()">添加对比</button>
+			<span style="padding-top: 0.25rem;">关键词:</span> <div id="tag"></div> <input class="keywdinput" placeholder="在此输入关键词" id="keywdinput"/> <button class="addkeywbtn" onclick="addki()">添加对比</button>
 		</div>
 		<div class="card">
 			<div id="main" style="width: 100%;height:700px;margin: 0 auto;"></div>
+			<div style="text-align: center;">帮助:关键词标签设置为空即为删除标签</div>
 		</div>
 	</body>
 	<script>

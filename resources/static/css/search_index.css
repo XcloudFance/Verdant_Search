@@ -23,6 +23,31 @@
 	}
 }
 
+@media (max-width: 720px) {
+	.search-input-w-box-top{
+		width: calc(100% - 8px)!important;
+		max-width: 48rem;
+		margin: 4px 4px 8px 4px !important;
+	}
+
+	.index-box{
+		width: 98%!important;
+		margin: 0 auto!important;
+	}
+
+	.form-button-box{
+		width: 25%!important;
+	}
+
+	.form-button{
+		width: 100%!important;
+	}
+
+	.search-input-w-box-left{
+		width: calc(100% - 25%)!important;
+	}
+}
+
 .index-box{
 	width: 45rem;
 	top: 27.2%;
