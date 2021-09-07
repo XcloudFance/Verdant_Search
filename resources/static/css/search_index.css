@@ -27,7 +27,6 @@
 	.search-input-w-box-top{
 		width: calc(100% - 8px)!important;
 		max-width: 48rem;
-		margin: 4px 4px 8px 4px !important;
 	}
 
 	.index-box{
@@ -45,6 +44,11 @@
 
 	.search-input-w-box-left{
 		width: calc(100% - 25%)!important;
+	}
+
+	.search-input-w-box{
+		width: 90%!important;
+        margin: 4px auto 8px;
 	}
 }
 
