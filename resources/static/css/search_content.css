@@ -6,17 +6,29 @@
 	.result-content-left{
 		padding: 8px!important;
 	}
+
+	.list-top{
+		display: unset;
+	}
 }
 
 @media (min-width: 720px) {
 	.search-input-w-box-top{
 		max-width: 48rem;
 	}
+
+	.list-top{
+		display: unset;
+	}
 }
 
 @media (min-width: 1280px) {
 	.search-input-w-box-top{
 		max-width: 42rem;
+	}
+
+	.list-top{
+		display: flex;
 	}
 }
 
