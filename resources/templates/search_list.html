@@ -301,6 +301,9 @@
                                 x2.appendChild(x3)
                                 l.appendChild(x2)
 
+                            } else if (el.type == 'extension') {
+                                l.className = 'result-li';
+                                l.innerHTML = '<div class="result-cont"><iframe class="plugin-iframe" style="height:'+ el.height +'px" src="'+ el.url +'"></iframe></div>';
                             } else {
                                 l.className = 'result-li';
                                 l.innerHTML = '<h2><a href="' + el.url + '">' + el.title + '</a></h2>' +

@@ -201,3 +201,8 @@
 .err_result{
 	
 }
+
+.plugin-iframe{
+    width: 100%;
+    border: 0;
+}
