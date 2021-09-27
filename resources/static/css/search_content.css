@@ -18,7 +18,7 @@
 	}
 
 	.list-top{
-		display: unset;
+		display: flex;
 	}
 }
 
@@ -122,7 +122,6 @@
 	color: #001ba0;
 	text-decoration: none;
 	border-bottom: 0px solid black;
-	transition: all .04s ease;
 }
 
 .result-translate a:hover{
@@ -140,6 +139,8 @@
 	overflow: hidden;
 	border: 1px solid rgba(0, 0, 0, 0.12);
 	box-shadow: 1px 1px 1px rgba(0,0,0,0.233);
+	border-radius: 0.25rem;
+	padding: 0.45rem;
 }
 
 .result-translate-content-c1{
@@ -150,11 +151,12 @@
 .result-translate-content-c2{
 	font-size: 14px;
 	margin: 4px 6px;
+	color: rgba(1,1,1,0.75);
 }
 
 .result-translate-content-c3{
 	white-space: break-spaces;
-	margin: 12px 6px 6px;
+	margin: 16px 6px 6px;
 }
 
 .result-translate-sound{

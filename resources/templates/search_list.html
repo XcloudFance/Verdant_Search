@@ -218,7 +218,7 @@
 
         ldtimer = setInterval(() => {
             lding();
-        }, 400);
+        }, 300);
 
         xhr.open('GET', '/search?keyword=' + encodeURIComponent(vl) + '&amount=' + amount_, true);
         xhr.onreadystatechange = () => {

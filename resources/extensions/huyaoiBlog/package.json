@@ -1,0 +1,16 @@
+{
+  "name": "huyaoiBlog",
+  "version": "1.0.0",
+  "author": "Verdant_Search Original Extension",
+  "contributors": [
+    {
+      "name": "huyao",
+      "email":"klxljun@qq.com"
+    }
+  ],
+  "description": "It is the first extension for VerdantSearch.",
+  "command": [ 
+    "echo helloworld!"
+  ],
+  "repository": ""
+}
