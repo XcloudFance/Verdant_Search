@@ -1,10 +1,11 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
-__version__ = '0.2.'
+__version__ = "0.3.1"
+from sys import version
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
 
-#monkey.patch_all()
+# monkey.patch_all()
 import pymysql
 
 ## -- postgresql  --
@@ -24,9 +25,10 @@ from get_pronun import *
 import asyncio
 import CubeQL_Client
 import datetime
+
 # flask定义
 import flask
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, send_from_directory
 from pssqlHandler import *
 import os
 
@@ -48,13 +50,12 @@ hea_ordinary = {
 
 page_Count: int = 0
 js = {}
-host = port = password = database = root = extensions_path = ''
+host = port = password = database = root = extensions_path = ""
 extensions_config = {}
 
 
-
 def Get_Config():
-    global host,port,root,password,database,js,extensions_path,extensions_config
+    global host, port, root, password, database, js, extensions_path, extensions_config
     # -- read config --
     f = open("config.json", "r")
     js = demjson.decode(f.read())
@@ -66,31 +67,30 @@ def Get_Config():
     database = js["Main"]["db"]
     extensions_path = js["Main"]["extensions"]
     paths = os.listdir(extensions_path)
-    print('Initializing the extension system...')
+    print("Initializing the extension system...")
     for i in paths:
-        f = open(extensions_path+'/'+i+'/package.json','r+')
+        f = open(extensions_path + "/" + i + "/package.json", "r+")
         content = f.read()
         f.close()
         extensions_config[i] = demjson.decode(content)
-        if not os.path.exists(extensions_path+'/'+i+'/index.html'):
-            os.system('git clone '+ extensions_config[i]['respositary'])
-            #if the project is not completed, fork it from github
-        for j in extensions_config[i]['command']:
-            os.system(j) 
-    print('Finished')
+        if not os.path.exists(extensions_path + "/" + i + "/index.html"):
+            os.system("git clone " + extensions_config[i]["respositary"])
+            # if the project is not completed, fork it from github
+        for j in extensions_config[i]["command"]:
+            os.system(j)
+    print("Finished")
 
     # -- end of read config --
 
+
 Get_Config()
 databaseHandler = pssql_Handler(host, port, root, password, database)
+
 
 def ordered_set(old_list):  # 有序去重
     new_list = list(set(old_list))
     new_list.sort(key=old_list.index)
     return new_list
-
-
-
 
 
 def sort_by_value(d):
@@ -171,32 +171,37 @@ def searchlist():
 def return_count():
     return page_Count
 
+
 def prefix_zero(content):
-    if content<10:
-        return '0'+str(content)
-        
+    if content < 10:
+        return "0" + str(content)
+
+
 def record_log(content):
 
     now = datetime.datetime.now()
-    datenow = str(now.year) +'-'+ str(now.month) + '-' + str(now.day)
-    #print(datenow)
-    
+    datenow = str(now.year) + "-" + str(now.month) + "-" + str(now.day)
+    # print(datenow)
 
-    databaseHandler.recordLog(content,datenow)
+    databaseHandler.recordLog(content, datenow)
 
 
-@app.route("/search", endpoint='search',methods=["GET"])
+@app.route("/search", endpoint="search", methods=["GET"])
 @databaseHandler.postgresql_check_status
 def search():
-    # -- everytime searching, record the history-- 
+    # -- everytime searching, record the history--
     global page_Count
     page_Count += 1
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
-    record_log(keyword)
+    record_log(keyword) #加入记录系统
     print(keyword)
     if keyword == " ":
         return {}
+    # == extension search ==
+    
+    # == extension search end ==
+
     amount = int(amount)
     end_amount = int(amount) + 10
     length = 0
@@ -204,7 +209,7 @@ def search():
 
     fetch = []
     for j in res:
-        #print(j)
+        # print(j)
         fetch += j[0].split("|")  # 因为这里面只出现一个结果
 
     index_list = ordered_set(fetch)
@@ -217,7 +222,7 @@ def search():
         ifsearch = specfic_search(keyword)
         # print(ifsearch)
 
-    if ifsearch != False and js['Main']['Whether_Translation'] == 1:  # 单词翻译查询
+    if ifsearch != False and js["Main"]["Whether_Translation"] == 1:  # 单词翻译查询
         if ifsearch[2] == 0 or ifsearch[2] == 1:
             # 或者，加一个多线程的思想，这边直接交给协程做，做好了用await等待加载完
             usatok, uktok = download_mp3(keyword)
@@ -244,13 +249,13 @@ def search():
         # 对结果进行分词,同样也对有空格的结果进行分词
         # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
         res_ = deal(Cut(keyword))
-        #print(res_)
+        # print(res_)
         match_weigh = {}
         tmp_index_list = {}
         for i in res_:
 
             res = databaseHandler.queryKeyword(i)
-            #print(res)
+            # print(res)
             if res == []:
                 continue
             fetch = []
@@ -273,14 +278,14 @@ def search():
         if end_amount > len(index_list):
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
-        #print(index_list)
+        # print(index_list)
         for i in index_list:
             res = databaseHandler.getRecordDetails(i)
             length += 1
             response_json[length] = {
                 "url": deal2(res[1]),
                 "detail": res[2][:300],
-                "title": res[3]
+                "title": res[3],
             }
         response_json["length"] = length
         # 如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
@@ -304,27 +309,27 @@ def search():
         # 取前几个
 
         for i in index_list:
-            
+
             databaseHandler.cursor.execute("select * from content where id = " + i)
             res = databaseHandler.cursor.fetchone()
             length += 1
 
             response_json[length] = {
                 "url": deal2(res[1]),
-                "detail": res[2][:300],#限制字数
+                "detail": res[2][:300],  # 限制字数
                 "title": res[3],
             }
         response_json["length"] = length
         if length <= 10:
             # 开始对百度进行爬虫，给CDS布置任务
-            #print(length)
+            # print(length)
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
 
         return json.dumps(response_json)
 
 
-@app.route("/keyword_think",endpoint='thinking', methods=["GET"])
+@app.route("/keyword_think", endpoint="thinking", methods=["GET"])
 @databaseHandler.postgresql_check_status
 def thinking():
     keyword = str(request.args.get("keyword"))
@@ -338,36 +343,38 @@ def thinking():
         if step == limited:
             break
         ret.append(i[0])
-    #print(ret)
+    # print(ret)
     return demjson.encode(ret)
 
-@app.route('/get_today_data',methods=['GET','POST'])
-def get_today_data():
-    if request.method == 'GET':
-        return render_template('qs.html')
-    else:
-        ret = {"Code":"200","Data":[]}
-        keyword = request.json.get('keyword')
-        for i in keyword:
-            ret['Data'].append(databaseHandler.getKeywordTrend(i))
-        
 
-        print(keyword,type(keyword))
+@app.route("/get_today_data", methods=["GET", "POST"])
+def get_today_data():
+    if request.method == "GET":
+        return render_template("qs.html")
+    else:
+        ret = {"Code": "200", "Data": []}
+        keyword = request.json.get("keyword")
+        for i in keyword:
+            ret["Data"].append(databaseHandler.getKeywordTrend(i))
+
+        print(keyword, type(keyword))
         return ret
-        #cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
-        #res = cursor.fetchall()
-        #print(res)
- 
-@app.route('/trend',methods=['GET'])
+        # cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
+        # res = cursor.fetchall()
+        # print(res)
+
+
+@app.route("/trend", methods=["GET"])
 def trend():
     return render_template("qs.html")
 
-@app.route("/redirect", endpoint='redirected',methods=["GET"])
+
+@app.route("/redirect", endpoint="redirected", methods=["GET"])
 @databaseHandler.postgresql_check_status
 def redirected():
     website = str(request.args.get("_"))  # 获取网址
     # 数据库操作
-    #print(website)
+    # print(website)
     # 这地方有问题，重定向了一个数据库都没有的网页，所以这边得采取更成熟的行为
     databaseHandler.increaseURLWeight(website)
     return redirect(website)
@@ -376,17 +383,32 @@ def redirected():
 # 可能需要防SQL注入，因为每一个点都是通过直接连接sql的,可能需要base64
 
 
-@app.route('/extensions',endpoint='extensions',methods=['GET'])
+@app.route("/extensions", endpoint="extensions", methods=["GET"])
 def extensions():
-    #directory
-    pass
-    #return 
+    try:
+        extension_name = request.args.get("name")
+        return send_from_directory("./extensions/" + extension_name, "index.html")
+    except Exception as e:
+        return str(e)
+
+
+@app.route("/pure_visit", endpoint="pure_visit", methods=["GET"])
+def purevisit():
+    URL = request.args.get("target")
+    print(URL)
+
 
 if __name__ == "__main__":
     # mysql_initation()
-    #jieba.enable_parallel(4)
+    # jieba.enable_parallel(4)
+    print(
+        "=================== Welcome to use Verdant_Search Engine Backend! ================="
+    )
+    print("Your now version : ", __version__)
+    print("Python version : ", version)
+    print(
+        "if you get some troubles during using, please contact me in my Github: https://github.com/XCloudFance"
+    )
     http_server = WSGIServer(("0.0.0.0", 7777), app)
 
     http_server.serve_forever()
-
-
