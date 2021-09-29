@@ -109,6 +109,8 @@ extension就是插件
     1:{
         "type":"extension",
         "url":"xxx",
+        "extension_url":"xxx",
+        "title":"xxx",
         "htmlcode":"xxx",
         "height":280
     }

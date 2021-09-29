@@ -198,9 +198,7 @@ def search():
     print(keyword)
     if keyword == " ":
         return {}
-    # == extension search ==
-    
-    # == extension search end ==
+
 
     amount = int(amount)
     end_amount = int(amount) + 10
@@ -215,30 +213,30 @@ def search():
     index_list = ordered_set(fetch)
 
     response_json = {}
-    ifsearch = False
+    translative_search :bool = False
     # 在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
     if amount == 0:
         # 0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
-        ifsearch = specfic_search(keyword)
-        # print(ifsearch)
+        translative_search = specfic_search(keyword)
+        # print(translative_search)
 
-    if ifsearch != False and js["Main"]["Whether_Translation"] == 1:  # 单词翻译查询
-        if ifsearch[2] == 0 or ifsearch[2] == 1:
+    if translative_search != False and js["Main"]["Whether_Translation"] == 1:  # 单词翻译查询
+        if translative_search[2] == 0 or translative_search[2] == 1:
             # 或者，加一个多线程的思想，这边直接交给协程做，做好了用await等待加载完
             usatok, uktok = download_mp3(keyword)
             response_json["1"] = {
                 "type": "translation",
-                "url": ifsearch[1],
-                "detail": ifsearch[0],
+                "url": translative_search[1],
+                "detail": translative_search[0],
                 "title": keyword + "_有道翻译",
                 "music_USA": usatok,
                 "music_UK": uktok,
             }
-        elif ifsearch[2] == 2:
+        elif translative_search[2] == 2:
             response_json["1"] = {
                 "type": "translation",
-                "url": ifsearch[1],
-                "detail": ifsearch[0],
+                "url": translative_search[1],
+                "detail": translative_search[0],
                 "title": keyword + "_有道翻译",
             }
         length += 1
@@ -279,14 +277,35 @@ def search():
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
         # print(index_list)
+
         for i in index_list:
             res = databaseHandler.getRecordDetails(i)
             length += 1
-            response_json[length] = {
+            whether_extension = False
+            extension_name = ""
+            # == extension search ==
+            for j in extensions_config:
+                url = extensions_config[j]['url']
+                print(url)
+                if (url) == (res[1]):
+                    print("extension activated")
+                    whether_extension = True
+                    extension_name = j
+            # == extension search ==
+            if not whether_extension:
+                response_json[length] = {
+                "type": "common",
                 "url": deal2(res[1]),
-                "detail": res[2][:300],
+                "detail": res[2][:200],  # 限制字数
                 "title": res[3],
-            }
+                }
+            else:
+                response_json[length] = {
+                    "type": "extension",
+                    "url": deal2(res[1]),
+                    "extension_url":"/extensions?name=" + extension_name,
+                    "title": res[3],
+                }
         response_json["length"] = length
         # 如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
@@ -313,12 +332,34 @@ def search():
             databaseHandler.cursor.execute("select * from content where id = " + i)
             res = databaseHandler.cursor.fetchone()
             length += 1
+            # == extension search ==
+            whether_extension = False
+            extension_name = ""
+            for j in extensions_config:
+                url = extensions_config[j]['url']
+                print(url)
+                if (url) == (res[1]):
+                    print("extension activated")
+                    whether_extension = True
+                    extension_name = j
+                    
+            # == extension search ==
 
-            response_json[length] = {
+            if not whether_extension:
+                response_json[length] = {
+                "type": "common",
                 "url": deal2(res[1]),
-                "detail": res[2][:300],  # 限制字数
+                "detail": res[2][:200],  # 限制字数
                 "title": res[3],
-            }
+                }
+            else:
+                response_json[length] = {
+                    "type": "extension",
+                    "url": deal2(res[1]),
+                    "extension_url":"/extensions?name=" + extension_name,
+                    "title": res[3],
+                }
+
         response_json["length"] = length
         if length <= 10:
             # 开始对百度进行爬虫，给CDS布置任务

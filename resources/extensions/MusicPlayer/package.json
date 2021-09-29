@@ -1,16 +1,15 @@
 {
-  "name": "MusicPlayer",
-  "version": "1.0.0",
-  "author": "Verdant_Search Original Extension",
-  "contributors": [
-    {
-      "name": "huyao",
-      "email":"xxx@github.com"
-    }
-  ],
-  "description": "It is the first extension for VerdantSearch.",
-  "command": [ 
-    "echo helloworld!"
-  ],
-  "repository": "git://github.com/XCloudFance/VerdantMusic.git"
+    "name": "MusicPlayer",
+    "version": "1.0.0",
+    "author": "Verdant_Search Original Extension",
+    "url": "",
+    "contributors": [{
+        "name": "huyao",
+        "email": "xxx@github.com"
+    }],
+    "description": "It is the first extension for VerdantSearch.",
+    "command": [
+        "echo helloworld!"
+    ],
+    "repository": "git://github.com/XCloudFance/VerdantMusic.git"
 }
