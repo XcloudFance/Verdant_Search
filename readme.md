@@ -56,6 +56,12 @@
 - 修改了cubeql的爬虫处理队列的规则
 - 修复已知bug
 
+## 0.3.1 更新 2021/09/29
+- 插件系统上线(The extension system is released)
+- 新增一个插件: huyaoiBlog
+- 预计接下来更新会很大一部分和插件相关
+
+
 ## User-agent
 Mozilla/5.0 (compatible;VerdantSpider/1.0)
 
@@ -189,7 +195,7 @@ python CDS-Distributed.py
   通过访问/trend即可，可以统计出所有关键词的搜索频率
   
   
-  
-插件功能即将发布！
-
+#### 插件系统
+  编写插件系统相当简单，插件系统本质上就是有一个前端框架在搜索结果下方，可以通过根目录的extensions.json（后面会放到config文件夹）进行对插件的注册
+  然后在extensions的文件夹里面新建一个index.html和package.json， json可参考huyaoiBlog的<a class="git-link" href="https://github.com/XCloudFance/Verdant_Search/resources/huyaoiBlog/package.json">package.json </a>
 
