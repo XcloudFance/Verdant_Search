@@ -14,6 +14,7 @@ root = js["Main"]["root"]
 password = js["Main"]["password"]
 database = js["Main"]["db"]
 # -- end of read config --
+import psycopg2
 
 while True:
     Datetmp =  datetime.datetime.strftime( datetime.datetime.now(),'%d')
@@ -24,9 +25,9 @@ while True:
         #这一段就相当于时间要到达，且当日还会执行就要重新排序内容
     #    continue
     daterun = Datetmp
-    import pymysql
-    mysql = pymysql.connect(
-        host=host, port=int(port), user=(root), password=password, db=database
+    
+    mysql = psycopg2.connect(
+            host=host, port=int(port), user=root, password=password, database=database
     )
     cursor = mysql.cursor()
 
@@ -36,7 +37,7 @@ while True:
 
     for keyword in keywords:
         #print(keyword[0])
-        cursor.execute('select value from search where keyer = "'+keyword[0]+'"')
+        cursor.execute('select value from search where keyer = %s;',(keyword[0],))
         tmp_list = {}
         index_list = cursor.fetchone()[0].split('|')
         for k in range(len(index_list)):
