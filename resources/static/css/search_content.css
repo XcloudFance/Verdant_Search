@@ -32,6 +32,10 @@
 	}
 }
 
+.list-top{
+	position: relative;
+}
+
 .search-input-w-box-top{
 	width: calc(100% - 152px);
 	top: 27.2%;
@@ -108,7 +112,7 @@
 
 /* 翻译 */
 .result-translate{
-	padding: 2px 4px 0;
+	padding: 4px 0 0;
 	transition: all .2s ease-out;
 	border: 1px solid rgba(255,255,255,0);
 	margin-bottom: 17px;
@@ -116,6 +120,7 @@
 
 .result-translate h2{
 	margin: 0;
+	margin-bottom: 4px;
 }
 
 .result-translate h2 a{
