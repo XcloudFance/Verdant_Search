@@ -77,7 +77,7 @@ def Get_Config():
             os.system("git clone " + extensions_config[i]["respositary"])
             # if the project is not completed, fork it from github
         for j in extensions_config[i]["command"]:
-            os.system(j)
+            os.system(j)# To execute commands filled in json
     print("Finished")
 
     # -- end of read config --
@@ -284,6 +284,9 @@ def search():
             whether_extension = False
             extension_name = ""
             # == extension search ==
+            whether_extension = False
+            extension_name = ""
+            extension_height = 0
             for j in extensions_config:
                 url = extensions_config[j]['url']
                 print(url)
@@ -291,7 +294,9 @@ def search():
                     print("extension activated")
                     whether_extension = True
                     extension_name = j
+                    extension_height = extensions_config[j]['height']
             # == extension search ==
+
             if not whether_extension:
                 response_json[length] = {
                 "type": "common",
@@ -305,7 +310,9 @@ def search():
                     "url": deal2(res[1]),
                     "extension_url":"/extensions?name=" + extension_name,
                     "title": res[3],
+                    "height":extension_height
                 }
+
         response_json["length"] = length
         # 如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
@@ -335,6 +342,7 @@ def search():
             # == extension search ==
             whether_extension = False
             extension_name = ""
+            extension_height = 0
             for j in extensions_config:
                 url = extensions_config[j]['url']
                 print(url)
@@ -342,7 +350,7 @@ def search():
                     print("extension activated")
                     whether_extension = True
                     extension_name = j
-                    
+                    extension_height = extensions_config[j]['height']
             # == extension search ==
 
             if not whether_extension:
@@ -358,6 +366,7 @@ def search():
                     "url": deal2(res[1]),
                     "extension_url":"/extensions?name=" + extension_name,
                     "title": res[3],
+                    "height":extension_height
                 }
 
         response_json["length"] = length
@@ -433,7 +442,7 @@ def extensions():
         return str(e)
 
 
-@app.route("/pure_visit", endpoint="pure_visit", methods=["GET"])
+@app.route("/pure_visit", endpoint="pure_visit", methods=["GET"]) #other things will be added(todo)
 def purevisit():
     URL = request.args.get("target")
     print(URL)

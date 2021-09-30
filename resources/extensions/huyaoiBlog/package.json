@@ -11,5 +11,6 @@
     "command": [
         "echo helloworld!"
     ],
-    "repository": ""
+    "repository": "",
+    "height": 180
 }
