@@ -54,7 +54,7 @@ host = port = password = database = root = extensions_path = ""
 extensions_config = {}
 
 
-def Get_Config():
+def initialization():
     global host, port, root, password, database, js, extensions_path, extensions_config
     # -- read config --
     f = open("config.json", "r")
@@ -73,15 +73,14 @@ def Get_Config():
         content = f.read()
         f.close()
         extensions_config[i] = demjson.decode(content)
-        if not os.path.exists(extensions_path + "/" + i + "/index.html"):
-            os.system("git clone " + extensions_config[i]["respositary"])
+        os.system("git clone " + extensions_config[i]["repositary"])
             # if the project is not completed, fork it from github
     print("Finished")
 
     # -- end of read config --
 
 
-Get_Config()
+initialization()
 databaseHandler = pssql_Handler(host, port, root, password, database)
 
 
@@ -457,6 +456,7 @@ if __name__ == "__main__":
     print(
         "if you get some troubles during using, please contact me in my Github: https://github.com/XCloudFance"
     )
+    
     http_server = WSGIServer(("0.0.0.0", 7777), app)
 
     http_server.serve_forever()
