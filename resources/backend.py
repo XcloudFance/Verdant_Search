@@ -76,8 +76,6 @@ def Get_Config():
         if not os.path.exists(extensions_path + "/" + i + "/index.html"):
             os.system("git clone " + extensions_config[i]["respositary"])
             # if the project is not completed, fork it from github
-        for j in extensions_config[i]["command"]:
-            os.system(j)# To execute commands filled in json
     print("Finished")
 
     # -- end of read config --
@@ -289,9 +287,9 @@ def search():
             extension_height = 0
             for j in extensions_config:
                 url = extensions_config[j]['url']
-                print(url)
                 if (url) == (res[1]):
-                    print("extension activated")
+                    for k in extensions_config[j]['command']:
+                        os.system(k)# To execute commands filled in json
                     whether_extension = True
                     extension_name = j
                     extension_height = extensions_config[j]['height']

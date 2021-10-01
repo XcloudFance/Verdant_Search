@@ -281,7 +281,7 @@ def mainly():
                 ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
                 for url_ in geturls:
                     # print(url_)
-                    cube.set(url_, typ="normal") #往cubeql里面加已经获取到的URI
+                    cube.set(url_, typ="normal" if i['typ'] !="search" else "fromsearch") #往cubeql里面加已经获取到的URI
                 
                 geturl = demjson.decode(cube.get())
 
@@ -290,6 +290,9 @@ def mainly():
                 wordlist = list(set(Cut(maincontent) + Cut(title)))
                 cursor.execute("select count(*) as value from content")
                 my_weigh = weigh_judgement(destination_URI, code)  # 把权值保存到变量，一会儿要用
+                if i['typ'] == 'fromsearch':
+                    my_weigh += 20 #搜索引擎的特殊加成，这里的fromsearch意思是从第一批bing搜索里面拿下来的结果，都是推荐高的结果
+                    
                 tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
                 cursor.execute(
                     "insert into content values ("
