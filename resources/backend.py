@@ -73,7 +73,7 @@ def initialization():
         content = f.read()
         f.close()
         extensions_config[i] = demjson.decode(content)
-        os.system("git clone " + extensions_config[i]["repositary"])
+        os.system("git clone " + extensions_config[i]["repository"])
             # if the project is not completed, fork it from github
     print("Finished")
 
