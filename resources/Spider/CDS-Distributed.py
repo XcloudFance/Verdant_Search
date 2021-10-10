@@ -142,7 +142,10 @@ def get_content(urlcode):
 
 def get_title(urlcode):
     bs = BeautifulSoup(urlcode, "lxml")
-    ret = bs.title.get_text()
+    try:
+        ret = bs.title.get_text()
+    except:
+        return ""
     if ret == "":
         title = bs.findAll(name="meta")
         for i in title:
@@ -252,7 +255,7 @@ def mainly():
         geturl = []
 
         for i in tmplist:
-            try:
+            #try:
                 if i == []:
                     continue
                 if i['typ'] == 'search':
@@ -276,6 +279,8 @@ def mainly():
                 # 取body做为内容
                 maincontent = get_keywords(code) + " " + get_p_content(code)
                 title = get_title(code)
+                if title.strip() == "":
+                    continue
                 dictlist[
                     destination_URI
                 ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
@@ -294,16 +299,20 @@ def mainly():
                     my_weigh += 20 #搜索引擎的特殊加成，这里的fromsearch意思是从第一批bing搜索里面拿下来的结果，都是推荐高的结果
                     
                 tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
-                cursor.execute(
-                    "insert into content values ("
-                    + tablenum
-                    + ",%s,%s,%s,"
-                    + str(my_weigh)
-                    + ")",
-                    (destination_URI, dictlist[destination_URI], title),
-                )
+                try:
+                    cursor.execute(
+                        "insert into content values ("
+                        + tablenum
+                        + ",%s,%s,%s,"
+                        + str(my_weigh)
+                        + ")",
+                        (destination_URI, dictlist[destination_URI], title),
+                    )
 
-                mysql.commit()
+                    mysql.commit()
+                except:
+                    print(destination_URI,":end")
+                    continue
                 # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
                 # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
                 # 判断这个关键词存不存在
@@ -360,8 +369,8 @@ def mainly():
                 print(destination_URI, " :end")
             # ---------------------------------------------
             
-            except:
-               print(destination_URI, " :error")
+            #except:
+            #   print(destination_URI, " :error")
 
 if __name__ == "__main__":
     print("Start!")

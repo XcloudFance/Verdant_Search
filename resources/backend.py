@@ -243,25 +243,29 @@ def search():
         # 试试分词
         # 对结果进行分词,同样也对有空格的结果进行分词
         # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
+        print(1)
         res_ = deal(Cut(keyword))
-        # print(res_)
+        time_start=time.time()
         match_weigh = {}
         tmp_index_list = {}
+
+
+
         for i in res_:
 
-            res = databaseHandler.queryKeyword(i)
+            res = databaseHandler.restrictedQueryKeyword(i)
             # print(res)
             if res == []:
                 continue
             fetch = []
-            for j in res:
-                fetch += j[0].split("|")
-            index_list = ordered_set(fetch)
-            for j in index_list:  # 这边match_weigh里面每一项对应tf*idf的权值加成，关键词匹配度越高，排名越前
+            #for j in res:
+            fetch = res[0][0].split("|")
+            for j in fetch:  # 这边match_weigh里面每一项对应tf*idf的权值加成，关键词匹配度越高，排名越前
                 if j in match_weigh:
                     match_weigh[j] += 10
                 else:
                     match_weigh[j] = 1
+
 
         for i in match_weigh:
             res = databaseHandler.getKeywordWeight(i)
@@ -321,9 +325,12 @@ def search():
         if length != 0:
             pass
         # print(demjson.encode(response_json))
+        time_end=time.time()
+        print('time cost',time_end-time_start,'s')
         return json.dumps(response_json)
 
     else:
+        print(2)
         if end_amount > len(index_list):
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
@@ -373,8 +380,8 @@ def search():
             cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
 
-        return json.dumps(response_json)
 
+        return json.dumps(response_json)
 
 @app.route("/keyword_think", endpoint="thinking", methods=["GET"])
 @databaseHandler.postgresql_check_status
@@ -409,7 +416,7 @@ def get_today_data():
         # cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
         # res = cursor.fetchall()
         # print(res)
-
+    
 
 @app.route("/trend", methods=["GET"])
 def trend():

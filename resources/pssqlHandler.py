@@ -62,6 +62,13 @@ class pssql_Handler:
             self.pssql.rollback()
             return ""
         return self.cursor.fetchall()
+    def restrictedQueryKeyword(self,keyword):#查询关键词
+        try:
+            self.cursor.execute('select value from search where keyer = %s;', (keyword,))
+        except:
+            self.pssql.rollback()
+            return ""
+        return self.cursor.fetchall()
     def getKeywordWeight(self,keyword):#获得权值
         self.cursor.execute("select weigh from content where id = " + keyword)
         return self.cursor.fetchone()
