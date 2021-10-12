@@ -46,7 +46,7 @@ class pssql_Handler:
         )
         self.pssql.commit()
     def recordLog(self,content,nowdate):#记录每天的dailylog,记载访问记录
-        self.cursor.execute("insert into daily_logs values('0','" + content + "','" + nowdate + "');")
+        self.cursor.execute("insert into daily_logs values('0',%s,%s);",(content,nowdate))
         self.pssql.commit()
 
     def queryKeywordDescendingSort(self,keyword):#逆序排联想关键词

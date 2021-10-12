@@ -69,7 +69,7 @@ def initialization():
     paths = os.listdir(extensions_path)
     print("Initializing the extension system...")
     for i in paths:
-        f = open(extensions_path + "/" + i + "/package.json", "r+")
+        f = open(extensions_path + "/" + i + "/package.json", "r+",encoding='utf-8')
         content = f.read()
         f.close()
         extensions_config[i] = demjson.decode(content)
