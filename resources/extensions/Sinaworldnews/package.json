@@ -7,7 +7,7 @@
         "name": "XCloudFance",
         "email": "15906005579@139.com"
     }],
-    "description": "¾ÍÊÇ¸öµ¥´¿µÄĞÂÎÅ²å¼ş£¬ÅÀĞÂÀËĞÂÎÅµÄ",
+    "description": "å°±æ˜¯ä¸ªå•çº¯çš„æ–°é—»æ’ä»¶ï¼Œçˆ¬æ–°æµªæ–°é—»çš„",
     "command": [
         "python Newspider.py"
     ],
