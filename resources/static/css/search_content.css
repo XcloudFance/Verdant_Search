@@ -10,6 +10,10 @@
 	.list-top{
 		display: unset;
 	}
+
+	#result_div{
+		top: 88px;
+	}
 }
 
 @media (min-width: 720px) {
@@ -20,6 +24,10 @@
 	.list-top{
 		display: flex;
 	}
+
+	#result_div{
+		top: 48px;
+	}
 }
 
 @media (min-width: 1280px) {
@@ -29,6 +37,10 @@
 
 	.list-top{
 		display: flex;
+	}
+
+	#result_div{
+		top: 48px;
 	}
 }
 

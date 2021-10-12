@@ -62,6 +62,13 @@
 
 <body>
     <div style="width: 100%;border-bottom: 1px solid rgba(0,0,0,.15);display: inline-block;z-index: 1;position: fixed;">
+        <div style=" position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: -1;"></div>
         <div class="list-top">
             <div class="logo">
                 <div style="width: 110px;height: 36px;display: table;margin: 0 auto;margin-top: 3px;">
@@ -82,16 +89,9 @@
                     </ul>
                 </div>
             </div>
-            <div style=" position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            z-index: -1;"></div>
         </div>
     </div>
-    <div id="result_div" style="width: 100%;display: flex;top: 48px;position: relative;">
+    <div id="result_div" style="width: 100%;display: flex;position: relative;">
         <div style="word-break: break-all;word-wrap: break-word;position: relative;">
             <div class="result-content-left">
                 <span>搜索结果&nbsp;[<span id="loading_x">正在搜索</span>]&nbsp;<span class="return-black">&nbsp;(当前页共有 <span id="result_len">-</span> 条结果)</span>&nbsp;</span>
@@ -132,8 +132,9 @@
     function GetQueryString(name) {
         let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         let r = window.location.search.substr(1).match(reg);
-        if (r != null)
+        if (r != null){
             return decodeURIComponent(r[2]);
+        }
         return null;
     }
 
@@ -145,7 +146,7 @@
     };
 
     var keyword = GetQueryString("keyword");
-    document.getElementById("input_form_k").value = decodeURIComponent(keyword);
+    document.getElementById("input_form_k").value = keyword;
     var amount = GetQueryString("amount");
     amount = amount != null && typeof parseInt(amount) == "number" ? parseInt(amount) : 0;
     const lastpg = amount - 10 <= 0 ? 0 : amount - 10;
@@ -156,7 +157,7 @@
     });
 
     document.getElementById('input_form_k').addEventListener("keyup", function(e) {
-        let tmp_ = encodeURIComponent(document.getElementById("input_form_k").value);
+        let tmp_ = encodeURIComponent(replaceUri(document.getElementById("input_form_k").value));
         if (e.key == "Enter") {
             if (inputi.now != -1) {
                 hrefg(inputi.now);
@@ -169,7 +170,7 @@
             //console.log('timer ok')
             clearTimeout(timer)
             timer = setTimeout(() => {
-                let tmp_2 = encodeURIComponent(document.getElementById("input_form_k").value);
+                let tmp_2 = encodeURIComponent(replaceUri(document.getElementById("input_form_k").value));
                 let xhr = null;
                 if (window.XMLHttpRequest) {
                     xhr = new XMLHttpRequest();
@@ -204,7 +205,7 @@
     });
 
     function gourl() {
-        location.href = "searchlist" + "?keyword=" + encodeURIComponent(document.getElementById("input_form_k").value);
+        location.href = "searchlist" + "?keyword=" + encodeURIComponent(replaceUri(document.getElementById("input_form_k").value));
     };
 
     if (keyword != null) {
@@ -242,7 +243,7 @@
             lding();
         }, 300);
 
-        xhr.open('GET', '/search?keyword=' + encodeURIComponent(vl) + '&amount=' + amount_, true);
+        xhr.open('GET', '/search?keyword=' + encodeURIComponent(replaceUri(vl)) + '&amount=' + amount_, true);
         xhr.onreadystatechange = () => {
             if (xhr.readyState == 4) { //完成了才调用，没完成调用也没意思
                 if (xhr.status == 200) { //http状态码 - 成功时调用这个函数
@@ -449,6 +450,11 @@
 
     function urlcut(url) {
         return url.substr(12);
+    }
+
+    function replaceUri(inputstr){
+        console.log(inputstr)
+        return inputstr
     }
 </script>
 
