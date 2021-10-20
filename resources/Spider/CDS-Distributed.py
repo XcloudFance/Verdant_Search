@@ -7,6 +7,7 @@ import sys
 import urllib
 import urllib.parse
 import urllib.request
+from bs4.builder import TreeBuilderRegistry
 import requests
 import re
 from bs4 import BeautifulSoup
@@ -105,6 +106,7 @@ def togbk(string):
 
 def get_url_code(url):
     driver = webdriver.Chrome(chrome_options=chrome_options)
+    
     driver.get(url)
 
     return driver.page_source
@@ -273,8 +275,11 @@ def mainly():
                     continue
                 if destination_URI.find(".png") != -1:
                     continue
-
-                code = get_url_code(destination_URI)
+                try:
+                    code = get_url_code(destination_URI)
+                except:
+                    print(destination_URI,":error")
+                    continue
                 geturls = list(set(get_url(code)))#获取该页面的所有子链接
                 # 取body做为内容
                 maincontent = get_keywords(code) + " " + get_p_content(code)
@@ -311,7 +316,8 @@ def mainly():
 
                     mysql.commit()
                 except:
-                    print(destination_URI,":end")
+                    mysql.rollback()
+                    print(destination_URI,":error")
                     continue
                 # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
                 # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
@@ -360,11 +366,16 @@ def mainly():
                                 index_list_ += "|" + index_list[k]
 
                         # -- sort --
-                        cursor.execute(
-                            "update search set value = %s where keyer = %s",
-                            (index_list_, j),
-                        )
-                        # --update
+                        while True:
+                            try:
+                                cursor.execute(
+                                    "update search set value = %s where keyer = %s",
+                                    (index_list_, j),
+                                )
+                                # --update
+                                break
+                            except:
+                                mysql.rollback()
                 mysql.commit()
                 print(destination_URI, " :end")
             # ---------------------------------------------

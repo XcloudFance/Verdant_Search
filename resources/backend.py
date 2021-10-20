@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 from sys import version
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
@@ -292,7 +292,8 @@ def search():
                 url = extensions_config[j]['url']
                 if (url) == (res[1]):
                     for k in extensions_config[j]['command']:
-                        os.system(k)# To execute commands filled in json
+                        print(j)
+                        os.system("cd %VERDANT_HOME%"+extensions_path[2:]+"/"+j+"; "+k)# To execute commands filled in json
                     whether_extension = True
                     extension_name = j
                     extension_height = extensions_config[j]['height']
@@ -349,8 +350,11 @@ def search():
             extension_height = 0
             for j in extensions_config:
                 url = extensions_config[j]['url']
-                print(url)
                 if (url) == (res[1]):
+                    for k in extensions_config[j]['command']:
+                        print(j)
+                        os.system("cd %VERDANT_HOME%"+extensions_path[1:]+"/"+j+"; "+k)# To execute commands filled in json
+
                     print("extension activated")
                     whether_extension = True
                     extension_name = j

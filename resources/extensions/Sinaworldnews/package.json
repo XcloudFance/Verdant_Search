@@ -2,12 +2,13 @@
     "name": "Sinaworldnews",
     "version": "1.0.0",
     "author": "Verdant_Search Original Extension",
-    "url": "https://news.sina.com.cn/world",
+    "url": "http://news.sina.com.cn",
     "contributors": [{
         "name": "XCloudFance",
         "email": "15906005579@139.com"
     }],
     "description": "就是个单纯的新闻插件，爬新浪新闻的",
+    "type": "periodical",
     "command": [
         "python Newspider.py"
     ],
