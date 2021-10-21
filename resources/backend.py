@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 from sys import version
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
@@ -51,8 +51,9 @@ hea_ordinary = {
 page_Count: int = 0
 js = {}
 host = port = password = database = root = extensions_path = ""
-extensions_config = {}
 
+extensions_config = {}
+cube = CubeQL_Client.CubeQL()
 
 def initialization():
     global host, port, root, password, database, js, extensions_path, extensions_config
@@ -66,6 +67,7 @@ def initialization():
     password = js["Main"]["password"]
     database = js["Main"]["db"]
     extensions_path = js["Main"]["extensions"]
+    checkext = bool(js['Main']['ifCheckExtension'])
     paths = os.listdir(extensions_path)
     print("Initializing the extension system...")
     for i in paths:
@@ -73,7 +75,8 @@ def initialization():
         content = f.read()
         f.close()
         extensions_config[i] = demjson.decode(content)
-        os.system("git clone " + extensions_config[i]["repository"])
+        if checkext == True:
+            os.system("git clone " + extensions_config[i]["repository"])
             # if the project is not completed, fork it from github
     print("Finished")
 
@@ -186,20 +189,28 @@ def record_log(content):
 @app.route("/search", endpoint="search", methods=["GET"])
 @databaseHandler.postgresql_check_status
 def search():
+    global cube
     # -- everytime searching, record the history--
     global page_Count
     page_Count += 1
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
     record_log(keyword) #加入记录系统
+    
     print(keyword)
     if keyword == " ":
         return {}
 
-
+    
     amount = int(amount)
     end_amount = int(amount) + 10
     length = 0
+
+    record_ret = (cube.get_record(keyword)[:])
+
+    if not record_ret == {}:
+        print('NOT')
+        return record_ret
     res = databaseHandler.queryKeyword(keyword)
 
     fetch = []
@@ -320,7 +331,7 @@ def search():
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 and amount == 0:
             # 开始对百度进行爬虫，给CDS布置任务rrrr
-            cube = CubeQL_Client.CubeQL()
+            
             cube.set(keyword, "search")
         # 这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
         if length != 0:
@@ -328,6 +339,10 @@ def search():
         # print(demjson.encode(response_json))
         time_end=time.time()
         print('time cost',time_end-time_start,'s')
+        
+        #-- 加一条cubeql临时存储结果 --
+        cube.set_record(keyword,response_json)
+
         return json.dumps(response_json)
 
     else:
@@ -381,10 +396,9 @@ def search():
         if length <= 10:
             # 开始对百度进行爬虫，给CDS布置任务
             # print(length)
-            cube = CubeQL_Client.CubeQL()
             cube.set(keyword, "search")
 
-
+        cube.set_record(keyword,json.dumps(response_json))
         return json.dumps(response_json)
 
 @app.route("/keyword_think", endpoint="thinking", methods=["GET"])

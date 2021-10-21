@@ -1,13 +1,16 @@
 from fastapi import FastAPI
 from pybloom_live import ScalableBloomFilter, BloomFilter
+from datetime import datetime
 bloom = ScalableBloomFilter(initial_capacity=1000)
 from multiprocessing import Process #用多进程
 app = FastAPI(debug=True)
 cylinder = []
 baidu_cylinder = []
 templation = {'type':'','content':''}
+query_record = {}
 #type有normal和search两种类型
 limitation = 200
+timestamp_start = datetime.now()
 #baidu-cds的思路就是将关键词从百度获取要爬虫的消息，然后放进cds待爬虫队列里面爬虫，并且标注为baidu出来的网址，给每个权值+20分x
 @app.post('/get')
 async def get():
@@ -88,3 +91,16 @@ async def sqlget():
     
     pass
 
+@app.get('/set_record')
+async def setrecord(*,name,content):
+    global query_record
+    if (datetime.now() - timestamp_start).days > 1:
+        query_record = {}
+    query_record[name] = content
+    return 'YES'
+
+@app.get('/get_record')
+async def getrecord(*,name):
+    if name not in query_record:
+        return {}
+    return query_record[name]

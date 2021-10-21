@@ -22,7 +22,13 @@ class CubeQL:
     def filter_set(self,url):
         req = requests.post('http://'+self.host+':'+self.port+'/filter_set?url='+url,hea)
     def filter_contain(self,url):
-        req = requests.post('http://'+self.host+':'+self.port+'/filter_contain?url'+url)
+        req = requests.post('http://'+self.host+':'+self.port+'/filter_contain?url='+url)
+        return req.text
+    def set_record(self,name,content):
+        req = requests.get('http://'+self.host+':'+self.port+'/set_record?name='+name+'&content='+content)
+        return req.text
+    def get_record(self,name):
+        req = requests.get('http://'+self.host+':'+self.port+'/get_record?name='+name)
         return req.text
     def del_all(self):
         pass
