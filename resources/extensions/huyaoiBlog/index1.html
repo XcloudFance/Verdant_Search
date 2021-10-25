@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			
+			.ls{
+				list-style: none;
+				line-height: 1.5rem;
+			}
+			
+			.dc{
+				color: #009c0f;
+				text-decoration:none;
+			}
+			
+			.dc:hover{
+				color: #007409;
+			}
+			
+			.box {
+				text-overflow: ellipsis;
+				font-size: 13px;
+				overflow: hidden;
+				border: 1px solid rgba(0, 0, 0, 0.12);
+				box-shadow: 1px 1px 1px rgb(0 0 0 / 23%);
+				border-radius: 0.25rem;
+				padding: 0.45rem;
+			}
+		</style>
+	</head>
+	<body>
+        <div class="box" >
+			<div style="position: relative;">
+				<h2>狐妖i博客的最新文章</h2>
+			</div>
+            <ul id="inputx" class="ls">
+                <li></li>
+            </ul>
+			<a href="https://klxljun.gitee.io/">查看更多 ></a>
+        </div>
+	</body>
+    <script>
+        let xhr = null;
+        if (window.XMLHttpRequest) {
+            xhr = new XMLHttpRequest();
+        } else if (window.ActiveXObject) {
+            xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xhr.open('GET', 'https://cdn.jsdelivr.net/gh/KLXLjun/KLXLjun.github.io/index.json', true);
+        xhr.onload = function() {
+            let dt = JSON.parse(xhr.response);
+            let elm = document.getElementById("inputx")
+            elm.innerHTML = "";
+            for (let i = 0; i < 5; i++) {
+                let fx = document.createElement("li");
+				let url = document.createElement("a");
+				url.href = "https://klxljun.gitee.io/" + dt[i].link;
+				url.innerText = dt[i].title;
+				url.className = "dc"
+				url.target = "_blank"
+				fx.appendChild(url);
+                elm.appendChild(fx);
+            }
+        }
+        xhr.send();
+    </script>
+</html>

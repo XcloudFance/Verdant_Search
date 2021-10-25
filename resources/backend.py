@@ -206,9 +206,9 @@ def search():
     end_amount = int(amount) + 10
     length = 0
 
-    record_ret = (cube.get_record(keyword)[:])
+    record_ret = demjson.decode((cube.get_record(keyword)[:]))
 
-    if not record_ret == {}:
+    if record_ret == {}:
         print('NOT')
         return record_ret
     res = databaseHandler.queryKeyword(keyword)
@@ -339,9 +339,9 @@ def search():
         # print(demjson.encode(response_json))
         time_end=time.time()
         print('time cost',time_end-time_start,'s')
-        
+        print(type(keyword),type(response_json))
         #-- 加一条cubeql临时存储结果 --
-        cube.set_record(keyword,response_json)
+        cube.set_record(keyword,json.dumps(response_json))
 
         return json.dumps(response_json)
 

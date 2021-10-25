@@ -21,7 +21,8 @@
     <link rel="shortcut icon" type="image/png" href="https://i.loli.net/2021/02/10/lFnaXCt7QmxrML4.png">
     <!-- <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,300,400,500,700,900" rel="stylesheet" /> -->
     <style>
-        html,body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -47,6 +48,9 @@
                 <span class="form-button-box">
                     <input class="form-button" id="start_search" type="button" value="搜索"/>
                 </span>
+                <center>
+                    <p id="attention1"></p>
+                </center>
                 <div id="search_associate">
                     <ul>
                     </ul>
@@ -54,7 +58,8 @@
             </div>
         </div>
         <!-- https://i.loli.net/2021/02/02/48U9aOFPwejLNTn.jpg -->
-        <div class="form-focus" id="form_focus" data-bm="24" style="background-image: url('https://i.loli.net/2021/02/02/48U9aOFPwejLNTn.jpg')"></div>
+        <!-- -->
+        <div class="form-focus" id="form_focus" data-bm="24" style="background-image: url('/img/bg1.jpg')"></div>
     </div>
 </body>
 <script>
@@ -69,6 +74,7 @@
         document.getElementById('form_focus').style.filter = "brightness(0.75)";
         document.getElementById('search_associate').style.display = "block";
         inputi.focus = true;
+
         SelectAssociate(inputi.now, true);
     });
 
