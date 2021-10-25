@@ -206,10 +206,8 @@ def search():
     end_amount = int(amount) + 10
     length = 0
 
-    record_ret = demjson.decode((cube.get_record(keyword)[:]))
-
-    if record_ret == {}:
-        print('NOT')
+    record_ret = demjson.decode((cube.get_record(keyword,str(amount))[:]))
+    if not record_ret == {}:
         return record_ret
     res = databaseHandler.queryKeyword(keyword)
 
@@ -339,9 +337,8 @@ def search():
         # print(demjson.encode(response_json))
         time_end=time.time()
         print('time cost',time_end-time_start,'s')
-        print(type(keyword),type(response_json))
         #-- 加一条cubeql临时存储结果 --
-        cube.set_record(keyword,json.dumps(response_json))
+        cube.set_record(keyword,json.dumps(response_json),str(amount))
 
         return json.dumps(response_json)
 
@@ -398,7 +395,7 @@ def search():
             # print(length)
             cube.set(keyword, "search")
 
-        cube.set_record(keyword,json.dumps(response_json))
+        cube.set_record(keyword,json.dumps(response_json),str(amount))
         return json.dumps(response_json)
 
 @app.route("/keyword_think", endpoint="thinking", methods=["GET"])
