@@ -96,11 +96,13 @@ async def setrecord(*,name,amount,content):
     global query_record
     if (datetime.now() - timestamp_start).days > 1:
         query_record = {}
-    query_record[name] = content
+    query_record[name][amount] = content
     return 'YES'
 
 @app.get('/get_record')
 async def getrecord(*,name,amount):
-    if name not in query_record:
-        return {}
-    return query_record[name]
+    
+    if name in query_record:
+        if amount in query_record[name]:
+            return query_record[name][amount]
+    return {}
