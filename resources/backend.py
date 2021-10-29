@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 from sys import version
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
@@ -23,7 +23,9 @@ import re
 from requests_html import requests
 from get_pronun import *
 import asyncio
-import CubeQL_Client
+import sys
+sys.path.append('..')
+from CubeQL import CubeQL_Client
 import datetime
 
 # flask定义
@@ -55,10 +57,11 @@ host = port = password = database = root = extensions_path = ""
 extensions_config = {}
 cube = CubeQL_Client.CubeQL()
 
+
 def initialization():
     global host, port, root, password, database, js, extensions_path, extensions_config
     # -- read config --
-    f = open("config.json", "r")
+    f = open("./config/config.json", "r")
     js = demjson.decode(f.read())
     f.close()
     host = js["Main"]["host"]
@@ -67,11 +70,11 @@ def initialization():
     password = js["Main"]["password"]
     database = js["Main"]["db"]
     extensions_path = js["Main"]["extensions"]
-    checkext = bool(js['Main']['ifCheckExtension'])
+    checkext = bool(js["Main"]["ifCheckExtension"])
     paths = os.listdir(extensions_path)
     print("Initializing the extension system...")
     for i in paths:
-        f = open(extensions_path + "/" + i + "/package.json", "r+",encoding='utf-8')
+        f = open(extensions_path + "/" + i + "/package.json", "r+", encoding="utf-8")
         content = f.read()
         f.close()
         extensions_config[i] = demjson.decode(content)
@@ -195,18 +198,17 @@ def search():
     page_Count += 1
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
-    record_log(keyword) #加入记录系统
-    
+    record_log(keyword)  # 加入记录系统
+
     print(keyword)
     if keyword == " ":
         return {}
 
-    
     amount = int(amount)
     end_amount = int(amount) + 10
     length = 0
 
-    record_ret = demjson.decode((cube.get_record(keyword,str(amount))[:]))
+    record_ret = demjson.decode((cube.get_record(keyword, str(amount))))
     if not record_ret == {}:
         return record_ret
     res = databaseHandler.queryKeyword(keyword)
@@ -219,7 +221,7 @@ def search():
     index_list = ordered_set(fetch)
 
     response_json = {}
-    translative_search :bool = False
+    translative_search: bool = False
     # 在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
     if amount == 0:
         # 0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
@@ -254,11 +256,9 @@ def search():
         # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
         print(1)
         res_ = deal(Cut(keyword))
-        time_start=time.time()
+        time_start = time.time()
         match_weigh = {}
         tmp_index_list = {}
-
-
 
         for i in res_:
 
@@ -267,14 +267,13 @@ def search():
             if res == []:
                 continue
             fetch = []
-            #for j in res:
+            # for j in res:
             fetch = res[0][0].split("|")
             for j in fetch:  # 这边match_weigh里面每一项对应tf*idf的权值加成，关键词匹配度越高，排名越前
                 if j in match_weigh:
                     match_weigh[j] += 10
                 else:
                     match_weigh[j] = 1
-
 
         for i in match_weigh:
             res = databaseHandler.getKeywordWeight(i)
@@ -298,30 +297,37 @@ def search():
             extension_name = ""
             extension_height = 0
             for j in extensions_config:
-                url = extensions_config[j]['url']
+                url = extensions_config[j]["url"]
                 if (url) == (res[1]):
-                    for k in extensions_config[j]['command']:
+                    for k in extensions_config[j]["command"]:
                         print(j)
-                        os.system("cd %VERDANT_HOME%"+extensions_path[2:]+"/"+j+"; "+k)# To execute commands filled in json
+                        os.system(
+                            "cd %VERDANT_HOME%"
+                            + extensions_path[2:]
+                            + "/"
+                            + j
+                            + "; "
+                            + k
+                        )  # To execute commands filled in json
                     whether_extension = True
                     extension_name = j
-                    extension_height = extensions_config[j]['height']
+                    extension_height = extensions_config[j]["height"]
             # == extension search ==
 
             if not whether_extension:
                 response_json[length] = {
-                "type": "common",
-                "url": deal2(res[1]),
-                "detail": res[2][:200],  # 限制字数
-                "title": res[3],
+                    "type": "common",
+                    "url": deal2(res[1]),
+                    "detail": res[2][:200],  # 限制字数
+                    "title": res[3],
                 }
             else:
                 response_json[length] = {
                     "type": "extension",
                     "url": deal2(res[1]),
-                    "extension_url":"/extensions?name=" + extension_name,
+                    "extension_url": "/extensions?name=" + extension_name,
                     "title": res[3],
-                    "height":extension_height
+                    "height": extension_height,
                 }
 
         response_json["length"] = length
@@ -329,16 +335,16 @@ def search():
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 and amount == 0:
             # 开始对百度进行爬虫，给CDS布置任务rrrr
-            
+
             cube.set(keyword, "search")
         # 这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
         if length != 0:
             pass
         # print(demjson.encode(response_json))
-        time_end=time.time()
-        print('time cost',time_end-time_start,'s')
-        #-- 加一条cubeql临时存储结果 --
-        cube.set_record(keyword,json.dumps(response_json),str(amount))
+        time_end = time.time()
+        print("time cost", time_end - time_start, "s")
+        # -- 加一条cubeql临时存储结果 --
+        cube.set_record(keyword, json.dumps(response_json), str(amount))
 
         return json.dumps(response_json)
 
@@ -361,32 +367,39 @@ def search():
             extension_name = ""
             extension_height = 0
             for j in extensions_config:
-                url = extensions_config[j]['url']
+                url = extensions_config[j]["url"]
                 if (url) == (res[1]):
-                    for k in extensions_config[j]['command']:
+                    for k in extensions_config[j]["command"]:
                         print(j)
-                        os.system("cd %VERDANT_HOME%"+extensions_path[1:]+"/"+j+"; "+k)# To execute commands filled in json
+                        os.system(
+                            "cd %VERDANT_HOME%"
+                            + extensions_path[1:]
+                            + "/"
+                            + j
+                            + "; "
+                            + k
+                        )  # To execute commands filled in json
 
                     print("extension activated")
                     whether_extension = True
                     extension_name = j
-                    extension_height = extensions_config[j]['height']
+                    extension_height = extensions_config[j]["height"]
             # == extension search ==
 
             if not whether_extension:
                 response_json[length] = {
-                "type": "common",
-                "url": deal2(res[1]),
-                "detail": res[2][:200],  # 限制字数
-                "title": res[3],
+                    "type": "common",
+                    "url": deal2(res[1]),
+                    "detail": res[2][:200],  # 限制字数
+                    "title": res[3],
                 }
             else:
                 response_json[length] = {
                     "type": "extension",
                     "url": deal2(res[1]),
-                    "extension_url":"/extensions?name=" + extension_name,
+                    "extension_url": "/extensions?name=" + extension_name,
                     "title": res[3],
-                    "height":extension_height
+                    "height": extension_height,
                 }
 
         response_json["length"] = length
@@ -395,8 +408,9 @@ def search():
             # print(length)
             cube.set(keyword, "search")
 
-        cube.set_record(keyword,json.dumps(response_json),str(amount))
+        cube.set_record(keyword, json.dumps(response_json), str(amount))
         return json.dumps(response_json)
+
 
 @app.route("/keyword_think", endpoint="thinking", methods=["GET"])
 @databaseHandler.postgresql_check_status
@@ -431,7 +445,7 @@ def get_today_data():
         # cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
         # res = cursor.fetchall()
         # print(res)
-    
+
 
 @app.route("/trend", methods=["GET"])
 def trend():
@@ -461,7 +475,9 @@ def extensions():
         return str(e)
 
 
-@app.route("/pure_visit", endpoint="pure_visit", methods=["GET"]) #other things will be added(todo)
+@app.route(
+    "/pure_visit", endpoint="pure_visit", methods=["GET"]
+)  # other things will be added(todo)
 def purevisit():
     URL = request.args.get("target")
     print(URL)
@@ -478,7 +494,7 @@ if __name__ == "__main__":
     print(
         "if you get some troubles during using, please contact me in my Github: https://github.com/XCloudFance"
     )
-    
+
     http_server = WSGIServer(("0.0.0.0", 7777), app)
 
     http_server.serve_forever()

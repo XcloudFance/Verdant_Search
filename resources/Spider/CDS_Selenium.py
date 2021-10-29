@@ -3,7 +3,9 @@
 '''
 from selenium import webdriver
 from bs4 import  BeautifulSoup
-from CubeQL_Client import CubeQL
+import sys
+sys.path.append('..')
+from CubeQL import CubeQL_Client
 chrome_options = webdriver.ChromeOptions()
 prefs={"profile.managed_default_content_settings.images":2}
 chrome_options.add_experimental_option("prefs",prefs)

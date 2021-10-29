@@ -3,7 +3,7 @@
 # 此版本为CDS(Custom Distrbuted Spider)版本，支持一键直接爬虫
 # 用redis+postgresql实现
 import os
-import sys
+
 import urllib
 import urllib.parse
 import urllib.request
@@ -19,7 +19,9 @@ import demjson
 import json
 import random
 import redis
-import CubeQL_Client
+import sys
+sys.path.append('..')
+from CubeQL import CubeQL_Client
 import threading
 import psycopg2
 from CDS_Selenium import *
@@ -53,7 +55,7 @@ hea = {
 }
 
 # -- read config --
-f = open("./../config.json", "r")  # 取上一级的config.json
+f = open("./../config/config.json", "r")  # 取上一级的config.json
 js = demjson.decode(f.read())
 f.close()
 host = js["Spider"]["host"]
