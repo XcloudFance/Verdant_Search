@@ -4,8 +4,8 @@ class CubeQL:
     
 
     #host = 'localhost'
-    def __init__(self):
-        f = open('../config/config.json','r')
+    def __init__(self,f):
+        
         js = demjson.decode(f.read())
         f.close()
         self.host = js['CubeQL_Client']['host']

@@ -34,6 +34,9 @@ from flask import render_template, request, redirect, send_from_directory
 from pssqlHandler import *
 import os
 
+from urllib.parse import urlparse
+
+
 app = flask.Flask(__name__, template_folder="./templates", static_url_path="")
 app.jinja_env.auto_reload = True
 # flask end
@@ -55,7 +58,8 @@ js = {}
 host = port = password = database = root = extensions_path = ""
 
 extensions_config = {}
-cube = CubeQL_Client.CubeQL()
+cube = CubeQL_Client.CubeQL(open('./config/config.json','r'))
+
 
 
 def initialization():
@@ -90,6 +94,7 @@ initialization()
 databaseHandler = pssql_Handler(host, port, root, password, database)
 
 
+
 def ordered_set(old_list):  # 有序去重
     new_list = list(set(old_list))
     new_list.sort(key=old_list.index)
@@ -103,101 +108,11 @@ def sort_by_value(d):
     return [backitems[i][1] for i in range(0, len(backitems))]
 
 
-def deal(keywords: list):
-    ret = keywords[:]
-    tmp1 = keywords
-    for i in list(range(len(tmp1))):
-
-        if tmp1[i] == " " or tmp1[i] == "+":
-            ret.remove(tmp1[i])  # 用了一个特别骚的方法，直接删除index的话会导致for循环越界
-    return ret
-
-
-def deal2(website: str):
-    return "/redirect?_=" + website
-
-
-def specfic_search(word):  # 如果啥也没有就返回False，如果有就返回搜索后的结果
-    try:
-
-        re_list = ["([a-z]|[A-Z]|\s){1,}翻译", "([a-z]|[A-Z]|\s){1,}", "(.*)的英语"]
-        mode = -1
-        tmp = -1
-        cmpres = ""
-        for i in re_list:
-
-            cmp = re.compile(i)
-            cmpres = re.match(cmp, word)
-            tmp += 1
-            if cmpres != None:
-                print(cmpres)
-                mode = tmp
-                break
-        if mode == -1:
-            # print(-1)
-            return False
-            # try
-        content = cmpres.group()
-        if mode == 1:
-            content = content[: len(content)]
-        if mode == 0:
-            content = content[: len(content) - 2]
-        if mode == 2:
-            content = content[: len(content) - 3]
-        # print(content)
-        req = requests.get(
-            "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=" + content
-        )
-
-        ret = get_word_mean(content, hea_ordinary)
-        ret_url = (
-            "http://dict.youdao.com/search?q="
-            + content
-            + "&keyfrom=new-fanyi.smartResult"
-        )
-        return ret, ret_url, mode
-    except:
-        return False
-
-
-@app.route("/")
-def index():
-    return render_template("index2.html")
-
-
-@app.route("/searchlist")
-def searchlist():
-    return render_template("search_list.html")
-
-
-@app.route("/return_count", methods=["GET"])
-def return_count():
-    return page_Count
-
-
-def prefix_zero(content):
-    if content < 10:
-        return "0" + str(content)
-
-
-def record_log(content):
-
-    now = datetime.datetime.now()
-    datenow = str(now.year) + "-" + str(now.month) + "-" + str(now.day)
-    # print(datenow)
-
-    databaseHandler.recordLog(content, datenow)
-
-
-@app.route("/search", endpoint="search", methods=["GET"])
-@databaseHandler.postgresql_check_status
-def search():
+def normal_search(amount,keyword,count = 10):
     global cube
     # -- everytime searching, record the history--
     global page_Count
     page_Count += 1
-    amount = request.args.get("amount")
-    keyword = request.args.get("keyword")
     record_log(keyword)  # 加入记录系统
 
     print(keyword)
@@ -205,7 +120,7 @@ def search():
         return {}
 
     amount = int(amount)
-    end_amount = int(amount) + 10
+    end_amount = int(amount) + count
     length = 0
 
     record_ret = demjson.decode((cube.get_record(keyword, str(amount))))
@@ -226,6 +141,10 @@ def search():
     if amount == 0:
         # 0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
         translative_search = specfic_search(keyword)
+        grammar = grammar_search(keyword)
+        if grammar != "":
+            return grammar
+
         # print(translative_search)
 
     if translative_search != False and js["Main"]["Whether_Translation"] == 1:  # 单词翻译查询
@@ -334,7 +253,7 @@ def search():
         # 如果发现这个keyword内没有任何空格的前提下就将其作为关键词存入
         # 并且现阶段结果太少，对于所有搜索的东西都会有一个爬虫从百度抓取数据然后将结果第一页爬虫下来，并且权值全部高加成
         if length <= 10 and amount == 0:
-            # 开始对百度进行爬虫，给CDS布置任务rrrr
+            # 开始对百度进行爬虫，给CDS布置任务
 
             cube.set(keyword, "search")
         # 这边获得的结果可以变成一个新的关键词，并且加2分关键词基础分
@@ -349,7 +268,6 @@ def search():
         return json.dumps(response_json)
 
     else:
-        print(2)
         if end_amount > len(index_list):
             end_amount = len(index_list)
         index_list = index_list[amount:end_amount]
@@ -410,6 +328,125 @@ def search():
 
         cube.set_record(keyword, json.dumps(response_json), str(amount))
         return json.dumps(response_json)
+
+
+
+def deal(keywords: list):
+    ret = keywords[:]
+    tmp1 = keywords
+    for i in list(range(len(tmp1))):
+
+        if tmp1[i] == " " or tmp1[i] == "+":
+            ret.remove(tmp1[i])  # 用了一个特别骚的方法，直接删除index的话会导致for循环越界
+    return ret
+
+
+def deal2(website: str):
+    return "/redirect?_=" + website
+
+
+def grammar_search(word) ->str:
+    # site: xxx
+    try:
+        split_word = word.rsplit(' ',1)
+        keyword_core = split_word[0]
+        command = (split_word[1]).split(':')
+    except:
+        return ""
+    final_res = {}
+    length = 0
+    if command[0] == "site":
+        url = command[1]
+        res = json.loads(normal_search(amount = 0,count=100,keyword = keyword_core))#结果不一定有100个，需要考虑一下
+        print(res)
+        for i in range(1,len(res)):
+            rootDomain = urlparse(res[str(i)]['url'][12:]).netloc
+            if rootDomain == url:
+                length = length + 1
+                final_res[length] = res[str(i)]
+        final_res['length'] = length
+        return json.dumps(final_res)
+        
+def specfic_search(word):  # 如果啥也没有就返回False，如果有就返回搜索后的结果
+    try:
+
+        re_list = ["([a-z]|[A-Z]|\s){1,}翻译", "([a-z]|[A-Z]|\s){1,}", "(.*)的英语"]
+        mode = -1
+        tmp = -1
+        cmpres = ""
+        for i in re_list:
+
+            cmp = re.compile(i)
+            cmpres = re.match(cmp, word)
+            tmp += 1
+            if cmpres != None:
+                print(cmpres)
+                mode = tmp
+                break
+        if mode == -1:
+            # print(-1)
+            return False
+            # try
+        content = cmpres.group()
+        if mode == 1:
+            content = content[: len(content)]
+        if mode == 0:
+            content = content[: len(content) - 2]
+        if mode == 2:
+            content = content[: len(content) - 3]
+        # print(content)
+        req = requests.get(
+            "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=" + content
+        )
+
+        ret = get_word_mean(content, hea_ordinary)
+        ret_url = (
+            "http://dict.youdao.com/search?q="
+            + content
+            + "&keyfrom=new-fanyi.smartResult"
+        )
+        return ret, ret_url, mode
+    except:
+        return False
+
+
+
+
+@app.route("/")
+def index():
+    return render_template("index2.html")
+
+
+@app.route("/searchlist")
+def searchlist():
+    return render_template("search_list.html")
+
+
+@app.route("/return_count", methods=["GET"])
+def return_count():
+    return page_Count
+
+
+def prefix_zero(content):
+    if content < 10:
+        return "0" + str(content)
+
+
+def record_log(content):
+
+    now = datetime.datetime.now()
+    datenow = str(now.year) + "-" + str(now.month) + "-" + str(now.day)
+    # print(datenow)
+
+    databaseHandler.recordLog(content, datenow)
+
+
+@app.route("/search", endpoint="search", methods=["GET"])
+@databaseHandler.postgresql_check_status
+def search():
+    amount = request.args.get("amount")
+    keyword = request.args.get("keyword")
+    return normal_search(amount,keyword)
 
 
 @app.route("/keyword_think", endpoint="thinking", methods=["GET"])

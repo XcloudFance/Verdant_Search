@@ -28,7 +28,7 @@ from CDS_Selenium import *
 import time
 
 
-cube = CubeQL_Client.CubeQL()
+cube = CubeQL_Client.CubeQL(open('../config/config.json','r'))
 
 hea_ordinary = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
