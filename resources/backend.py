@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
-__version__ = "0.3.4"
+__version__ = "0.3.5"
 from sys import version
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
@@ -139,11 +139,13 @@ def normal_search(amount,keyword,count = 10):
     translative_search: bool = False
     # 在pymysql中，fetchall取不到返回()，fetchone取不到就返回None
     if amount == 0:
-        # 0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
-        translative_search = specfic_search(keyword)
         grammar = grammar_search(keyword)
         if grammar != "":
             return grammar
+        # 0.1.5:这边增加了一个特判，只有在第一页的时候才会触发翻译
+        if js["Main"]["Whether_Translation"] == 1:
+            translative_search = specfic_search(keyword)
+
 
         # print(translative_search)
 
@@ -357,15 +359,15 @@ def grammar_search(word) ->str:
     length = 0
     if command[0] == "site":
         url = command[1]
-        res = json.loads(normal_search(amount = 0,count=100,keyword = keyword_core))#结果不一定有100个，需要考虑一下
-        print(res)
+        normalres = normal_search(amount = 0,count=100,keyword = keyword_core).encode('utf-8').decode('utf-8')
+        res = demjson.decode(normalres,False)#结果不一定有100个，需要考虑一下
         for i in range(1,len(res)):
             rootDomain = urlparse(res[str(i)]['url'][12:]).netloc
             if rootDomain == url:
                 length = length + 1
-                final_res[length] = res[str(i)]
+                final_res[str(length)] = res[str(i)]
         final_res['length'] = length
-        return json.dumps(final_res)
+        return demjson.encode(final_res)
         
 def specfic_search(word):  # 如果啥也没有就返回False，如果有就返回搜索后的结果
     try:

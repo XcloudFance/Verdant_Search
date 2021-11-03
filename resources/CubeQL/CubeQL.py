@@ -91,7 +91,7 @@ async def sqlget():
     
     pass
 
-@app.get('/set_record')
+@app.post('/set_record')
 async def setrecord(*,name,amount,content):
     global query_record
     if (datetime.now() - timestamp_start).days > 1:
@@ -99,7 +99,7 @@ async def setrecord(*,name,amount,content):
     query_record[name][amount] = content
     return 'YES'
 
-@app.get('/get_record')
+@app.post('/get_record')
 async def getrecord(*,name,amount):
     
     if name in query_record:
