@@ -1,3 +1,5 @@
+#-*- coding:utf-8 -*-
+import demjson
 from fastapi import FastAPI
 from pybloom_live import ScalableBloomFilter, BloomFilter
 from datetime import datetime
@@ -96,7 +98,7 @@ async def setrecord(*,name,amount,content):
     global query_record
     if (datetime.now() - timestamp_start).days > 1:
         query_record = {}
-    query_record[name][amount] = content
+    query_record[name] = {amount:content}
     return 'YES'
 
 @app.post('/get_record')
@@ -104,5 +106,5 @@ async def getrecord(*,name,amount):
     
     if name in query_record:
         if amount in query_record[name]:
-            return query_record[name][amount]
+            return (query_record[name][amount])
     return {}

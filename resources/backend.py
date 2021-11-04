@@ -123,9 +123,9 @@ def normal_search(amount,keyword,count = 10):
     end_amount = int(amount) + count
     length = 0
 
-    record_ret = demjson.decode((cube.get_record(keyword, str(amount))))
-    if not record_ret == {}:
-        return record_ret
+    record_ret = ((cube.get_record(keyword, str(amount))))
+    if bool(record_ret): #如果为字符串就会变成true了
+        return (record_ret+"\"}}")
     res = databaseHandler.queryKeyword(keyword)
 
     fetch = []
@@ -175,7 +175,6 @@ def normal_search(amount,keyword,count = 10):
         # 试试分词
         # 对结果进行分词,同样也对有空格的结果进行分词
         # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
-        print(1)
         res_ = deal(Cut(keyword))
         time_start = time.time()
         match_weigh = {}
@@ -197,8 +196,11 @@ def normal_search(amount,keyword,count = 10):
                     match_weigh[j] = 1
 
         for i in match_weigh:
-            res = databaseHandler.getKeywordWeight(i)
-            tmp_index_list[i] = res[0] + match_weigh[i]
+            try:
+                res = databaseHandler.getKeywordWeight(i)
+                tmp_index_list[i] = res[0] + match_weigh[i]
+            except:
+                continue
         index_list = sort_by_value(tmp_index_list)
         index_list.reverse()
         # 取前几个
@@ -221,7 +223,6 @@ def normal_search(amount,keyword,count = 10):
                 url = extensions_config[j]["url"]
                 if (url) == (res[1]):
                     for k in extensions_config[j]["command"]:
-                        print(j)
                         os.system(
                             "cd %VERDANT_HOME%"
                             + extensions_path[2:]
@@ -286,6 +287,11 @@ def normal_search(amount,keyword,count = 10):
             whether_extension = False
             extension_name = ""
             extension_height = 0
+            if res == None:
+                length -= 1
+                continue
+            
+            # == extension search ==
             for j in extensions_config:
                 url = extensions_config[j]["url"]
                 if (url) == (res[1]):
@@ -352,15 +358,15 @@ def grammar_search(word) ->str:
     try:
         split_word = word.rsplit(' ',1)
         keyword_core = split_word[0]
-        command = (split_word[1]).split(':')
+        command = (split_word[1]).split(':',1)
     except:
         return ""
     final_res = {}
     length = 0
     if command[0] == "site":
         url = command[1]
-        normalres = normal_search(amount = 0,count=100,keyword = keyword_core).encode('utf-8').decode('utf-8')
-        res = demjson.decode(normalres,False)#结果不一定有100个，需要考虑一下
+        normalres = normal_search(amount = 0,count=100,keyword = keyword_core)
+        res = demjson.decode(normalres)#结果不一定有100个，需要考虑一下
         for i in range(1,len(res)):
             rootDomain = urlparse(res[str(i)]['url'][12:]).netloc
             if rootDomain == url:
@@ -469,6 +475,7 @@ def thinking():
     return demjson.encode(ret)
 
 
+
 @app.route("/get_today_data", methods=["GET", "POST"])
 def get_today_data():
     if request.method == "GET":
@@ -479,7 +486,6 @@ def get_today_data():
         for i in keyword:
             ret["Data"].append(databaseHandler.getKeywordTrend(i))
 
-        print(keyword, type(keyword))
         return ret
         # cursor.execute("select * from where content = '"+keyword+"' and timerange>='"+time_begin+"' and timerange<='"+"'") #获取时间段
         # res = cursor.fetchall()

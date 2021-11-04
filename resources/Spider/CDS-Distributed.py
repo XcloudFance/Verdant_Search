@@ -26,7 +26,7 @@ import threading
 import psycopg2
 from CDS_Selenium import *
 import time
-
+from urllib.parse import urlparse
 
 cube = CubeQL_Client.CubeQL(open('../config/config.json','r'))
 
@@ -128,13 +128,16 @@ def delcssjs(code):
     return code
 
 
-def get_url(url):
+def get_url(url,origin):
     soup = BeautifulSoup(url, "html.parser")
     ret = []
     href_ = soup.find_all(name="a")
     for each in href_:
         if str(each.get("href"))[:4] == "http":
             ret.append(each.get("href"))
+        else:
+             
+            ret.append('http://'+urlparse(origin).netloc+'/'+each.get('href'))
     return ret
 
 
@@ -164,6 +167,8 @@ def get_p_content(urlcode):
     ret = ""
     for i in bs(["p"]):
         ret += i.get_text() + " "
+    for i in bs(['a']):
+        ret += i.get_text()+ " "
     return ret
 
 
@@ -282,11 +287,13 @@ def mainly():
                 except:
                     print(destination_URI,":error")
                     continue
-                geturls = list(set(get_url(code)))#获取该页面的所有子链接
+                geturls = list(set(get_url(code,destination_URI)))#获取该页面的所有子链接
+                print(geturls,11)
                 # 取body做为内容
                 maincontent = get_keywords(code) + " " + get_p_content(code)
                 title = get_title(code)
-                if title.strip() == "":
+                print(code)
+                if title.strip() == "": #过滤掉没有标题的内容9(filter sites that don't have its titles)
                     continue
                 dictlist[
                     destination_URI
@@ -304,7 +311,7 @@ def mainly():
                 my_weigh = weigh_judgement(destination_URI, code)  # 把权值保存到变量，一会儿要用
                 if i['typ'] == 'fromsearch':
                     my_weigh += 20 #搜索引擎的特殊加成，这里的fromsearch意思是从第一批bing搜索里面拿下来的结果，都是推荐高的结果
-                    
+                  
                 tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
                 try:
                     cursor.execute(
@@ -346,7 +353,10 @@ def mainly():
                             cursor.execute(
                                 "select weigh from content where id = " + index_list[k]
                             )
-                            the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
+                            try:
+                                the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
+                            except:
+                                the_weigh = 0
                             if my_weigh >= the_weigh:
                                 index_list.insert(k, tablenum)
                                 break

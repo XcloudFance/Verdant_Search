@@ -29,7 +29,7 @@ class CubeQL:
         return req.text
     def get_record(self,name,amount):
         req = requests.post('http://'+self.host+':'+self.port+'/get_record?name='+name+'&amount='+amount)
-        return req.text
+        return demjson.decode(req.text)
     def del_all(self):
         pass
 if __name__ == '__main__':
