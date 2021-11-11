@@ -390,19 +390,17 @@ def mainly():
 
                         # -- sort --
                         times = 0
-                        while True:
-                            if times == 20:
-                                print('error')
-                                break
+                        while times != 20:
                             try:
                                 cursor.execute(
                                     "update search set value = %s where keyer = %s",
                                     (index_list_, j),
                                 )
-                                times+=1
-                                # --update
                                 
+                                # --update
+                                break
                             except:
+                                times += 1
                                 mysql.rollback()
                 if times != 20:
                     mysql.commit()
