@@ -8,6 +8,7 @@ import urllib
 import urllib.parse
 import urllib.request
 from bs4.builder import TreeBuilderRegistry
+from numpy import maximum
 import requests
 import re
 from bs4 import BeautifulSoup
@@ -136,8 +137,10 @@ def get_url(url,origin):
         if str(each.get("href"))[:4] == "http":
             ret.append(each.get("href"))
         else:
-             
-            ret.append('http://'+urlparse(origin).netloc+'/'+each.get('href'))
+            try:      
+                ret.append('http://'+urlparse(origin).netloc+'/'+each.get('href'))
+            except:
+                continue
     return ret
 
 
@@ -287,12 +290,11 @@ def mainly():
                 except:
                     print(destination_URI,":error")
                     continue
+                print(destination_URI)
                 geturls = list(set(get_url(code,destination_URI)))#获取该页面的所有子链接
-                print(geturls,11)
                 # 取body做为内容
                 maincontent = get_keywords(code) + " " + get_p_content(code)
                 title = get_title(code)
-                print(code)
                 if title.strip() == "": #过滤掉没有标题的内容9(filter sites that don't have its titles)
                     continue
                 dictlist[
@@ -300,11 +302,20 @@ def mainly():
                 ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
                 for url_ in geturls:
                     # print(url_)
-                    cube.set(url_, typ="normal" if i['typ'] !="search" else "fromsearch") #往cubeql里面加已经获取到的URI
+
+                    #爬虫不爬政府网站
+                    if url_.find('beian.gov')!=-1:
+                        continue
+
+                    if url_.find('bing.com')!=-1 and url_.find('?q')!=-1:
+                        cube.set(url_, typ="normal" if i['typ'] !="search" else "fromsearch") #往cubeql里面加已经获取到的URI
+                    else:
+                        cube.set(url_,typ="search_url")
                 
                 geturl = demjson.decode(cube.get())
 
-                if i['typ'] == 'search':#设置一个跳转，因为搜索引擎不需要收录需要搜素的关键词地址
+                if i['typ'] == 'search' or i['typ']=='search_url':#设置一个跳转，因为搜索引擎不需要收录需要搜素的关键词地址
+                    #这边新增了一个search或者search_url的结构
                     continue
                 wordlist = list(set(Cut(maincontent) + Cut(title)))
                 cursor.execute("select count(*) as value from content")
@@ -378,18 +389,24 @@ def mainly():
                                 index_list_ += "|" + index_list[k]
 
                         # -- sort --
+                        times = 0
                         while True:
+                            if times == 20:
+                                print('error')
+                                break
                             try:
                                 cursor.execute(
                                     "update search set value = %s where keyer = %s",
                                     (index_list_, j),
                                 )
+                                times+=1
                                 # --update
-                                break
+                                
                             except:
                                 mysql.rollback()
-                mysql.commit()
-                print(destination_URI, " :end")
+                if times != 20:
+                    mysql.commit()
+                    print(destination_URI, " :end")
             # ---------------------------------------------
             
             #except:
