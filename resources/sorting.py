@@ -5,7 +5,7 @@
 import time,datetime,demjson
 
 # -- read config --
-f = open("config.json", "r")
+f = open("./config/config.json", "r")
 js = demjson.decode(f.read())
 f.close()
 host = js["Main"]["host"]

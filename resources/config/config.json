@@ -4,7 +4,7 @@
         "port": "1278"
     },
     "Main": {
-        "host": "localhost",
+        "host": "115.29.198.35",
         "port": "5432",
         "root": "postgres",
         "password": "123456",
@@ -14,7 +14,7 @@
         "extensions": "./extensions"
     },
     "Spider": {
-        "host": "127.0.0.1",
+        "host": "115.29.198.35",
         "port": "5432",
         "root": "postgres",
         "password": "123456",

@@ -197,7 +197,7 @@ def normal_search(amount,keyword,count = 10):
 
         for i in match_weigh:
             try:
-                res = databaseHandler.getKeywordWeight(i)
+                res = databaseHandler.getKeywordWeight(i) #??????
                 tmp_index_list[i] = res[0] + match_weigh[i]
             except:
                 continue

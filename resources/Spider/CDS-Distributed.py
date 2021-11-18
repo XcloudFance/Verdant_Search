@@ -80,6 +80,9 @@ def mysql_initation():  # 保证一定可以连到数据库
         break
     cursor = mysql.cursor()
 
+def  cope_del_symbol(str1: str):
+    return str1.replace('//','/')
+
 # -- postgres --
 def postgresql_initation():  # 这边是postgres的版本
     global mysql, cursor
@@ -134,6 +137,7 @@ def get_url(url,origin):
     ret = []
     href_ = soup.find_all(name="a")
     for each in href_:
+        
         if str(each.get("href"))[:4] == "http":
             ret.append(each.get("href"))
         else:
@@ -283,7 +287,7 @@ def mainly():
                 
                 if destination_URI in dictlist:
                     continue
-                if destination_URI.find(".png") != -1:
+                if destination_URI.find(".png") != -1 or destination_URI.find('//'):
                     continue
                 try:
                     code = get_url_code(destination_URI)
@@ -302,12 +306,12 @@ def mainly():
                 ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
                 for url_ in geturls:
                     # print(url_)
-
+                    url_ = cope_del_symbol(url_) #去除多余的/
                     #爬虫不爬政府网站
                     if url_.find('beian.gov')!=-1:
                         continue
 
-                    if url_.find('bing.com')!=-1 and url_.find('?q')!=-1:
+                    if not(url_.find('bing.com')!=-1 and url_.find('?q')!=-1):
                         cube.set(url_, typ="normal" if i['typ'] !="search" else "fromsearch") #往cubeql里面加已经获取到的URI
                     else:
                         cube.set(url_,typ="search_url")
@@ -342,6 +346,7 @@ def mainly():
                 # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
                 # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
                 # 判断这个关键词存不存在
+                
                 for j in wordlist:
                     cursor.execute("select value from search where keyer = %s", (j,))
                     index = cursor.fetchone()
@@ -358,6 +363,7 @@ def mainly():
                         index_list = index[0].split("|")
                         # print(index_list)
                         index_list = [x for x in index_list if x != ""]
+                        time_start = time.time()
                         for k in range(len(index_list)):
                             # 取出每个地址的权值
                             # print('select weigh from content where id = '+index_list[k])
@@ -379,6 +385,8 @@ def mainly():
 
                         # 然后再生成一次字符串表
                         # 不能去重，会被set改顺序
+                        time_end = time.time()
+                        print(time_end-time_start)
                         tmp_list = list(set(index_list))
                         tmp_list.sort(key=index_list.index)
                         index_list = tmp_list
@@ -389,8 +397,9 @@ def mainly():
                                 index_list_ += "|" + index_list[k]
 
                         # -- sort --
+                        
                         times = 0
-                        while times != 20:
+                        while times <= 20:
                             try:
                                 cursor.execute(
                                     "update search set value = %s where keyer = %s",
@@ -402,9 +411,8 @@ def mainly():
                             except:
                                 times += 1
                                 mysql.rollback()
-                if times != 20:
-                    mysql.commit()
-                    print(destination_URI, " :end")
+                mysql.commit()
+                print(destination_URI, " :end")
             # ---------------------------------------------
             
             #except:
