@@ -273,15 +273,17 @@ def normal_search(amount,keyword,count = 10):
     else:
         if end_amount > len(index_list):
             end_amount = len(index_list)
-        index_list = index_list[amount:end_amount]
+        index_list = index_list[amount:]
         # 新增关键词权值统计
         databaseHandler.increaseKeywordWeight(keyword)
         # 取前几个
-
         for i in index_list:
-
+            if length >= (end_amount - amount):
+                break
             databaseHandler.cursor.execute("select * from content where id = " + i)
             res = databaseHandler.cursor.fetchone()
+            if res[-1] == True: #这边需要加一个，如果发现banned掉要更新关键词表的内容，交给cubeql后台管理
+                continue
             length += 1
             # == extension search ==
             whether_extension = False

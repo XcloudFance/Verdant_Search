@@ -25,7 +25,7 @@ class CubeQL:
         req = requests.post('http://'+self.host+':'+self.port+'/filter_contain?url='+url)
         return req.text
     def set_record(self,name,content,amount):
-        data = 'name='+name+'&content='+content+'&amount='+amount.encode('utf-8')
+        data = ('name='+name+'&content='+content+'&amount='+amount).encode('UTF-8')
         req = requests.post('http://'+self.host+':'+self.port+'/set_record',data = data)
         return req.text
     def get_record(self,name,amount):

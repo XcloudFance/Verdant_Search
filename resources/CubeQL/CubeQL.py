@@ -37,8 +37,7 @@ async def setting(*,url,typ):
         return #直接在这边加过滤器
     cylinder.insert(0,{'typ':typ,'content':url})
     bloom.add(url)
-    bloom.add("https://"+url)
-    bloom.add("http://"+url)
+    
     
     #cylinder = list(set(cylinder))
     pass
