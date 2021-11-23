@@ -5,6 +5,9 @@ from pybloom_live import ScalableBloomFilter, BloomFilter
 from datetime import datetime
 bloom = ScalableBloomFilter(initial_capacity=1000)
 from multiprocessing import Process #用多进程
+
+import psycopg2
+
 app = FastAPI(debug=True)
 cylinder = []
 baidu_cylinder = []
@@ -13,6 +16,44 @@ query_record = {}
 #type有normal和search两种类型
 limitation = 200
 timestamp_start = datetime.now()
+
+
+
+# -- read config --
+f = open("./../config/config.json", "r")  # 取上一级的config.json
+js = demjson.decode(f.read())
+f.close()
+host = js["Spider"]["host"]
+port = js["Spider"]["port"]
+root = js["Spider"]["root"]
+password = js["Spider"]["password"]
+database = js["Spider"]["db"]
+# -- end of read config --
+# -- postgres --
+def postgresql_initation():  # 这边是postgres的版本
+    global mysql, cursor
+    mysql = psycopg2.connect(
+        host=host, port=int(port), user=root, password=password, database=database
+    )
+    cursor = mysql.cursor()
+
+    while False:
+        try:
+            mysql = psycopg2.connect(
+                host=host,
+                port=int(port),
+                user=root,
+                password=password,
+                database=database,
+            )
+        except:
+            time.sleep(1)
+            continue
+        break
+    # cursor = mysql.cursor()
+
+# -- end postgres -- 
+
 #baidu-cds的思路就是将关键词从百度获取要爬虫的消息，然后放进cds待爬虫队列里面爬虫，并且标注为baidu出来的网址，给每个权值+20分x
 @app.post('/get')
 async def get():
@@ -107,3 +148,13 @@ async def getrecord(*,name,amount):
         if amount in query_record[name]:
             return (query_record[name][amount])
     return {}
+
+# initialization
+# 从数据库读取信息，然后全部加进bloom filter
+print('inputting the data from database into bloomfilter')
+postgresql_initation()
+cursor.execute('select url from content')
+urls = cursor.fetchall()
+for url in urls:
+    bloom.add(url[0])
+print('done')
