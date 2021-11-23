@@ -55,6 +55,8 @@ hea = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
 }
 
+cube = CubeQL_Client.CubeQL(open('../config/config.json','r'))
+
 # -- read config --
 f = open("./../config/config.json", "r")  # 取上一级的config.json
 js = demjson.decode(f.read())
@@ -222,8 +224,6 @@ def weigh_judgement(url, urlcode):
     return weigh
 
 
-dictlist = {}
-
 
 def getsearchurl(keyword):
     url = get_url_code(
@@ -270,6 +270,8 @@ def mainly():
             cursor.execute('update content set bannned = True where id = ' +str(i[0]))
             mysql.commit()
             continue
+        geturls = list(set(get_url(code,i[1])))#获取该页面的所有子链接
+
         maincontent = get_keywords(code) + " " + get_p_content(code)
         title = get_title(code)
         if maincontent != i[2]:
@@ -279,9 +281,6 @@ def mainly():
             #--
             if title.strip() == "": #过滤掉没有标题的内容9(filter sites that don't have its titles)
                 continue
-            dictlist[
-                destination_URI
-            ] = maincontent  # get_content(str(code.decode('utf-8',"ignore"))).replace("\xa1","").replace('\u02d3',"").replace('\u0632',"")
             for url_ in geturls:
                 # print(url_)
                 url_ = cope_del_symbol(url_) #去除多余的/
@@ -294,33 +293,18 @@ def mainly():
                 else:
                     cube.set(url_,typ="search_url")
             
-            geturl = demjson.decode(cube.get())
 
             if i['typ'] == 'search' or i['typ']=='search_url':#设置一个跳转，因为搜索引擎不需要收录需要搜素的关键词地址
                 #这边新增了一个search或者search_url的结构
                 continue
             wordlist = list(set(Cut(maincontent) + Cut(title)))
             cursor.execute("select count(*) as value from content")
-            my_weigh = weigh_judgement(destination_URI, code)  # 把权值保存到变量，一会儿要用
+            my_weigh = weigh_judgement(i[1], code)  # 把权值保存到变量，一会儿要用
             if i['typ'] == 'fromsearch':
                 my_weigh += 20 #搜索引擎的特殊加成，这里的fromsearch意思是从第一批bing搜索里面拿下来的结果，都是推荐高的结果
                 
             tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
-            try:
-                cursor.execute(
-                    "insert into content values ("
-                    + tablenum
-                    + ",%s,%s,%s,"
-                    + str(my_weigh)
-                    + ")",
-                    (destination_URI, dictlist[destination_URI], title),
-                )
 
-                mysql.commit()
-            except:
-                mysql.rollback()
-                print(i[1]),":error")
-                continue
             # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
             # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
             # 判断这个关键词存不存在
@@ -394,8 +378,6 @@ def mainly():
             # ---------------------------------------------
 
             #--
-
-
         else:
             print(i[1],'ok')
 
