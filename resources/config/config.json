@@ -1,6 +1,6 @@
 {
     "CubeQL_Client": {
-        "host": "115.29.198.35",
+        "host": "127.0.0.1",
         "port": "1278"
     },
     "Main": {
@@ -14,7 +14,7 @@
         "extensions": "./extensions"
     },
     "Spider": {
-        "host": "115.29.198.35",
+        "host": "127.0.0.1",
         "port": "5432",
         "root": "postgres",
         "password": "123456",

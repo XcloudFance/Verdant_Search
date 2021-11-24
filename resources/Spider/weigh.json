@@ -1,6 +1,8 @@
 {
-    "poi.ac":10,
-    ".com":4,
-    ".cc":3,
-    "baidu.com":9
+    "poi.ac": 10,
+    ".com": 20,
+    ".cc": 18,
+    "baidu.com": 9,
+    ".top": 15,
+    ".cn": 18
 }

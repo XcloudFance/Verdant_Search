@@ -28,7 +28,7 @@ import psycopg2
 from CDS_Selenium import *
 import time
 from urllib.parse import urlparse
-
+mode = 'released'
 cube = CubeQL_Client.CubeQL(open('../config/config.json','r'))
 
 hea_ordinary = {
@@ -386,7 +386,8 @@ def mainly():
                         # 然后再生成一次字符串表
                         # 不能去重，会被set改顺序
                         time_end = time.time()
-                        print(time_end-time_start)
+                        if mode == 'debug':
+                            print(time_end-time_start)
                         tmp_list = list(set(index_list))
                         tmp_list.sort(key=index_list.index)
                         index_list = tmp_list

@@ -30,7 +30,7 @@ import time
 from urllib.parse import urlparse
 
 cube = CubeQL_Client.CubeQL(open('../config/config.json','r'))
-
+mode = 'released'
 hea_ordinary = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",
     "Accept-Encoding": "gzip, deflate",
@@ -289,19 +289,14 @@ def mainly():
                     continue
 
                 if not(url_.find('bing.com')!=-1 and url_.find('?q')!=-1):
-                    cube.set(url_, typ="normal" if i['typ'] !="search" else "fromsearch") #往cubeql里面加已经获取到的URI
+                    cube.set(url_, typ="normal") #往cubeql里面加已经获取到的URI
                 else:
                     cube.set(url_,typ="search_url")
             
 
-            if i['typ'] == 'search' or i['typ']=='search_url':#设置一个跳转，因为搜索引擎不需要收录需要搜素的关键词地址
-                #这边新增了一个search或者search_url的结构
-                continue
             wordlist = list(set(Cut(maincontent) + Cut(title)))
             cursor.execute("select count(*) as value from content")
             my_weigh = weigh_judgement(i[1], code)  # 把权值保存到变量，一会儿要用
-            if i['typ'] == 'fromsearch':
-                my_weigh += 20 #搜索引擎的特殊加成，这里的fromsearch意思是从第一批bing搜索里面拿下来的结果，都是推荐高的结果
                 
             tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
 
@@ -348,7 +343,8 @@ def mainly():
                     # 然后再生成一次字符串表
                     # 不能去重，会被set改顺序
                     time_end = time.time()
-                    print(time_end-time_start)
+                    if mode == 'debug':
+                        print(time_end-time_start)
                     tmp_list = list(set(index_list))
                     tmp_list.sort(key=index_list.index)
                     index_list = tmp_list
