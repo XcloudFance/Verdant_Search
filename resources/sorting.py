@@ -32,8 +32,8 @@ while True:
     cursor = mysql.cursor()
 
     #keyword = ','
-    cursor.execute('select keyer from search')
-    keywords = cursor.fetchall()
+    #cursor.execute('select keyer from search')
+    keywords = ['百度']
 
     for keyword in keywords:
         #print(keyword[0])
@@ -61,6 +61,7 @@ while True:
                 ret += index_list_[i]+'|'
             else:
                 ret += index_list_[i]
+        print(ret)
         cursor.execute("update search set value = %s where keyer = %s",(ret, keyword[0]),)
     mysql.commit()
         #print(i, " :end") 

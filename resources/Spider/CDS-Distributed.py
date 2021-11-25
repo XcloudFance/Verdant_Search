@@ -81,7 +81,10 @@ def mysql_initation():  # 保证一定可以连到数据库
     cursor = mysql.cursor()
 
 def  cope_del_symbol(str1: str):
-    return str1.replace('//','/')
+    newstr = str1
+    while newstr[8:].find('//')!=-1:
+        newstr = newstr[:8] + newstr[8:].replace('//','/')
+    return newstr
 
 # -- postgres --
 def postgresql_initation():  # 这边是postgres的版本
@@ -299,7 +302,7 @@ def mainly():
                 # 取body做为内容
                 maincontent = get_keywords(code) + " " + get_p_content(code)
                 title = get_title(code)
-                if title.strip() == "": #过滤掉没有标题的内容9(filter sites that don't have its titles)
+                if title.strip() == "" or title.strip() == '404': #过滤掉没有标题的内容9(filter sites that don't have its titles)
                     continue
                 dictlist[
                     destination_URI

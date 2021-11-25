@@ -83,7 +83,10 @@ def mysql_initation():  # 保证一定可以连到数据库
     cursor = mysql.cursor()
 
 def  cope_del_symbol(str1: str):
-    return str1.replace('//','/')
+    newstr = str1
+    while newstr[8:].find('//')!=-1:
+        newstr = newstr[:8] + newstr[8:].replace('//','/')
+    return newstr
 
 # -- postgres --
 def postgresql_initation():  # 这边是postgres的版本
