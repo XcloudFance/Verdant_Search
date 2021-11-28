@@ -179,7 +179,7 @@ def normal_search(amount,keyword,count = 10):
         time_start = time.time()
         match_weigh = {}
         tmp_index_list = {}
-
+        response_json = {}
         for i in res_:
 
             res = databaseHandler.restrictedQueryKeyword(i)
@@ -340,7 +340,6 @@ def normal_search(amount,keyword,count = 10):
         return json.dumps(response_json)
 
 
-
 def deal(keywords: list):
     ret = keywords[:]
     tmp1 = keywords
@@ -456,8 +455,10 @@ def record_log(content):
 def search():
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
-    return normal_search(amount,keyword)
-
+    ret = normal_search(amount,keyword)
+    if ret == None:
+        return {"length":0}
+    return ret
 
 @app.route("/keyword_think", endpoint="thinking", methods=["GET"])
 @databaseHandler.postgresql_check_status

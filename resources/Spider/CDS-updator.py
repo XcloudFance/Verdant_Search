@@ -263,7 +263,7 @@ def mainly():
     global cube
     #这一部分就开始做更新处理了，更新处理就是将数据库的记录拿出来再次爬取一次，然后对结果进行更新处理
     #然后进行一个段的处理方式
-    cursor.execute('select id,url,detail from content ORDER BY "id" DESC LIMIT 1000 OFFSET 1000') #从倒数1000个开始数1000个数字
+    cursor.execute('select id,url,detail from content where id >= 3458 and id <= 3466')#DESC LIMIT 650 OFFSET 0') 从倒数1000个开始数1000个数字
     res = cursor.fetchall()
     for i in res:
         try:
@@ -301,7 +301,7 @@ def mainly():
             cursor.execute("select count(*) as value from content")
             my_weigh = weigh_judgement(i[1], code)  # 把权值保存到变量，一会儿要用
                 
-            tablenum = str(cursor.fetchone()[0])  # 这边就是直接获取content表中到底有多少行了
+            tablenum = str(i[0])  # 这边就是直接获取content表中到底有多少行了
 
             # 在插入之前要先对这个网址进行权值判定，并且在判定完加入关键词的时候要进行排序，或者减少并发量，在夜晚的时候提交mysql表单好像也不是不行，但是这样做很麻烦
             # 此时就要添加关键词进去了，采取的方案是，如果有实现预留的关键词，就在里面的原先内容中添加，如果没有，就新建一个数据项
@@ -321,57 +321,58 @@ def mainly():
                     # 如果没有就得对其进行排序，从头搜到尾，用降序的形式实现这序列
                     # 首先先将原序列变成一个列表才方便操作
                     index_list = index[0].split("|")
-                    # print(index_list)
-                    index_list = [x for x in index_list if x != ""]
-                    time_start = time.time()
-                    for k in range(len(index_list)):
-                        # 取出每个地址的权值
-                        # print('select weigh from content where id = '+index_list[k])
-                        cursor.execute(
-                            "select weigh from content where id = " + index_list[k]
-                        )
-                        try:
-                            the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
-                        except:
-                            the_weigh = 0
-                        if my_weigh >= the_weigh:
-                            index_list.insert(k, tablenum)
-                            break
-                        elif k == len(index_list) - 1:
-                            index_list.insert(k + 1, tablenum)
-                            index_list = [x for x in index_list if x != ""]
-                            break
-                            # 如果没有比自己小的值就放在最后面
-
-                    # 然后再生成一次字符串表
-                    # 不能去重，会被set改顺序
-                    time_end = time.time()
-                    if mode == 'debug':
-                        print(time_end-time_start)
-                    tmp_list = list(set(index_list))
-                    tmp_list.sort(key=index_list.index)
-                    index_list = tmp_list
-                    for k in range(len(index_list)):
-                        if k == 0:
-                            index_list_ = index_list[k]
-                        else:
-                            index_list_ += "|" + index_list[k]
-
-                    # -- sort --
-                    
-                    times = 0
-                    while times <= 20:
-                        try:
+                    if tablenum not in index_list:
+                        # print(index_list)
+                        index_list = [x for x in index_list if x != ""]
+                        time_start = time.time()
+                        for k in range(len(index_list)):
+                            # 取出每个地址的权值
+                            # print('select weigh from content where id = '+index_list[k])
                             cursor.execute(
-                                "update search set value = %s where keyer = %s",
-                                (index_list_, j),
+                                "select weigh from content where id = " + index_list[k]
                             )
-                            
-                            # --update
-                            break
-                        except:
-                            times += 1
-                            mysql.rollback()
+                            try:
+                                the_weigh = cursor.fetchone()[0]  # 取出此时要被比较的权值
+                            except:
+                                the_weigh = 0
+                            if my_weigh >= the_weigh:
+                                index_list.insert(k, tablenum)
+                                break
+                            elif k == len(index_list) - 1:
+                                index_list.insert(k + 1, tablenum)
+                                index_list = [x for x in index_list if x != ""]
+                                break
+                                # 如果没有比自己小的值就放在最后面
+
+                        # 然后再生成一次字符串表
+                        # 不能去重，会被set改顺序
+                        time_end = time.time()
+                        if mode == 'debug':
+                            print(time_end-time_start)
+                        tmp_list = list(set(index_list))
+                        tmp_list.sort(key=index_list.index)
+                        index_list = tmp_list
+                        for k in range(len(index_list)):
+                            if k == 0:
+                                index_list_ = index_list[k]
+                            else:
+                                index_list_ += "|" + index_list[k]
+
+                        # -- sort --
+                        
+                        times = 0
+                        while times <= 20:
+                            try:
+                                cursor.execute(
+                                    "update search set value = %s where keyer = %s",
+                                    (index_list_, j),
+                                )
+                                
+                                # --update
+                                break
+                            except:
+                                times += 1
+                                mysql.rollback()
             mysql.commit()
             print(i[1], " :end")
             # ---------------------------------------------
