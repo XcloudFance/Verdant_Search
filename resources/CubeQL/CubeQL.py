@@ -156,5 +156,6 @@ postgresql_initation()
 cursor.execute('select url from content')
 urls = cursor.fetchall()
 for url in urls:
+    print(url)
     bloom.add(url[0])
 print('done')

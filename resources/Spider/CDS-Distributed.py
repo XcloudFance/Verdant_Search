@@ -290,10 +290,11 @@ def mainly():
                 
                 if destination_URI in dictlist:
                     continue
-                if destination_URI.find(".png") != -1 or destination_URI.find('//'):
+                if destination_URI.find(".png") != -1 or destination_URI[8:].find('//')!=-1:
                     continue
                 try:
                     code = get_url_code(destination_URI)
+
                 except:
                     print(destination_URI,":error")
                     continue
