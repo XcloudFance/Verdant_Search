@@ -59,7 +59,7 @@ host = port = password = database = root = extensions_path = ""
 
 extensions_config = {}
 cube = CubeQL_Client.CubeQL(open('./config/config.json','r'))
-
+english_dict = {}
 
 
 def initialization():
@@ -86,6 +86,13 @@ def initialization():
             os.system("git clone " + extensions_config[i]["repository"])
             # if the project is not completed, fork it from github
     print("Finished")
+
+    print('initializing dictionary database...')
+    f = open('./config/dict.txt','r',encoding='utf-8')
+    for i,e in enumerate(f.read().split('\n')):
+        name,word = e.split(',',1)
+        english_dict[i] = name
+    f.close()
 
     # -- end of read config --
 
@@ -126,7 +133,7 @@ def normal_search(amount,keyword,count = 10):
     record_ret = ((cube.get_record(keyword, str(amount))))
     if bool(record_ret): #如果为字符串就会变成true了
         return (record_ret+"\"}}")
-    res = databaseHandler.queryKeyword(keyword)
+    res = databaseHandler.queryKeyword(keyword) #第一次查询
 
     fetch = []
     for j in res:
@@ -150,6 +157,7 @@ def normal_search(amount,keyword,count = 10):
         # print(translative_search)
 
     if translative_search != False and js["Main"]["Whether_Translation"] == 1:  # 单词翻译查询
+        print(translative_search[2],233)
         if translative_search[2] == 0 or translative_search[2] == 1:
             # 或者，加一个多线程的思想，这边直接交给协程做，做好了用await等待加载完
             usatok, uktok = download_mp3(keyword)
@@ -170,16 +178,16 @@ def normal_search(amount,keyword,count = 10):
             }
         length += 1
         pass
-
+        
     if index_list == []:
         # 试试分词
         # 对结果进行分词,同样也对有空格的结果进行分词
         # 这边出现了bug，原因是因为~*的postgresql操作符所出现的问题 2021/3/2
+        print(length,234)
         res_ = deal(Cut(keyword))
         time_start = time.time()
         match_weigh = {}
         tmp_index_list = {}
-        response_json = {}
         for i in res_:
 
             res = databaseHandler.restrictedQueryKeyword(i)
@@ -213,12 +221,12 @@ def normal_search(amount,keyword,count = 10):
         for i in index_list:
             res = databaseHandler.getRecordDetails(i)
             length += 1
-            whether_extension = False
-            extension_name = ""
+
             # == extension search ==
             whether_extension = False
             extension_name = ""
             extension_height = 0
+            print(response_json)
             for j in extensions_config:
                 url = extensions_config[j]["url"]
                 if (url) == (res[1]):
@@ -267,7 +275,6 @@ def normal_search(amount,keyword,count = 10):
         print("time cost", time_end - time_start, "s")
         # -- 加一条cubeql临时存储结果 --
         cube.set_record(keyword, json.dumps(response_json), str(amount))
-
         return json.dumps(response_json)
 
     else:
@@ -338,7 +345,7 @@ def normal_search(amount,keyword,count = 10):
 
         cube.set_record(keyword, json.dumps(response_json), str(amount))
         return json.dumps(response_json)
-
+    
 
 def deal(keywords: list):
     ret = keywords[:]
@@ -455,7 +462,11 @@ def record_log(content):
 def search():
     amount = request.args.get("amount")
     keyword = request.args.get("keyword")
+    if keyword == '#每日一词': #每日一词彩蛋功能
+        keyword = english_dict[random.randint(1,len(english_dict)-1)]
+        pass
     ret = normal_search(amount,keyword)
+
     if ret == None:
         return {"length":0}
     return ret
@@ -531,18 +542,17 @@ def purevisit():
     print(URL)
 
 
-if __name__ == "__main__":
-    # mysql_initation()
-    # jieba.enable_parallel(4)
-    print(
-        "=================== Welcome to use Verdant_Search Engine Backend! ================="
-    )
-    print("Your now version : ", __version__)
-    print("Python version : ", version)
-    print(
-        "if you get some troubles during using, please contact me in my Github: https://github.com/XCloudFance"
-    )
-
+# mysql_initation()
+# jieba.enable_parallel(4)
+print(
+    "=================== Welcome to use Verdant_Search Engine Backend! ================="
+)
+print("Your now version : ", __version__)
+print("Python version : ", version)
+print(
+    "if you get some troubles during using, please contact me in my Github: https://github.com/XCloudFance"
+)
+if __name__ == '__main__':
     http_server = WSGIServer(("0.0.0.0", 7777), app)
 
     http_server.serve_forever()
