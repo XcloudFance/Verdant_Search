@@ -61,7 +61,11 @@
 - 新增一个插件: huyaoiBlog
 - 预计接下来更新会很大一部分和插件相关
 
-
+## 0.3.6 更新 2021/12/15
+- 优化了很多目录结构
+- 修复了很多bug
+- 并且新增了每日一词的功能
+- 好像性能提升了一点
 ## User-agent
 Mozilla/5.0 (compatible;VerdantSpider/1.0)
 
@@ -88,7 +92,7 @@ Mozilla/5.0 (compatible;VerdantSpider/1.0)
 16. 支持多样化搜索，更人性化的筛选器
 
 
-
+postgresql 参考版本为11.10
 ## Environment
 
 python >= 3.6
@@ -96,8 +100,6 @@ python >= 3.6
 flask
 
 fastapi==0.54.1
-
-postgresql == 11.10 
 
 psycopg2
 
@@ -109,7 +111,11 @@ jieba
 
 demjson
 
-asyncio
+bloomfilter_live
+
+gevent
+
+
 
 
 
@@ -170,23 +176,24 @@ config.json - 配置文件，只有在运行代码的根目录的json文件才�
 
 
 
-运行步骤
+#### 运行步骤
+  可能environment里面有一些库没有提到，反正有什么装什么
 
-修改config.json的数据库账号密码和ip
+  修改config.json的数据库账号密码和ip
 
-确保postgresql是开着的
+  确保postgresql是开着的
 
-在CubeQL目录下运行
+  在CubeQL目录下运行
 
-uvicorn CubeQL:app --port 1278
+  uvicorn CubeQL:app --port 1278
 
-在resources目录下运行
+  在resources目录下运行
 
-python backend.py
+  python backend.py
 
-在spider目录下运行（不运行也可以打开青荇搜索）
+  在spider目录下运行（不运行也可以打开青荇搜索）
 
-python CDS-Distributed.py
+  python CDS-Distributed.py
 
 
 
