@@ -129,9 +129,9 @@ gevent
 
 
 
-#### 使用方法
+## 使用方法
 
-##### 目录结构
+### 目录结构
 
 ├─.vscode  
 ├─docs  
@@ -176,7 +176,7 @@ config.json - 配置文件，只有在运行代码的根目录的json文件才�
 
 
 
-#### 运行步骤
+### 运行步骤
   可能environment里面有一些库没有提到，反正有什么装什么
 
   修改config.json的数据库账号密码和ip
@@ -198,11 +198,12 @@ config.json - 配置文件，只有在运行代码的根目录的json文件才�
 
 
 
-#### 青荇趋势
+### 青荇趋势
   通过访问/trend即可，可以统计出所有关键词的搜索频率
   
   
-#### 插件系统
+### 插件系统
   编写插件系统相当简单，插件系统本质上就是有一个前端框架在搜索结果下方，可以通过根目录的extensions.json（后面会放到config文件夹）进行对插件的注册
-  然后在extensions的文件夹里面新建一个index.html和package.json， json可参考huyaoiBlog的<a class="git-link" href="https://github.com/XcloudFance/Verdant_Search/blob/master/resources/extensions/huyaoiBlog/package.json">package.json </a>
+  然后在extensions的文件夹里面新建一个index.html和package.json， json可参考huyaoiBlog的
+  <a class="git-link" href="https://github.com/XcloudFance/Verdant_Search/blob/master/resources/extensions/huyaoiBlog/package.json">package.json </a>
 
