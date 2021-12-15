@@ -204,6 +204,8 @@ config.json - 配置文件，只有在运行代码的根目录的json文件才�
   
 ### 插件系统
   编写插件系统相当简单，插件系统本质上就是有一个前端框架在搜索结果下方，可以通过根目录的extensions.json（后面会放到config文件夹）进行对插件的注册
+  
   然后在extensions的文件夹里面新建一个index.html和package.json， json可参考huyaoiBlog的
+  
   <a class="git-link" href="https://github.com/XcloudFance/Verdant_Search/blob/master/resources/extensions/huyaoiBlog/package.json">package.json </a>
 
