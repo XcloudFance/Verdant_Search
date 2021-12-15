@@ -1,6 +1,6 @@
 # coding: UTF-8
 from requests_html import requests
-from maketoken import *
+from .maketoken import *
 from bs4 import BeautifulSoup
 hea = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3",

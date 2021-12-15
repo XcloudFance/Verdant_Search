@@ -1,10 +1,11 @@
 # -*- coding:utf-8 -*-
 # 搜索引擎部分
-__version__ = "0.3.5"
+__version__ = "0.3.6"
 from sys import version
 from gevent import monkey
 from gevent.pywsgi import WSGIServer
-
+import sys
+sys.path.append('..')
 # monkey.patch_all()
 import pymysql
 
@@ -21,17 +22,14 @@ from cut import *
 import time
 import re
 from requests_html import requests
-from get_pronun import *
-import asyncio
-import sys
-sys.path.append('..')
+from lib.get_pronun import *
 from CubeQL import CubeQL_Client
 import datetime
 
 # flask定义
 import flask
 from flask import render_template, request, redirect, send_from_directory
-from pssqlHandler import *
+from lib.pssqlHandler import *
 import os
 
 from urllib.parse import urlparse

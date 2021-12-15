@@ -8,22 +8,16 @@ import urllib
 import urllib.parse
 import urllib.request
 from bs4.builder import TreeBuilderRegistry
-from numpy import maximum
 import requests
 import re
 from bs4 import BeautifulSoup
 from cut import *
 import pymysql
-import socket, socketserver
-import threading
 import demjson
-import json
 import random
-import redis
 import sys
 sys.path.append('..')
 from CubeQL import CubeQL_Client
-import threading
 import psycopg2
 from CDS_Selenium import *
 import time
