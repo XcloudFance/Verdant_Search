@@ -6,6 +6,11 @@ class pssql_Handler:
 
     def __init__(self,host,port,root,password,database): #初始化数据库
         global pssql, cursor
+        self.host = host
+        self.port = port
+        self.root = root
+        self.password = password
+        self.database = database
         self.pssql = psycopg2.connect(
             host=host, port=int(port), user=root, password=password, database=database
         )
@@ -30,10 +35,14 @@ class pssql_Handler:
             
             # print(1)
             try:
-                pass
-                #self.cursor.execute(';')
+                
+                self.cursor.execute('select id from content where id = 1;')
             except:
                 print('pssql error!')
+                self.pssql = psycopg2.connect(
+                    host=self.host, port=int(self.port), user=self.root, password=self.password, database=self.database
+                )
+                self.cursor = self.pssql.cursor()
             return func(*args,**kwargs)
         return regular_checks
 
