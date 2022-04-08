@@ -1,15 +1,15 @@
 {
-    "name": "MusicPlayer",
+    "name": "Covid-19",
     "version": "1.0.0",
     "author": "Verdant_Search Original Extension",
-    "url": "",
+    "url": "https://www.wapi.cn/pneumonia.html",
     "contributors": [{
-        "name": "huyao",
-        "email": "xxx@github.com"
+        "name": "Lancelot",
+        "email": "15906005579@139.com"
     }],
-    "description": "It is the first extension for VerdantSearch.",
+    "description": "Covid-19 Gadget",
     "command": [
-        "echo helloworld!"
+        ""
     ],
     "repository": "git://github.com/XCloudFance/VerdantMusic.git"
 }
