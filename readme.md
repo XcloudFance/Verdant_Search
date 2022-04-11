@@ -15,9 +15,9 @@
 
 ## 运行截图
 
-![预览1](https://github.com/XcloudFance/Verdant_Search/blob/main/images/20220411125522.jpg)
+![预览1](https://github.com/XcloudFance/Verdant_Search/blob/master/images/20220411125522.jpg)
 
-![预览2](https://github.com/XcloudFance/Verdant_Search/blob/main/images/20220411125516.jpg)
+![预览2](https://github.com/XcloudFance/Verdant_Search/blob/master/images/20220411125516.jpg)
 
 ## CubeQL
 
