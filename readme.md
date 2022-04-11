@@ -13,6 +13,12 @@
 - 支持实时在线反馈bug和建议
 - 分布式爬虫+自我实现的临时数据库(CubeQL)
 
+## 运行截图
+
+![预览1](https://github.com/XcloudFance/Verdant_Search/blob/main/images/20220411125522.jpg)
+
+![预览2](https://github.com/XcloudFance/Verdant_Search/blob/main/images/20220411125516.jpg)
+
 ## CubeQL
 
 用于青荇搜索的临时存储结构，实现类似redis的功能，同时还能通过布隆过滤器模块来过滤已经爬虫过的网址，用作去重
