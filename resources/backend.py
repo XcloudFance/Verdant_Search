@@ -224,7 +224,6 @@ def normal_search(amount,keyword,count = 10):
             whether_extension = False
             extension_name = ""
             extension_height = 0
-            print(response_json)
             for j in extensions_config:
                 url = extensions_config[j]["url"]
                 if (url) == (res[1]):
@@ -303,7 +302,6 @@ def normal_search(amount,keyword,count = 10):
                 url = extensions_config[j]["url"]
                 if (url) == (res[1]):
                     for k in extensions_config[j]["command"]:
-                        print(j)
                         os.system(
                             "cd %VERDANT_HOME%"
                             + extensions_path[1:]

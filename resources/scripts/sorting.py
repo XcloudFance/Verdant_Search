@@ -5,7 +5,7 @@
 import time,datetime,demjson
 
 # -- read config --
-f = open("./config/config.json", "r")
+f = open("../config/config.json", "r")
 js = demjson.decode(f.read())
 f.close()
 host = js["Main"]["host"]
@@ -33,7 +33,7 @@ while True:
 
     #keyword = ','
     #cursor.execute('select keyer from search')
-    keywords = ['百度']
+    keywords = ['新冠']
 
     for keyword in keywords:
         #print(keyword[0])

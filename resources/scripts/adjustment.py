@@ -3,7 +3,7 @@ import time,datetime,demjson
 import psycopg2
 
 # -- read config --
-f = open("./config/config.json", "r")
+f = open("../config/config.json", "r")
 js = demjson.decode(f.read())
 f.close()
 host = js["Main"]["host"]
@@ -23,21 +23,24 @@ def cope_del_symbol(str1: str):
     return newstr
 cursor.execute('update content set banned = False')
 #如果有相同标题的，直接删除
-for i in range(2500,3000):
-    cursor.execute('select * from content where id = ' + str(i))
-    content = list(cursor.fetchone())
-    title = content[2]
-    url = content[1]
+for i in range(1,6000):
+    cursor.execute('select id,title,url,banned from content where id = ' + str(i))
+    try:
+        content = list(cursor.fetchone())
+    except:
+        continue
+    title = content[1]
+    url = content[2]
     if title in table:
         content[-1] = True
     else:
         table[title] = 1
-    copestr = cope_del_symbol(content[1])
-    if content[1] != copestr:
-        content[1] = copestr
+    copestr = cope_del_symbol(url)
+    if url != copestr:
+        url = copestr
     try:
-        cursor.execute('update content set url = %s , banned =  '+str(content[-1])+' where id = ' +str(content[0]),(content[1],))
+        cursor.execute('update content set url = %s , banned =  '+str(content[-1])+' where id = ' +str(content[0]),(url,))
     except:
         mysql.rollback()
         cursor.execute('update content set banned = True where id = ' +str(content[0]))
-    mysql.commit()
+mysql.commit()
