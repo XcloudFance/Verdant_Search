@@ -5,4 +5,4 @@ requests==2.20.0
 starlette==0.12.9
 beautifulsoup4==4.9.0
 fastapi==0.54.1
-jinja2==2.11.0
+jinja2==2.11.3
