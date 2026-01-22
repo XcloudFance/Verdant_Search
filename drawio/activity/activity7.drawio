@@ -1,0 +1,168 @@
+<mxfile host="app.diagrams.net" agent="drawio" version="29.3.0">
+  <diagram name="Evaluate Reranking Performance" id="evaluate_reranking">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="frame" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=280;height=40;" value="Evaluate Reranking Performance and Metrics" vertex="1">
+          <mxGeometry height="1200" width="1280" x="60" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="swimlane_container" parent="1" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;dx=450;dy=50;" value="" vertex="1">
+          <mxGeometry height="1100" width="1160" x="80" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_admin" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="Administrator" vertex="1">
+          <mxGeometry height="40" width="120" x="225" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_system" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="Evaluation System" vertex="1">
+          <mxGeometry height="40" width="180" x="770" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="act_initiate_eval" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Initiate reranking&#xa;evaluation task" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_start" edge="1" parent="1" source="start" target="act_initiate_eval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_load_benchmark" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Load benchmark dataset&#xa;(MS MARCO, MMDocIR)" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_initiate_load" edge="1" parent="1" source="act_initiate_eval" target="sys_load_benchmark" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_prepare_test_queries" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Prepare test queries&#xa;with ground truth labels" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_load_prepare" edge="1" parent="1" source="sys_load_benchmark" target="sys_prepare_test_queries" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_run_baseline" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Run baseline methods&#xa;(BM25, RankZephyr)" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_prepare_baseline" edge="1" parent="1" source="sys_prepare_test_queries" target="sys_run_baseline" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_run_multimodal" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Run multimodal reranker&#xa;on test set" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_baseline_multimodal" edge="1" parent="1" source="sys_run_baseline" target="sys_run_multimodal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fork1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="350" x="545" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_to_fork" edge="1" parent="1" source="sys_run_multimodal" target="fork1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_calc_ndcg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Calculate NDCG&#xa;metrics" vertex="1">
+          <mxGeometry height="60" width="150" x="195" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_calc_map" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Calculate MAP&#xa;and MRR" vertex="1">
+          <mxGeometry height="60" width="150" x="385" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_calc_precision" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Calculate Precision&#xa;and Recall" vertex="1">
+          <mxGeometry height="60" width="150" x="575" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_measure_latency" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Measure inference&#xa;latency" vertex="1">
+          <mxGeometry height="60" width="150" x="765" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_fork_ndcg" edge="1" parent="1" source="fork1" target="sys_calc_ndcg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="705" />
+              <mxPoint x="590" y="740" />
+              <mxPoint x="270" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_map" edge="1" parent="1" source="fork1" target="sys_calc_map" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="705" />
+              <mxPoint x="670" y="740" />
+              <mxPoint x="460" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_precision" edge="1" parent="1" source="fork1" target="sys_calc_precision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="705" />
+              <mxPoint x="750" y="740" />
+              <mxPoint x="650" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_latency" edge="1" parent="1" source="fork1" target="sys_measure_latency" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850" y="705" />
+              <mxPoint x="850" y="740" />
+              <mxPoint x="840" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="join1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="350" x="545" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ndcg_join" edge="1" parent="1" source="sys_calc_ndcg" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="270" y="870" />
+              <mxPoint x="590" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_map_join" edge="1" parent="1" source="sys_calc_map" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="870" />
+              <mxPoint x="670" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_precision_join" edge="1" parent="1" source="sys_calc_precision" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="870" />
+              <mxPoint x="750" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_latency_join" edge="1" parent="1" source="sys_measure_latency" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="870" />
+              <mxPoint x="850" y="870" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sys_compare_baselines" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Compare results against&#xa;baseline methods" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="970" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_join_compare" edge="1" parent="1" source="join1" target="sys_compare_baselines" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_generate_report" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Generate evaluation&#xa;report with visualizations" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_compare_report" edge="1" parent="1" source="sys_compare_baselines" target="sys_generate_report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_review_report" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Review evaluation report&#xa;and performance metrics" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_report_review" edge="1" parent="1" source="sys_generate_report" target="act_review_report" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="1180" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_end" edge="1" parent="1" source="act_review_report" target="end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

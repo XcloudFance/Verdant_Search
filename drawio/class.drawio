@@ -1,0 +1,174 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0" version="29.3.0">
+  <diagram name="Class Diagram - Core Domain Model" id="0">
+    <mxGraphModel dx="5193" dy="2975" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="class_user" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="User&#xa;───────────────&#xa;- userID: string&#xa;- email: string&#xa;- passwordHash: string&#xa;- profile: UserProfile&#xa;- createdAt: timestamp&#xa;───────────────&#xa;+ authenticate(): boolean&#xa;+ updateProfile(): void&#xa;+ getConversations(): List&lt;Conversation&gt;" vertex="1">
+          <mxGeometry height="180" width="280" x="-140" y="-130" as="geometry" />
+        </mxCell>
+        <mxCell id="class_session" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="Session&#xa;───────────────&#xa;- sessionID: string&#xa;- userID: string&#xa;- token: string&#xa;- expiresAt: timestamp&#xa;───────────────&#xa;+ validate(): boolean&#xa;+ refresh(): void&#xa;+ revoke(): void" vertex="1">
+          <mxGeometry height="160" width="280" x="-140" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="class_profile" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="UserProfile&#xa;───────────────&#xa;- language: string&#xa;- theme: string&#xa;- searchPreferences: JSON&#xa;───────────────&#xa;+ updatePreferences(): void" vertex="1">
+          <mxGeometry height="140" width="280" x="-510" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="class_conversation" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="Conversation&#xa;───────────────&#xa;- conversationID: string&#xa;- userID: string&#xa;- messages: List&lt;Message&gt;&#xa;- context: string&#xa;- status: ConversationStatus&#xa;───────────────&#xa;+ addMessage(): void&#xa;+ getHistory(): List&lt;Message&gt;&#xa;+ rewriteQuery(): Query" vertex="1">
+          <mxGeometry height="200" width="280" x="1340" y="-130" as="geometry" />
+        </mxCell>
+        <mxCell id="class_message" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="Message&#xa;───────────────&#xa;- messageID: string&#xa;- conversationID: string&#xa;- role: MessageRole&#xa;- content: string&#xa;- citations: List&lt;Citation&gt;&#xa;- timestamp: timestamp&#xa;───────────────&#xa;+ addCitation(): void&#xa;+ format(): string" vertex="1">
+          <mxGeometry height="180" width="280" x="1340" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="class_citation" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="Citation&#xa;───────────────&#xa;- chunkID: string&#xa;- documentID: string&#xa;- snippet: string&#xa;───────────────&#xa;+ getSource(): Document" vertex="1">
+          <mxGeometry height="140" width="280" x="1340" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="class_document" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="Document&#xa;───────────────&#xa;- documentID: string&#xa;- source: string&#xa;- title: string&#xa;- content: string&#xa;- metadata: JSON&#xa;- status: DocumentStatus&#xa;- createdAt: timestamp&#xa;───────────────&#xa;+ extract(): void&#xa;+ chunk(): List&lt;Chunk&gt;&#xa;+ getMetadata(): JSON" vertex="1">
+          <mxGeometry height="200" width="280" x="270" y="-150" as="geometry" />
+        </mxCell>
+        <mxCell id="class_chunk" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="Chunk&#xa;───────────────&#xa;- chunkID: string&#xa;- documentID: string&#xa;- content: string&#xa;- embedding: float[]&#xa;- position: int&#xa;- metadata: JSON&#xa;───────────────&#xa;+ generateEmbedding(): void&#xa;+ calculateScore(): float" vertex="1">
+          <mxGeometry height="180" width="280" x="640" y="-130" as="geometry" />
+        </mxCell>
+        <mxCell id="class_query" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="Query&#xa;───────────────&#xa;- queryID: string&#xa;- userID: string&#xa;- text: string&#xa;- embedding: float[]&#xa;- filters: JSON&#xa;- timestamp: timestamp&#xa;───────────────&#xa;+ rewrite(): Query&#xa;+ generateEmbedding(): void" vertex="1">
+          <mxGeometry height="180" width="280" x="270" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="class_search_result" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="SearchResult&#xa;───────────────&#xa;- queryID: string&#xa;- chunks: List&lt;RankedChunk&gt;&#xa;- totalResults: int&#xa;- latency: float&#xa;───────────────&#xa;+ getTopK(): List&lt;RankedChunk&gt;&#xa;+ rerank(): void" vertex="1">
+          <mxGeometry height="160" width="280" x="640" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="class_ranked_chunk" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="RankedChunk&#xa;───────────────&#xa;- chunk: Chunk&#xa;- score: float&#xa;- rank: int&#xa;- explanation: string&#xa;───────────────&#xa;+ getChunk(): Chunk&#xa;+ getScore(): float" vertex="1">
+          <mxGeometry height="160" width="280" x="1000" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="class_index" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="«interface»&#xa;Index&#xa;───────────────&#xa;+ add(chunk: Chunk): void&#xa;+ search(query: Query): List&lt;Chunk&gt;&#xa;+ update(chunkID: string): void&#xa;+ delete(chunkID: string): void" vertex="1">
+          <mxGeometry height="140" width="280" x="450" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="class_inverted_index" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="InvertedIndex&#xa;───────────────&#xa;- postingLists: Map&lt;string, List&gt;&#xa;───────────────&#xa;+ search(query: Query): List&lt;Chunk&gt;&#xa;+ calculateBM25(): float" vertex="1">
+          <mxGeometry height="140" width="280" x="180" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="class_vector_index" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="VectorIndex&#xa;───────────────&#xa;- hnsw: HNSWGraph&#xa;───────────────&#xa;+ search(query: Query): List&lt;Chunk&gt;&#xa;+ nearestNeighbors(): List&lt;Chunk&gt;" vertex="1">
+          <mxGeometry height="140" width="280" x="620" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="enum_doc_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="«enumeration»&#xa;DocumentStatus&#xa;───────────────&#xa;PENDING&#xa;CRAWLING&#xa;PROCESSING&#xa;INDEXED&#xa;ACTIVE&#xa;ARCHIVED" vertex="1">
+          <mxGeometry height="160" width="180" x="150" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="enum_message_role" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="«enumeration»&#xa;MessageRole&#xa;───────────────&#xa;USER&#xa;ASSISTANT&#xa;SYSTEM" vertex="1">
+          <mxGeometry height="120" width="180" x="1640" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="enum_conv_status" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;fontSize=12;" value="«enumeration»&#xa;ConversationStatus&#xa;───────────────&#xa;NEW&#xa;ACTIVE&#xa;PAUSED&#xa;ARCHIVED" vertex="1">
+          <mxGeometry height="140" width="180" x="1630" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_session" edge="1" parent="1" source="class_session" style="endArrow=diamond;endFill=1;html=1;endSize=12;" target="class_user" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_session_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_session_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="0..*" vertex="1">
+          <mxGeometry height="20" width="30" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_profile" edge="1" parent="1" source="class_profile" style="endArrow=diamond;endFill=1;html=1;endSize=12;" target="class_user" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_profile_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_profile_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="-230" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_doc_chunk" edge="1" parent="1" source="class_chunk" style="endArrow=diamond;endFill=1;html=1;endSize=12;" target="class_document" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_doc_chunk_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="550" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_doc_chunk_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1..*" vertex="1">
+          <mxGeometry height="20" width="30" x="610" y="-60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_index_chunk" edge="1" parent="1" source="class_index" style="endArrow=none;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="class_chunk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_index_chunk_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="indexes" vertex="1">
+          <mxGeometry height="20" width="60" x="700" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_index_chunk_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="*" vertex="1">
+          <mxGeometry height="20" width="20" x="790" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_inverted_index" edge="1" parent="1" source="class_inverted_index" style="endArrow=block;dashed=1;html=1;endFill=0;endSize=12;" target="class_index" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_vector_index" edge="1" parent="1" source="class_vector_index" style="endArrow=block;dashed=1;html=1;endFill=0;endSize=12;" target="class_index" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_query_result" edge="1" parent="1" source="class_query" style="endArrow=none;html=1;" target="class_search_result" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_query_result_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="produces" vertex="1">
+          <mxGeometry height="20" width="60" x="550" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_query_result_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="550" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_query_result_label3" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="610" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_result_ranked" edge="1" parent="1" source="class_ranked_chunk" style="endArrow=diamond;endFill=0;html=1;endSize=12;" target="class_search_result" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_result_ranked_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="930" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_result_ranked_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="*" vertex="1">
+          <mxGeometry height="20" width="20" x="970" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_ranked_chunk" edge="1" parent="1" source="class_ranked_chunk" style="endArrow=open;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="class_chunk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_ranked_chunk_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="references" vertex="1">
+          <mxGeometry height="20" width="80" x="860" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_conv" edge="1" parent="1" source="class_user" style="endArrow=none;html=1;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=0;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;" target="class_conversation" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="140" y="-170" />
+              <mxPoint x="1340" y="-170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_user_conv_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="has" vertex="1">
+          <mxGeometry height="20" width="40" x="680" y="-190" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_conv_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="150" y="-150" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_user_conv_label3" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="*" vertex="1">
+          <mxGeometry height="20" width="20" x="1310" y="-150" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_conv_msg" edge="1" parent="1" source="class_message" style="endArrow=diamond;endFill=1;html=1;endSize=12;" target="class_conversation" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_conv_msg_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="1480" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_conv_msg_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="*" vertex="1">
+          <mxGeometry height="20" width="20" x="1480" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_msg_citation" edge="1" parent="1" source="class_citation" style="endArrow=diamond;endFill=0;html=1;endSize=12;" target="class_message" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_msg_citation_label" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="1" vertex="1">
+          <mxGeometry height="20" width="20" x="1480" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_msg_citation_label2" parent="1" style="text;html=1;align=center;verticalAlign=middle;" value="*" vertex="1">
+          <mxGeometry height="20" width="20" x="1480" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_doc_status" edge="1" parent="1" source="class_document" style="endArrow=open;dashed=1;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="enum_doc_status" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_msg_role" edge="1" parent="1" source="class_message" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="enum_message_role" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_conv_status" edge="1" parent="1" source="class_conversation" style="endArrow=open;dashed=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="enum_conv_status" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

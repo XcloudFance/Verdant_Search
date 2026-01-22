@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+
+# Python
+backend/python/venv
+backend/python/__pycache__
+backend/python/*.pyc
+backend/python/*.pyo
+backend/python/*.pyd
+backend/python/.pytest_cache
+backend/python/.coverage
+
+# Crawler (排除爬虫)
+backend/crawler
+
+# Node
+frontend/node_modules
+frontend/dist
+frontend/.vite
+
+# Go
+backend/go/tmp
+
+# Logs
+logs
+*.log
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data files
+*.csv
+drawio
+verdant_dashboard
+
+# Docker
+docker-compose.yml
+
+# Documentation
+README.md
+readme.md
+*.md
+!backend/*/README.md

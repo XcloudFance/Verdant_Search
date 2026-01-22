@@ -1,0 +1,130 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="29.2.7">
+  <diagram name="Data Ingestion and Indexing Module" id="0">
+    <mxGraphModel dx="2714" dy="1169" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system_boundary" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;verticalAlign=top;fontStyle=1;fontSize=16;" value="Data Ingestion and Indexing Module" vertex="1">
+          <mxGeometry height="980" width="1100" x="320" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_admin" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="System Administrator" vertex="1">
+          <mxGeometry height="120" width="60" x="100" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_scheduler" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Scheduler" vertex="1">
+          <mxGeometry height="120" width="60" x="100" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_configure_ingestion" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-25: Configure&lt;br&gt;Data Ingestion" vertex="1">
+          <mxGeometry height="80" width="160" x="360" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_trigger_crawl" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-26: Trigger&lt;br&gt;Crawling Job" vertex="1">
+          <mxGeometry height="80" width="160" x="360" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_monitor_indexing" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-27: Monitor&lt;br&gt;Indexing Progress" vertex="1">
+          <mxGeometry height="80" width="160" x="360" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_manage_schedule" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-28: Manage Index&lt;br&gt;Refresh Schedule" vertex="1">
+          <mxGeometry height="80" width="160" x="360" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_crawl_confluence" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-29: Crawl&lt;br&gt;Confluence" vertex="1">
+          <mxGeometry height="80" width="160" x="620" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_crawl_gdrive" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-30: Crawl&lt;br&gt;Google Drive" vertex="1">
+          <mxGeometry height="80" width="160" x="620" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_crawl_git" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-31: Crawl Git&lt;br&gt;Repositories" vertex="1">
+          <mxGeometry height="80" width="160" x="620" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_crawl_local" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-32: Crawl Local&lt;br&gt;Network Shares" vertex="1">
+          <mxGeometry height="80" width="160" x="620" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_extract_text" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-33: Extract Text&lt;br&gt;and Images" vertex="1">
+          <mxGeometry height="80" width="160" x="880" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_chunk_documents" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-34: Chunk&lt;br&gt;Documents" vertex="1">
+          <mxGeometry height="80" width="160" x="880" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_build_inverted_index" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-35: Build&lt;br&gt;Inverted Index" vertex="1">
+          <mxGeometry height="80" width="160" x="1140" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_build_vector_index" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-36: Build Vector&lt;br&gt;Index (HNSW)" vertex="1">
+          <mxGeometry height="80" width="160" x="1140" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_split_by_heading" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-38: Split by&lt;br&gt;Heading" vertex="1">
+          <mxGeometry height="80" width="160" x="620" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_split_by_paragraph" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-39: Split by&lt;br&gt;Paragraph" vertex="1">
+          <mxGeometry height="80" width="160" x="620" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_fixed_token_split" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-40: Fixed Token&lt;br&gt;Count Split" vertex="1">
+          <mxGeometry height="80" width="160" x="620" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_realtime_sync" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-41: Real-time Sync" vertex="1">
+          <mxGeometry height="80" width="160" x="590" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_batch_update" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-42: Scheduled&lt;br&gt;Batch Update" vertex="1">
+          <mxGeometry height="80" width="160" x="360" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_generate_embeddings" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-37: Generate&lt;br&gt;Embeddings" vertex="1">
+          <mxGeometry height="80" width="160" x="880" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc1" edge="1" parent="1" source="actor_admin" style="endArrow=none;html=1;" target="uc_configure_ingestion" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc2" edge="1" parent="1" source="actor_admin" style="endArrow=none;html=1;" target="uc_trigger_crawl" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc3" edge="1" parent="1" source="actor_admin" style="endArrow=none;html=1;" target="uc_monitor_indexing" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc4" edge="1" parent="1" source="actor_admin" style="endArrow=none;html=1;" target="uc_manage_schedule" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc5" edge="1" parent="1" source="actor_scheduler" style="endArrow=none;html=1;" target="uc_batch_update" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include1" edge="1" parent="1" source="uc_trigger_crawl" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_crawl_confluence" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include2" edge="1" parent="1" source="uc_trigger_crawl" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_crawl_gdrive" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include3" edge="1" parent="1" source="uc_trigger_crawl" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_crawl_git" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include4" edge="1" parent="1" source="uc_trigger_crawl" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_crawl_local" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include5" edge="1" parent="1" source="uc_crawl_confluence" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_extract_text" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include6" edge="1" parent="1" source="uc_extract_text" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_chunk_documents" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include7" edge="1" parent="1" source="uc_chunk_documents" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_build_inverted_index" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include8" edge="1" parent="1" source="uc_chunk_documents" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_build_vector_index" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include9" edge="1" parent="1" source="uc_build_vector_index" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_generate_embeddings" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend1" edge="1" parent="1" source="uc_split_by_heading" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_chunk_documents" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend2" edge="1" parent="1" source="uc_split_by_paragraph" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_chunk_documents" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend3" edge="1" parent="1" source="uc_fixed_token_split" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_chunk_documents" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend4" edge="1" parent="1" source="uc_realtime_sync" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_manage_schedule" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend5" edge="1" parent="1" source="uc_batch_update" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_manage_schedule" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

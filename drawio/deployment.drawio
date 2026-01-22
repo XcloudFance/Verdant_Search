@@ -1,0 +1,154 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0" version="29.3.0">
+  <diagram name="Deployment Diagram" id="deployment">
+    <mxGraphModel dx="2011" dy="978" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="Verdant Search Deployment Diagram" vertex="1">
+          <mxGeometry height="40" width="500" x="630" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="group_db" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="380" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="db_server" parent="group_db" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="db_label" parent="group_db" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;Database Server" vertex="1">
+          <mxGeometry height="25" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="postgres" parent="group_db" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;database&amp;gt;&amp;gt;&lt;br&gt;PostgreSQL 15&lt;br&gt;(users, documents)" vertex="1">
+          <mxGeometry height="120" width="150" x="25" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="group_redis" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="370" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="redis_server" parent="group_redis" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="redis_label" parent="group_redis" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;Cache Server" vertex="1">
+          <mxGeometry height="25" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="group_redis" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Redis 7.2&lt;br&gt;(Session, Query)" vertex="1">
+          <mxGeometry height="120" width="150" x="25" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="group_kafka" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="370" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka_server" parent="group_kafka" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka_label" parent="group_kafka" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;Message Queue" vertex="1">
+          <mxGeometry height="25" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka" parent="group_kafka" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Kafka 3.6&lt;br&gt;(Crawl Jobs)" vertex="1">
+          <mxGeometry height="120" width="150" x="25" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="group_client" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="1270" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="client_device" parent="group_client" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="c2q9i851IIsWA-9BVTzz-74" connectable="0" parent="group_client" style="group" value="" vertex="1">
+          <mxGeometry height="160" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="client_label" parent="c2q9i851IIsWA-9BVTzz-74" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;User Device" vertex="1">
+          <mxGeometry height="25" width="170" as="geometry" />
+        </mxCell>
+        <mxCell id="react_app" parent="c2q9i851IIsWA-9BVTzz-74" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;React Frontend" vertex="1">
+          <mxGeometry height="120" width="150" x="10" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="group_frontend" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="890" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend_server" parent="group_frontend" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend_label" parent="group_frontend" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;Frontend Server" vertex="1">
+          <mxGeometry height="25" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="nginx_server" parent="group_frontend" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Nginx 1.24" vertex="1">
+          <mxGeometry height="120" width="150" x="25" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="group_backend" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="800" y="495" as="geometry" />
+        </mxCell>
+        <mxCell id="backend_server" parent="group_backend" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="backend_label" parent="group_backend" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;Backend API Server" vertex="1">
+          <mxGeometry height="25" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="api_service" parent="group_backend" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Go 1.21&lt;br&gt;API Gateway" vertex="1">
+          <mxGeometry height="120" width="150" x="25" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="group_search" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="1250" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="search_server" parent="group_search" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="search_label" parent="group_search" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;Search Server" vertex="1">
+          <mxGeometry height="25" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="search_services" parent="group_search" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;Python 3.11&lt;br&gt;Pyserini BM25&lt;br&gt;FAISS HNSW" vertex="1">
+          <mxGeometry height="120" width="150" x="25" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="group_ml" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="200" width="200" x="1280" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="ml_server" parent="group_ml" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="200" width="200" as="geometry" />
+        </mxCell>
+        <mxCell id="ml_label" parent="group_ml" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=top;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=11" value="&lt;br&gt;AI/ML Server" vertex="1">
+          <mxGeometry height="25" width="170" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="ml_services" parent="group_ml" style="html=1;dropTarget=0;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=10" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;PyTorch 2.1&lt;br&gt;SGLang (Qwen2.5)&lt;br&gt;CLIP + BLIP-2" vertex="1">
+          <mxGeometry height="120" width="150" x="25" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="conn1" edge="1" parent="1" source="group_client" style="endArrow=none;html=1;dashed=1;dashPattern=1 4;strokeWidth=2;" target="group_frontend" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn1_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=10" value="&lt;&lt;protocol&gt;&gt;&lt;br&gt;HTTPS" vertex="1">
+          <mxGeometry height="30" width="60" x="1150" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="conn2" edge="1" parent="1" source="group_frontend" style="endArrow=none;html=1;dashed=1;dashPattern=1 4;strokeWidth=2;" target="group_backend" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn2_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=10" value="&lt;&lt;protocol&gt;&gt;&lt;br&gt;HTTP/REST" vertex="1">
+          <mxGeometry height="30" width="60" x="950" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="conn3" edge="1" parent="1" source="group_backend" style="endArrow=none;html=1;dashed=1;dashPattern=1 4;strokeWidth=2;" target="group_search" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn3_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=10" value="&lt;&lt;protocol&gt;&gt;&lt;br&gt;gRPC" vertex="1">
+          <mxGeometry height="30" width="60" x="1160" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="conn4" edge="1" parent="1" source="group_search" style="endArrow=none;html=1;dashed=1;dashPattern=1 4;strokeWidth=2;" target="group_ml" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn4_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=10" value="&lt;&lt;protocol&gt;&gt;&lt;br&gt;gRPC" vertex="1">
+          <mxGeometry height="30" width="60" x="1390" y="655" as="geometry" />
+        </mxCell>
+        <mxCell id="conn5" edge="1" parent="1" source="group_backend" style="endArrow=none;html=1;dashed=1;dashPattern=1 4;strokeWidth=2;exitX=0;exitY=0.25;exitDx=0;exitDy=0;exitPerimeter=0;" target="group_db" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn5_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=10" value="&lt;&lt;protocol&gt;&gt;&lt;br&gt;TCP/SQL" vertex="1">
+          <mxGeometry height="30" width="60" x="650" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="conn6" edge="1" parent="1" source="group_backend" style="endArrow=none;html=1;dashed=1;dashPattern=1 4;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" target="group_redis" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn6_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=10" value="&lt;&lt;protocol&gt;&gt;&lt;br&gt;RESP" vertex="1">
+          <mxGeometry height="30" width="60" x="590" y="505" as="geometry" />
+        </mxCell>
+        <mxCell id="conn7" edge="1" parent="1" source="group_backend" style="endArrow=none;html=1;dashed=1;dashPattern=1 4;strokeWidth=2;exitX=0;exitY=0.75;exitDx=0;exitDy=0;exitPerimeter=0;" target="group_kafka" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn7_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=2;fontSize=10" value="&lt;&lt;protocol&gt;&gt;&lt;br&gt;Kafka Protocol" vertex="1">
+          <mxGeometry height="30" width="80" x="590" y="745" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

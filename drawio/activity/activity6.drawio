@@ -1,0 +1,203 @@
+<mxfile host="app.diagrams.net" agent="drawio" version="29.3.0">
+  <diagram name="Trigger Crawling Job" id="trigger_crawling">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="frame" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=260;height=40;" value="Trigger Crawling and Indexing Job" vertex="1">
+          <mxGeometry height="1400" width="1280" x="60" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="swimlane_container" parent="1" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;dx=450;dy=50;" value="" vertex="1">
+          <mxGeometry height="1300" width="1160" x="80" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_admin" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="Administrator" vertex="1">
+          <mxGeometry height="40" width="120" x="225" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_system" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="Crawling System" vertex="1">
+          <mxGeometry height="40" width="180" x="770" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="act_initiate" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Initiate crawling job&#xa;(manual or scheduled)" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_start" edge="1" parent="1" source="start" target="act_initiate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_receive_trigger" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Receive crawling&#xa;trigger request" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_initiate_receive" edge="1" parent="1" source="act_initiate" target="sys_receive_trigger" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_allocate_workers" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Allocate distributed&#xa;worker nodes via Kafka" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_receive_allocate" edge="1" parent="1" source="sys_receive_trigger" target="sys_allocate_workers" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fork1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="350" x="545" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_to_fork" edge="1" parent="1" source="sys_allocate_workers" target="fork1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_crawl_sources" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Crawl configured&#xa;data sources" vertex="1">
+          <mxGeometry height="60" width="160" x="195" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_extract_content" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Extract text and&#xa;images from docs" vertex="1">
+          <mxGeometry height="60" width="160" x="405" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_chunk_docs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Chunk documents&#xa;into segments" vertex="1">
+          <mxGeometry height="60" width="160" x="615" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_generate_embeddings" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Generate dense&#xa;vector embeddings" vertex="1">
+          <mxGeometry height="60" width="160" x="825" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_fork_crawl" edge="1" parent="1" source="fork1" target="sys_crawl_sources" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="485" />
+              <mxPoint x="590" y="520" />
+              <mxPoint x="275" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_extract" edge="1" parent="1" source="fork1" target="sys_extract_content" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="485" />
+              <mxPoint x="670" y="520" />
+              <mxPoint x="485" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_chunk" edge="1" parent="1" source="fork1" target="sys_chunk_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="485" />
+              <mxPoint x="750" y="520" />
+              <mxPoint x="695" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_embeddings" edge="1" parent="1" source="fork1" target="sys_generate_embeddings" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="850" y="485" />
+              <mxPoint x="850" y="520" />
+              <mxPoint x="905" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="join1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="350" x="545" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_crawl_join" edge="1" parent="1" source="sys_crawl_sources" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="275" y="650" />
+              <mxPoint x="590" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_extract_join" edge="1" parent="1" source="sys_extract_content" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="485" y="650" />
+              <mxPoint x="670" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_chunk_join" edge="1" parent="1" source="sys_chunk_docs" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="695" y="650" />
+              <mxPoint x="750" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_embeddings_join" edge="1" parent="1" source="sys_generate_embeddings" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="905" y="650" />
+              <mxPoint x="850" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="fork2" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="280" x="580" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_join_fork2" edge="1" parent="1" source="join1" target="fork2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_build_inverted" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Build inverted index&#xa;for BM25" vertex="1">
+          <mxGeometry height="60" width="170" x="565" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_build_hnsw" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Build HNSW vector&#xa;index" vertex="1">
+          <mxGeometry height="60" width="170" x="785" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_fork2_inverted" edge="1" parent="1" source="fork2" target="sys_build_inverted" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="765" />
+              <mxPoint x="650" y="800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork2_hnsw" edge="1" parent="1" source="fork2" target="sys_build_hnsw" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="810" y="765" />
+              <mxPoint x="810" y="800" />
+              <mxPoint x="870" y="800" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="join2" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="280" x="580" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_inverted_join2" edge="1" parent="1" source="sys_build_inverted" target="join2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="930" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_hnsw_join2" edge="1" parent="1" source="sys_build_hnsw" target="join2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="870" y="930" />
+              <mxPoint x="810" y="930" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sys_persist_storage" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Persist indexes to&#xa;compressed storage" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="1030" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_join2_persist" edge="1" parent="1" source="join2" target="sys_persist_storage" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_update_metadata" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Update job status&#xa;and statistics" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_persist_metadata" edge="1" parent="1" source="sys_persist_storage" target="sys_update_metadata" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_view_status" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="View indexing progress&#xa;and completion status" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_metadata_view" edge="1" parent="1" source="sys_update_metadata" target="act_view_status" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="1280" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_end" edge="1" parent="1" source="act_view_status" target="end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

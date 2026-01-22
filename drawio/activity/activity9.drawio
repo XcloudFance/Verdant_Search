@@ -1,0 +1,119 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0" version="29.3.0">
+  <diagram name="Receive Query Generate Answer" id="receive_query_generate">
+    <mxGraphModel dx="2714" dy="1169" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="frame" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=280;height=40;" value="Receive Query and Generate AI Answer" vertex="1">
+          <mxGeometry height="1200" width="1280" x="60" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="swimlane_container" parent="1" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;dx=450;dy=50;" value="" vertex="1">
+          <mxGeometry height="1100" width="1160" x="80" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_user" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="User" vertex="1">
+          <mxGeometry height="40" width="100" x="235" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_system" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="RAG System" vertex="1">
+          <mxGeometry height="40" width="180" x="770" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="act_submit_query" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Submit search query&#xa;in chat interface" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_start" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_submit_query">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_receive_query" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Receive and validate&#xa;user query" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_submit_receive" edge="1" parent="1" source="act_submit_query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_receive_query">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_trigger_retrieval" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Trigger hybrid retrieval&#xa;process" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_receive_trigger" edge="1" parent="1" source="sys_receive_query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_trigger_retrieval">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_retrieve_context" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Retrieve top ranked&#xa;document chunks" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_trigger_retrieve" edge="1" parent="1" source="sys_trigger_retrieval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_retrieve_context">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="decision_context_found" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="90" width="100" x="670" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="decision_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" value="Context&#xa;Found?" vertex="1">
+          <mxGeometry height="40" width="70" x="685" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_retrieve_decision" edge="1" parent="1" source="sys_retrieve_context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="decision_context_found">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_no_context_response" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Generate response&#xa;indicating no results" vertex="1">
+          <mxGeometry height="60" width="140" x="900" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_no_context" edge="1" parent="1" source="decision_context_found" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_no_context_response">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_no" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="[No]" vertex="1">
+          <mxGeometry height="25" width="40" x="795" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_inject_context" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Inject retrieved context&#xa;into LLM prompt" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_yes_inject" edge="1" parent="1" source="decision_context_found" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_inject_context">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_yes" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="[Yes]" vertex="1">
+          <mxGeometry height="25" width="40" x="720" y="685" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_generate_answer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="LLM generates grounded&#xa;answer with citations" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_inject_generate" edge="1" parent="1" source="sys_inject_context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_generate_answer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_validate_grounding" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Validate answer&#xa;grounding in context" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_generate_validate" edge="1" parent="1" source="sys_generate_answer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_validate_grounding">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_stream_response" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Stream response with&#xa;inline citations" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_validate_stream" edge="1" parent="1" source="sys_validate_grounding" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_stream_response">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_view_answer" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="View AI generated&#xa;answer with sources" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_stream_view" edge="1" parent="1" source="sys_stream_response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_view_answer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_no_context_view" edge="1" parent="1" source="sys_no_context_response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="970" y="965" />
+              <mxPoint x="1100" y="965" />
+              <mxPoint x="1100" y="1155" />
+              <mxPoint x="420" y="1155" />
+              <mxPoint x="420" y="1095" />
+            </Array>
+            <mxPoint x="970" y="670" as="sourcePoint" />
+            <mxPoint x="375" y="1095" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_end" edge="1" parent="1" source="act_view_answer" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

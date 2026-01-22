@@ -1,0 +1,73 @@
+// 在ChatWidget.jsx中需要添加的代码
+
+// 1. 在imports中添加：
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+
+// 2. 在组件中添加state：
+const [refining, setRefining] = useState(false);
+
+// 3. 添加refine函数：
+const refineAndSearch = async () => {
+    if (refining || !query) return;
+    
+    setRefining(true);
+    
+    try {
+        // 准备对话历史
+        const history = messages
+            .filter(msg => msg.role === 'user' || msg.role === 'assistant')
+            .map(msg => ({
+                role: msg.role,
+                content: msg.content
+            }));
+        
+        console.log('Refining query based on conversation...');
+        
+        // 调用API获取优化的查询
+        const response = await fetch('http://localhost:8001/api/llm/refine-query', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                original_query: query,
+                chat_history: history
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Query refinement failed');
+        }
+        
+        const data = await response.json();
+        console.log('Refined query:', data.refined_query);
+        
+        // 使用新查询重新搜索
+        window.location.href = `/results?q=${encodeURIComponent(data.refined_query)}`;
+        
+    } catch (error) {
+        console.error('Query refinement error:', error);
+        setMessages(prev => [...prev, {
+            role: 'assistant',
+            content: 'Sorry, I had trouble refining your search query. Please try again.'
+        }]);
+    } finally {
+        setRefining(false);
+    }
+};
+
+// 4. 在Header部分添加按钮：
+// 在 CloseIcon 按钮后面添加：
+<IconButton 
+    size="small" 
+    onClick={refineAndSearch}
+    disabled={refining || messages.length < 3}
+    title="Refine search based on conversation"
+    sx={{ 
+        color: 'white',
+        '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+    }}
+>
+    {refining ? <CircularProgress size={20} color="inherit" /> : <AutorenewIcon />}
+</IconButton>
+

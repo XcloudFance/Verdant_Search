@@ -1,0 +1,124 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="29.2.7">
+  <diagram name="RAG Generation Module" id="0">
+    <mxGraphModel dx="2714" dy="1169" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="system_boundary" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;verticalAlign=top;fontStyle=1;fontSize=16;" value="RAG Generation Module" vertex="1">
+          <mxGeometry height="880" width="1120" x="300" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_user" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Authenticated User" vertex="1">
+          <mxGeometry height="120" width="60" x="100" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_llm" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="LLM Service" vertex="1">
+          <mxGeometry height="120" width="60" x="1520" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_receive_query" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-43: Receive&lt;br&gt;User Query" vertex="1">
+          <mxGeometry height="80" width="160" x="340" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_view_answer" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-44: View AI&lt;br&gt;Generated Answer" vertex="1">
+          <mxGeometry height="80" width="160" x="340" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_ask_followup" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-45: Ask Follow-up&lt;br&gt;Question" vertex="1">
+          <mxGeometry height="80" width="160" x="340" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_view_citations" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-46: View Source&lt;br&gt;Citations" vertex="1">
+          <mxGeometry height="80" width="160" x="340" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_inject_context" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-47: Inject Retrieved&lt;br&gt;Context into Prompt" vertex="1">
+          <mxGeometry height="80" width="160" x="600" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_stream_response" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-48: Stream&lt;br&gt;Response" vertex="1">
+          <mxGeometry height="80" width="160" x="600" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_maintain_history" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-49: Maintain&lt;br&gt;Conversation History" vertex="1">
+          <mxGeometry height="80" width="160" x="600" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_format_references" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-50: Format Source&lt;br&gt;References" vertex="1">
+          <mxGeometry height="80" width="160" x="600" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_generate_answer" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-51: Generate&lt;br&gt;Grounded Answer" vertex="1">
+          <mxGeometry height="80" width="160" x="860" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_add_citations" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-52: Add Inline&lt;br&gt;Citations" vertex="1">
+          <mxGeometry height="80" width="160" x="750" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_validate_grounding" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-53: Validate Answer&lt;br&gt;Grounding" vertex="1">
+          <mxGeometry height="80" width="160" x="1190" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_indicate_limitation" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-54: Indicate&lt;br&gt;Knowledge Limitation" vertex="1">
+          <mxGeometry height="80" width="160" x="990" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_rewrite_query" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-55: Rewrite Query&lt;br&gt;with Context" vertex="1">
+          <mxGeometry height="80" width="160" x="870" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_trigger_retrieval" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-56: Trigger New&lt;br&gt;Retrieval" vertex="1">
+          <mxGeometry height="80" width="160" x="1170" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_analyze_feedback" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-57: Analyze User&lt;br&gt;Feedback" vertex="1">
+          <mxGeometry height="80" width="160" x="340" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_refine_search" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-58: Refine Search&lt;br&gt;Strategy" vertex="1">
+          <mxGeometry height="80" width="160" x="600" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_update_results" parent="1" style="ellipse;whiteSpace=wrap;html=1;" value="UC-59: Update&lt;br&gt;Document List" vertex="1">
+          <mxGeometry height="80" width="160" x="860" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc1" edge="1" parent="1" source="actor_user" style="endArrow=none;html=1;" target="uc_receive_query" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc2" edge="1" parent="1" source="actor_user" style="endArrow=none;html=1;" target="uc_view_answer" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc3" edge="1" parent="1" source="actor_user" style="endArrow=none;html=1;" target="uc_ask_followup" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc4" edge="1" parent="1" source="actor_user" style="endArrow=none;html=1;" target="uc_view_citations" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="assoc5" edge="1" parent="1" source="uc_generate_answer" style="endArrow=none;html=1;" target="actor_llm" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include1" edge="1" parent="1" source="uc_receive_query" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_inject_context" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include2" edge="1" parent="1" source="uc_inject_context" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_generate_answer" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include3" edge="1" parent="1" source="uc_generate_answer" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_add_citations" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include4" edge="1" parent="1" source="uc_generate_answer" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_stream_response" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include5" edge="1" parent="1" source="uc_ask_followup" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_maintain_history" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include6" edge="1" parent="1" source="uc_maintain_history" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_rewrite_query" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include7" edge="1" parent="1" source="uc_rewrite_query" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_trigger_retrieval" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include8" edge="1" parent="1" source="uc_generate_answer" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_validate_grounding" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include9" edge="1" parent="1" source="uc_view_citations" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_format_references" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include10" edge="1" parent="1" source="uc_ask_followup" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_analyze_feedback" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include11" edge="1" parent="1" source="uc_analyze_feedback" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_refine_search" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include12" edge="1" parent="1" source="uc_trigger_retrieval" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_update_results" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend1" edge="1" parent="1" source="uc_indicate_limitation" style="endArrow=open;dashed=1;html=1;dashPattern=5 5;endFill=0;" target="uc_generate_answer" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

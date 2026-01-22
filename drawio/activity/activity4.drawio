@@ -1,0 +1,113 @@
+<mxfile host="app.diagrams.net" agent="drawio" version="29.3.0">
+  <diagram name="Follow-up Question" id="followup_question">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="frame" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=280;height=40;" value="Ask Follow-up Question and Query Rewriting" vertex="1">
+          <mxGeometry height="1000" width="1280" x="60" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="swimlane_container" parent="1" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;dx=450;dy=50;" value="" vertex="1">
+          <mxGeometry height="900" width="1160" x="80" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_user" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="User" vertex="1">
+          <mxGeometry height="40" width="100" x="235" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_system" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="RAG System" vertex="1">
+          <mxGeometry height="40" width="180" x="770" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="act_view_initial" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Review initial search&#xa;results and AI response" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_start" edge="1" parent="1" source="start" target="act_view_initial" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_ask_followup" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Type follow-up&#xa;question in chat" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_view_ask" edge="1" parent="1" source="act_view_initial" target="act_ask_followup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_receive_followup" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Receive follow-up&#xa;with conversation context" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ask_receive" edge="1" parent="1" source="act_ask_followup" target="sys_receive_followup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_load_history" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Load conversation&#xa;history and context" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_receive_history" edge="1" parent="1" source="sys_receive_followup" target="sys_load_history" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_rewrite_query" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Rewrite follow-up into&#xa;standalone search query" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_history_rewrite" edge="1" parent="1" source="sys_load_history" target="sys_rewrite_query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_trigger_retrieval" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Trigger new retrieval&#xa;with rewritten query" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_rewrite_trigger" edge="1" parent="1" source="sys_rewrite_query" target="sys_trigger_retrieval" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_update_results" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Update document list&#xa;with new rankings" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_trigger_update" edge="1" parent="1" source="sys_trigger_retrieval" target="sys_update_results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_generate_response" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Generate new AI&#xa;response with context" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_update_generate" edge="1" parent="1" source="sys_update_results" target="sys_generate_response" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_review_new" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Review updated results&#xa;and AI response" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="910" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_generate_review" edge="1" parent="1" source="sys_generate_response" target="act_review_new" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="decision_continue" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="90" width="100" x="235" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="decision_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" value="More&#xa;Follow-ups?" vertex="1">
+          <mxGeometry height="40" width="70" x="250" y="625" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_review_decision" edge="1" parent="1" source="act_review_new" target="decision_continue" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="285" y="820" />
+              <mxPoint x="285" y="820" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_loop" edge="1" parent="1" source="decision_continue" target="act_ask_followup" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="285" y="500" />
+              <mxPoint x="285" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="label_yes" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="[Yes]" vertex="1">
+          <mxGeometry height="25" width="40" x="285" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="482.5" y="632.5" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_end" edge="1" parent="1" source="decision_continue" target="end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_no" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="[No]" vertex="1">
+          <mxGeometry height="25" width="40" x="360" y="625" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

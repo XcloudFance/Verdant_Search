@@ -1,0 +1,10 @@
+# 爬虫模块依赖
+DrissionPage
+trafilatura
+readability-lxml
+redis
+pybloom-live
+lxml
+requests
+Pillow
+beautifulsoup4

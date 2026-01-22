@@ -1,0 +1,208 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" version="29.2.9">
+  <diagram name="BlockchainModule State Diagram" id="blockchain-state-diagram">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Frame -->
+        <mxCell id="frame" value="state diagram&#10;BlockchainModule" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=140;height=40;fontSize=12;align=left;verticalAlign=top;spacingLeft=5;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1350" height="850" as="geometry" />
+        </mxCell>
+        
+        <!-- Initial State -->
+        <mxCell id="initial" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="60" y="100" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Idle State -->
+        <mxCell id="idle" value="Idle" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;arcSize=20;" vertex="1" parent="1">
+          <mxGeometry x="100" y="200" width="80" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Verifying Request Entry State -->
+        <mxCell id="verifying" value="Verifying Request Entry /&#10;verifyRequestAuthenticity()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;arcSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="250" y="140" width="180" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Authentication Decision -->
+        <mxCell id="authDecision" value="Authenticated?" style="rhombus;whiteSpace=wrap;html=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="295" y="250" width="90" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Authentication Failed State -->
+        <mxCell id="authFailed" value="Authentication Failed&#10;entry/&#10;logCriticalFailure()&#10;returnErrorMessage()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;arcSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="120" y="380" width="160" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Retrieving Data State -->
+        <mxCell id="retrieving" value="Retrieving Data&#10;entry/&#10;accessWalletAddress()&#10;retrieveTransactionRecords()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;arcSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="480" y="240" width="180" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Check Timeout Decision -->
+        <mxCell id="timeoutDecision" value="Check&#10;Timeout" style="rhombus;whiteSpace=wrap;html=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="525" y="380" width="90" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Network Timeout State -->
+        <mxCell id="networkTimeout" value="Network Timeout&#10;entry/&#10;haltProcessing()&#10;returnErrorMessage()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;arcSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="490" y="500" width="160" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Processing Data State -->
+        <mxCell id="processing" value="Processing Data&#10;entry/&#10;processTransactionRecords()&#10;compileLedgerData()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;arcSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="750" y="240" width="180" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- verifyLedgerData label -->
+        <mxCell id="verifyLabel" value="verifyLedgerData()" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="880" y="340" width="110" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Data Valid Decision -->
+        <mxCell id="dataValidDecision" value="Data Valid?" style="rhombus;whiteSpace=wrap;html=1;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="880" y="400" width="80" height="50" as="geometry" />
+        </mxCell>
+        
+        <!-- Data Integrity Failed State -->
+        <mxCell id="integrityFailed" value="Data Integrity Failed&#10;entry/&#10;stopCompilation()&#10;logCriticalIntegrityFailure()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;arcSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="840" y="520" width="180" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Junction point for tampered -->
+        <mxCell id="junction" value="" style="ellipse;html=1;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="912" y="480" width="16" height="16" as="geometry" />
+        </mxCell>
+        
+        <!-- Returning Data State -->
+        <mxCell id="returning" value="Returning Data&#10;entry/&#10;returnVerifiedData()" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;arcSize=10;align=center;" vertex="1" parent="1">
+          <mxGeometry x="950" y="100" width="150" height="70" as="geometry" />
+        </mxCell>
+        
+        <!-- returnVerifiedData label -->
+        <mxCell id="returnLabel" value="returnVerifiedData&#10;(transactionList)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="260" width="110" height="40" as="geometry" />
+        </mxCell>
+        
+        <!-- Final State -->
+        <mxCell id="final" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="120" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Edges -->
+        
+        <!-- Initial to Idle -->
+        <mxCell id="e1" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="initial" target="idle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Idle to Verifying with label -->
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=1;exitY=0;entryX=0;entryY=0.5;" edge="1" parent="1" source="idle" target="verifying">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="200" />
+              <mxPoint x="200" y="165" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2label" value="requestLedgerData()" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="150" y="120" width="120" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Verifying to AuthDecision -->
+        <mxCell id="e3" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="verifying" target="authDecision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- AuthDecision to AuthFailed [fail] -->
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=0;exitY=0.5;entryX=0.5;entryY=0;" edge="1" parent="1" source="authDecision" target="authFailed">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="200" y="275" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4label" value="[fail]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="230" y="320" width="40" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- AuthDecision to Retrieving [success] -->
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="authDecision" target="retrieving">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5label" value="[success]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="400" y="255" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Retrieving to TimeoutDecision -->
+        <mxCell id="e6" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="retrieving" target="timeoutDecision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- TimeoutDecision to NetworkTimeout [yes] -->
+        <mxCell id="e7" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="timeoutDecision" target="networkTimeout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7label" value="[yes]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="575" y="460" width="40" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- TimeoutDecision to Processing [no] -->
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="timeoutDecision" target="processing">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="410" />
+              <mxPoint x="700" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e8label" value="[no]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="680" y="360" width="40" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Processing to DataValidDecision -->
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="processing" target="dataValidDecision">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="360" />
+              <mxPoint x="920" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- DataValidDecision to Junction [tampered] -->
+        <mxCell id="e10" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="dataValidDecision" target="junction">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10label" value="[tampered]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="850" y="460" width="60" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Junction to IntegrityFailed -->
+        <mxCell id="e11" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="junction" target="integrityFailed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- DataValidDecision to Returning [verified] -->
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="dataValidDecision" target="returning">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="425" />
+              <mxPoint x="1120" y="135" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e12label" value="[verified]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="310" width="50" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Returning to Final -->
+        <mxCell id="e13" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="returning" target="final">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

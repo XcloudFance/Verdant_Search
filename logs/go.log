@@ -1,0 +1,34 @@
+2026/01/19 13:52:32 Database connected successfully
+2026/01/19 13:52:32 Using existing database schema from init.sql
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /health                   --> main.main.func1 (4 handlers)
+[GIN-debug] POST   /api/auth/register        --> main.main.Register.func2 (4 handlers)
+[GIN-debug] POST   /api/auth/login           --> main.main.Login.func3 (4 handlers)
+[GIN-debug] GET    /api/search               --> github.com/lancelot/verdant-search/handlers.Search (4 handlers)
+[GIN-debug] GET    /api/history              --> github.com/lancelot/verdant-search/handlers.GetHistory (5 handlers)
+[GIN-debug] POST   /api/history              --> github.com/lancelot/verdant-search/handlers.AddToHistory (5 handlers)
+[GIN-debug] DELETE /api/history/:id          --> github.com/lancelot/verdant-search/handlers.DeleteHistory (5 handlers)
+[GIN-debug] DELETE /api/history              --> github.com/lancelot/verdant-search/handlers.ClearHistory (5 handlers)
+2026/01/19 13:52:32 Server starting on port 8080
+[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
+Please check https://github.com/gin-gonic/gin/blob/master/docs/doc.md#dont-trust-all-proxies for details.
+[GIN-debug] Listening and serving HTTP on :8080
+[GIN] 2026/01/19 - 13:53:42 | 204 |      729.07µs |       127.0.0.1 | OPTIONS  "/api/history"
+[GIN] 2026/01/19 - 13:53:42 | 401 |     237.066µs |       127.0.0.1 | GET      "/api/history"
+[GIN] 2026/01/19 - 13:53:42 | 401 |      85.372µs |       127.0.0.1 | GET      "/api/history"
+[GIN] 2026/01/19 - 13:55:02 | 401 |      68.713µs |       127.0.0.1 | POST     "/api/history"
+[GIN] 2026/01/19 - 13:55:02 | 401 |       68.61µs |       127.0.0.1 | POST     "/api/history"
+[GIN] 2026/01/19 - 13:55:15 | 401 |      61.188µs |       127.0.0.1 | GET      "/api/history"
+[GIN] 2026/01/19 - 13:55:15 | 401 |     410.474µs |       127.0.0.1 | GET      "/api/history"
+[GIN] 2026/01/19 - 13:55:15 | 401 |       71.02µs |       127.0.0.1 | POST     "/api/history"
+[GIN] 2026/01/19 - 13:55:15 | 401 |      66.873µs |       127.0.0.1 | POST     "/api/history"
+[GIN] 2026/01/19 - 14:00:55 | 401 |     257.478µs |       127.0.0.1 | POST     "/api/history"
+[GIN] 2026/01/19 - 14:44:31 | 401 |    3.122184ms |       127.0.0.1 | POST     "/api/history"
+[GIN] 2026/01/19 - 14:45:17 | 401 |       73.04µs |       127.0.0.1 | POST     "/api/history"
+[GIN] 2026/01/19 - 14:46:47 | 401 |     439.268µs |       127.0.0.1 | POST     "/api/history"
+signal: killed

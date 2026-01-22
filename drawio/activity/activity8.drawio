@@ -1,0 +1,126 @@
+<mxfile host="app.diagrams.net" agent="drawio" version="29.3.0">
+  <diagram name="Multimodal Listwise Reranking" id="multimodal_reranking">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="frame" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=280;height=40;" value="Multimodal Listwise Reranking Process" vertex="1">
+          <mxGeometry height="1200" width="1280" x="60" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="swimlane_container" parent="1" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;dx=450;dy=50;" value="" vertex="1">
+          <mxGeometry height="1100" width="1160" x="80" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_retrieval" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="First-stage Retrieval" vertex="1">
+          <mxGeometry height="40" width="160" x="205" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_system" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="Multimodal Reranker" vertex="1">
+          <mxGeometry height="40" width="200" x="760" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="act_receive_candidates" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Receive top K candidates&#xa;from hybrid retrieval" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_start" edge="1" parent="1" source="start" target="act_receive_candidates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_receive_list" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Receive candidate list&#xa;with metadata" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_candidates_receive" edge="1" parent="1" source="act_receive_candidates" target="sys_receive_list" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fork1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="280" x="580" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_to_fork" edge="1" parent="1" source="sys_receive_list" target="fork1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_extract_text" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Extract text content&#xa;from documents" vertex="1">
+          <mxGeometry height="60" width="170" x="565" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_extract_images" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Extract images and&#xa;visual elements" vertex="1">
+          <mxGeometry height="60" width="170" x="785" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_fork_text" edge="1" parent="1" source="fork1" target="sys_extract_text" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="375" />
+              <mxPoint x="650" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_images" edge="1" parent="1" source="fork1" target="sys_extract_images" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="810" y="375" />
+              <mxPoint x="810" y="410" />
+              <mxPoint x="870" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="join1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="280" x="580" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_text_join" edge="1" parent="1" source="sys_extract_text" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_images_join" edge="1" parent="1" source="sys_extract_images" target="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="870" y="530" />
+              <mxPoint x="810" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sys_encode_multimodal" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Encode multimodal content&#xa;with BLIP-2 VLM" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_join_encode" edge="1" parent="1" source="join1" target="sys_encode_multimodal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_construct_prompt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Construct setwise prompt&#xa;with query and candidates" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_encode_prompt" edge="1" parent="1" source="sys_encode_multimodal" target="sys_construct_prompt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_listwise_reasoning" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Perform listwise reasoning&#xa;over cross-modal evidence" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_prompt_reasoning" edge="1" parent="1" source="sys_construct_prompt" target="sys_listwise_reasoning" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_generate_ranking" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Generate final ranking&#xa;scores for candidates" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="960" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_reasoning_ranking" edge="1" parent="1" source="sys_listwise_reasoning" target="sys_generate_ranking" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_sort_results" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Sort candidates by&#xa;reranked scores" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="1070" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_ranking_sort" edge="1" parent="1" source="sys_generate_ranking" target="sys_sort_results" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_return_ranked" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Return reranked results&#xa;to search interface" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="1070" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_sort_return" edge="1" parent="1" source="sys_sort_results" target="act_return_ranked" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_end" edge="1" parent="1" source="act_return_ranked" target="end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

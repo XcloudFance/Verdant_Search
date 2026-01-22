@@ -1,0 +1,135 @@
+INFO:     Will watch for changes in these directories: ['/home/lancelot/verdant_search/backend/python']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [282802] using WatchFiles
+/home/lancelot/verdant_search/backend/python/venv/lib/python3.13/site-packages/jieba/_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+INFO:     Started server process [282839]
+INFO:     Waiting for application startup.
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Building prefix dict from the default dictionary ...
+Dumping model to file cache /tmp/jieba.cache
+Loading model cost 0.444 seconds.
+Prefix dict has been built successfully.
+INFO:     Application startup complete.
+Loading embedding model on cuda...
+Model loaded: sentence-transformers/clip-ViT-B-32
+Jieba tokenizer initialized
+INFO:     127.0.0.1:59354 - "GET /api/suggestions?q=test HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59354 - "GET /api/suggestions?q=java HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59354 - "OPTIONS /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59358 - "OPTIONS /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59366 - "GET /api/suggestions?q=china HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59358 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59354 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59358 - "OPTIONS /api/llm/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59354 - "OPTIONS /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Redis cache connected: localhost:6379
+Cache disabled by configuration
+✗ Cache MISS: questions for 'china...'
+Question generation error (anthropic): Connection error.
+✓ Cached questions for 'china...' (TTL: 600s)
+INFO:     127.0.0.1:59354 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✗ Cache MISS: summary for 'china...'
+LLM Summary Error (anthropic): Connection error.
+✓ Cached summary for 'china...' (TTL: 600s)
+INFO:     127.0.0.1:59358 - "POST /api/llm/summary HTTP/1.1" 200 OK
+✓ Cache HIT: questions for 'china...'
+Question generation error (anthropic): Connection error.
+✓ Cached questions for 'china...' (TTL: 600s)
+INFO:     127.0.0.1:59354 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38804 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38808 - "POST /api/search HTTP/1.1" 200 OK
+✓ Cache HIT: summary for 'china...'
+INFO:     127.0.0.1:38804 - "POST /api/llm/summary HTTP/1.1" 200 OK
+✓ Cache HIT: questions for 'china...'
+✓ Cached questions for 'china...' (TTL: 600s)
+INFO:     127.0.0.1:38808 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38818 - "GET /api/suggestions?q=china HTTP/1.1" 200 OK
+✓ Cache HIT: questions for 'china...'
+INFO:     127.0.0.1:38804 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Cached summary for 'china...' (TTL: 600s)
+INFO:     127.0.0.1:59260 - "POST /api/llm/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48900 - "GET /api/suggestions?q=ct HTTP/1.1" 200 OK
+✗ Cache MISS: summary for 'crypto...'
+✓ Cached summary for 'crypto...' (TTL: 600s)
+INFO:     127.0.0.1:48900 - "POST /api/llm/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48928 - "GET /api/suggestions?q=crypto HTTP/1.1" 200 OK
+✗ Cache MISS: questions for 'crypto...'
+✓ Cached questions for 'crypto...' (TTL: 600s)
+INFO:     127.0.0.1:48910 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Cache HIT: questions for 'crypto...'
+INFO:     127.0.0.1:48900 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48922 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36338 - "GET /api/suggestions?q=c HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36354 - "GET /api/suggestions?q=China HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57754 - "OPTIONS /api/llm/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57764 - "OPTIONS /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57764 - "OPTIONS /api/search HTTP/1.1" 200 OK
+✗ Cache MISS: summary for 'china reddit news...'
+✓ Cached summary for 'china reddit news...' (TTL: 600s)
+INFO:     127.0.0.1:57754 - "POST /api/llm/summary HTTP/1.1" 200 OK
+✗ Cache MISS: questions for 'china reddit news...'
+✓ Cached questions for 'china reddit news...' (TTL: 600s)
+INFO:     127.0.0.1:57770 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57782 - "GET /api/suggestions?q=china%20reddit%20news HTTP/1.1" 200 OK
+✓ Cache HIT: questions for 'china reddit news...'
+INFO:     127.0.0.1:57754 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57764 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34618 - "GET /api/suggestions?q=java HTTP/1.1" 200 OK
+✗ Cache MISS: summary for 'java...'
+✓ Cached summary for 'java...' (TTL: 600s)
+INFO:     127.0.0.1:34618 - "POST /api/llm/summary HTTP/1.1" 200 OK
+✗ Cache MISS: questions for 'java...'
+✓ Cached questions for 'java...' (TTL: 600s)
+INFO:     127.0.0.1:34626 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Cache HIT: questions for 'java...'
+INFO:     127.0.0.1:34618 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34632 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41260 - "OPTIONS /api/llm/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41260 - "POST /api/llm/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47074 - "POST /api/llm/chat HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39738 - "OPTIONS /api/llm/refine-query HTTP/1.1" 200 OK
+✓ Query refined: 'java' -> 'java accessibility module assistive technologies API'
+INFO:     127.0.0.1:39738 - "POST /api/llm/refine-query HTTP/1.1" 200 OK
+✗ Cache MISS: summary for 'java accessibility module assi...'
+✓ Cached summary for 'java accessibility module assi...' (TTL: 600s)
+INFO:     127.0.0.1:39738 - "POST /api/llm/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39774 - "GET /api/suggestions?q=java%20accessibility%20module%20assistive%20technologies%20API HTTP/1.1" 200 OK
+✗ Cache MISS: questions for 'java accessibility module assi...'
+✓ Cached questions for 'java accessibility module assi...' (TTL: 600s)
+INFO:     127.0.0.1:39744 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Cache HIT: questions for 'java accessibility module assi...'
+INFO:     127.0.0.1:39738 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:39758 - "POST /api/search HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52030 - "OPTIONS /api/search/image HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52030 - "POST /api/search/image HTTP/1.1" 200 OK
+✗ Cache MISS: summary for '[Image Search]...'
+✓ Cached summary for '[Image Search]...' (TTL: 600s)
+INFO:     127.0.0.1:52030 - "POST /api/llm/summary HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52048 - "GET /api/suggestions?q=%5BImage%20Search%5D HTTP/1.1" 200 OK
+✗ Cache MISS: questions for '[Image Search]...'
+✓ Cached questions for '[Image Search]...' (TTL: 600s)
+INFO:     127.0.0.1:52046 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Cache HIT: questions for '[Image Search]...'
+INFO:     127.0.0.1:52030 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44410 - "GET /api/suggestions?q=ja HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44410 - "GET /api/suggestions?q=java HTTP/1.1" 200 OK
+INFO:     127.0.0.1:44410 - "GET /api/suggestions?q=java%20ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34400 - "GET /api/suggestions?q=java%20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33264 - "POST /api/search/image HTTP/1.1" 200 OK
+✓ Cache HIT: summary for '[Image Search]...'
+INFO:     127.0.0.1:33264 - "POST /api/llm/summary HTTP/1.1" 200 OK
+✓ Cache HIT: questions for '[Image Search]...'
+INFO:     127.0.0.1:33264 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Cache HIT: questions for '[Image Search]...'
+INFO:     127.0.0.1:33264 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33264 - "GET /api/suggestions?q=%5BImage%20Search%5D HTTP/1.1" 200 OK
+INFO:     127.0.0.1:47038 - "POST /api/search/image HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36452 - "POST /api/search/image HTTP/1.1" 200 OK
+✓ Cache HIT: summary for '[Image Search]...'
+INFO:     127.0.0.1:36452 - "POST /api/llm/summary HTTP/1.1" 200 OK
+✓ Cache HIT: questions for '[Image Search]...'
+INFO:     127.0.0.1:36462 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+✓ Cache HIT: questions for '[Image Search]...'
+INFO:     127.0.0.1:36452 - "POST /api/llm/suggest-questions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:36452 - "GET /api/suggestions?q=%5BImage%20Search%5D HTTP/1.1" 200 OK

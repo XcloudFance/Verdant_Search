@@ -1,0 +1,200 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0" version="29.3.0">
+  <diagram name="Configure Data Ingestion" id="configure_ingestion">
+    <mxGraphModel dx="2413" dy="1174" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="frame" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=240;height=40;" value="Configure Data Ingestion Sources" vertex="1">
+          <mxGeometry height="1100" width="1280" x="60" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="swimlane_container" parent="1" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;dx=450;dy=50;" value="" vertex="1">
+          <mxGeometry height="1000" width="1160" x="80" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_admin" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="Administrator" vertex="1">
+          <mxGeometry height="40" width="120" x="225" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="label_system" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontSize=14;" value="Ingestion System" vertex="1">
+          <mxGeometry height="40" width="180" x="770" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="272.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="act_navigate" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Navigate to data&#xa;ingestion settings" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_start" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_navigate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_display_sources" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Display available&#xa;data source types" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_nav_display" edge="1" parent="1" source="act_navigate" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_display_sources">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fork1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="380" x="530" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_to_fork" edge="1" parent="1" source="sys_display_sources" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="fork1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="act_config_confluence" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Configure&#xa;Confluence spaces" vertex="1">
+          <mxGeometry height="60" width="150" x="195" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="act_config_gdrive" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Configure Google&#xa;Drive folders" vertex="1">
+          <mxGeometry height="60" width="150" x="385" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="act_config_git" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Configure Git&#xa;repositories" vertex="1">
+          <mxGeometry height="60" width="150" x="575" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="act_config_shares" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Configure network&#xa;shares" vertex="1">
+          <mxGeometry height="60" width="150" x="765" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_fork_confluence" edge="1" parent="1" source="fork1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_config_confluence">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="365" />
+              <mxPoint x="490" y="400" />
+              <mxPoint x="270" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_gdrive" edge="1" parent="1" source="fork1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_config_gdrive">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="400" />
+              <mxPoint x="550" y="400" />
+              <mxPoint x="550" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_git" edge="1" parent="1" source="fork1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_config_git">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="740" y="400" />
+              <mxPoint x="690" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_fork_shares" edge="1" parent="1" source="fork1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_config_shares">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="365" />
+              <mxPoint x="860" y="400" />
+              <mxPoint x="840" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="join1" parent="1" style="line;strokeWidth=3;html=1;perimeter=backbonePerimeter;points=[];outlineConnect=0;" vertex="1">
+          <mxGeometry height="10" width="380" x="530" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_confluence_join" edge="1" parent="1" source="act_config_confluence" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="join1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="270" y="520" />
+              <mxPoint x="580" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_gdrive_join" edge="1" parent="1" source="act_config_gdrive" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="join1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="520" />
+              <mxPoint x="660" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_git_join" edge="1" parent="1" source="act_config_git" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="join1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="650" y="520" />
+              <mxPoint x="740" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_shares_join" edge="1" parent="1" source="act_config_shares" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="join1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="840" y="520" />
+              <mxPoint x="860" y="520" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="act_set_credentials" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Provide authentication&#xa;credentials and permissions" vertex="1">
+          <mxGeometry height="60" width="200" x="185" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_join_credentials" edge="1" parent="1" source="join1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act_set_credentials">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="555" />
+              <mxPoint x="580" y="590" />
+              <mxPoint x="285" y="590" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sys_validate_credentials" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Validate credentials&#xa;and test connection" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_cred_validate" edge="1" parent="1" source="act_set_credentials" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_validate_credentials">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="decision_valid" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="90" width="100" x="670" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="M0MboWZLjS1KShOoTap_-1" edge="1" parent="1" source="decision_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;endArrow=open;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" target="act_set_schedule">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="decision_label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;" value="Connection&#xa;Valid?" vertex="1">
+          <mxGeometry height="40" width="70" x="685" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_validate_decision" edge="1" parent="1" source="sys_validate_credentials" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="decision_valid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="error_invalid" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Display connection&#xa;error details" vertex="1">
+          <mxGeometry height="60" width="140" x="900" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_invalid" edge="1" parent="1" source="decision_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="error_invalid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_no" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="[No]" vertex="1">
+          <mxGeometry height="25" width="40" x="795" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_error_loop" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="765" />
+              <mxPoint x="1100" y="600" />
+              <mxPoint x="420" y="600" />
+              <mxPoint x="420" y="640" />
+            </Array>
+            <mxPoint x="1040" y="765" as="sourcePoint" />
+            <mxPoint x="385" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="act_set_schedule" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Configure refresh&#xa;schedule" vertex="1">
+          <mxGeometry height="60" width="180" x="195" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="label_yes" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="[Yes]" vertex="1">
+          <mxGeometry height="25" width="40" x="520" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_save_config" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Save configuration&#xa;to database" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_schedule_save" edge="1" parent="1" source="act_set_schedule" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_save_config">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_display_success" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;" value="Display configuration&#xa;success message" vertex="1">
+          <mxGeometry height="60" width="180" x="630" y="980" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_save_success" edge="1" parent="1" source="sys_save_config" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_display_success">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="25" width="25" x="707.5" y="1070" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_end" edge="1" parent="1" source="sys_display_success" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

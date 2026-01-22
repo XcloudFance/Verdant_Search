@@ -1,0 +1,170 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0" version="29.3.0">
+  <diagram name="Give Ledger Report using Blockchain" id="blockchain_ledger_activity">
+    <mxGraphModel dx="2413" dy="1174" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="swimlane_container" parent="1" style="shape=internalStorage;whiteSpace=wrap;html=1;backgroundOutline=1;dx=400;dy=40;" value="" vertex="1">
+          <mxGeometry height="1040" width="940" x="70" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="frame" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;width=200;height=30;" value="Give Ledger Report using Blockchain" vertex="1">
+          <mxGeometry height="1100" width="1050" x="50" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="label_salesreport" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" value="SalesReportUI" vertex="1">
+          <mxGeometry height="30" width="120" x="190" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="label_blockchain" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1" value="BlockchainModule" vertex="1">
+          <mxGeometry height="30" width="150" x="650" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="start" parent="1" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="20" width="20" x="240" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="act1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Request ledger data&#xa;for date range" vertex="1">
+          <mxGeometry height="50" width="170" x="165" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="edge1" edge="1" parent="1" source="start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="act1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_act1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Verify request&#xa;authenticity" vertex="1">
+          <mxGeometry height="50" width="170" x="505" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" edge="1" parent="1" source="act1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_act1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="225" />
+              <mxPoint x="460" y="225" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="decision1" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="90" x="545" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="decision1_label1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Auth" vertex="1">
+          <mxGeometry height="20" width="60" x="560" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="decision1_label2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Success?" vertex="1">
+          <mxGeometry height="20" width="60" x="560" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="edge3" edge="1" parent="1" source="sys_act1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="decision1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZAzo3olLa2VMXVGNCUQQ-2" edge="1" parent="1" source="error1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="330" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="error1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;" value="Display &quot;Authentication&#xa;failed&quot;" vertex="1">
+          <mxGeometry height="50" width="110" x="750" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="edge4" edge="1" parent="1" source="decision1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="error1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_no1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" value="[No]" vertex="1">
+          <mxGeometry height="20" width="30" x="650" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_act2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;" value="Access wallet address&#xa;&amp; retrieve transaction&#xa;records" vertex="1">
+          <mxGeometry height="60" width="170" x="505" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="edge5" edge="1" parent="1" source="decision1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_act2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_yes1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" value="[Yes]" vertex="1">
+          <mxGeometry height="20" width="30" x="595" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="decision2" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="90" x="545" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="decision2_label1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Retrieval" vertex="1">
+          <mxGeometry height="20" width="60" x="560" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="decision2_label2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Timeout?" vertex="1">
+          <mxGeometry height="20" width="60" x="560" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="edge6" edge="1" parent="1" source="sys_act2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="decision2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZAzo3olLa2VMXVGNCUQQ-4" edge="1" parent="1" source="error2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;endFill=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="920" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="error2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;" value="Display &quot;Network&#xa;timeout error&quot;" vertex="1">
+          <mxGeometry height="50" width="110" x="750" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="edge7" edge="1" parent="1" source="decision2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="error2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_yes2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" value="[Yes]" vertex="1">
+          <mxGeometry height="20" width="30" x="650" y="535" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_act3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;" value="Process transaction&#xa;records &amp; compile&#xa;ledger data" vertex="1">
+          <mxGeometry height="60" width="170" x="505" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="edge8" edge="1" parent="1" source="decision2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_act3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_no2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" value="[No]" vertex="1">
+          <mxGeometry height="20" width="30" x="595" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="decision3" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="80" width="90" x="545" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="decision3_label1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Data" vertex="1">
+          <mxGeometry height="20" width="60" x="560" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="decision3_label2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Tampered?" vertex="1">
+          <mxGeometry height="20" width="70" x="555" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="edge9" edge="1" parent="1" source="sys_act3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="decision3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ZAzo3olLa2VMXVGNCUQQ-3" edge="1" parent="1" source="error3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.25;entryDx=0;entryDy=0;endArrow=open;endFill=0;" target="act1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="770" />
+              <mxPoint x="920" y="170" />
+              <mxPoint x="380" y="170" />
+              <mxPoint x="380" y="213" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="error3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;" value="Display &quot;Data&#xa;integrity failed&quot;" vertex="1">
+          <mxGeometry height="50" width="110" x="750" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="edge10" edge="1" parent="1" source="decision3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="error3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_yes3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" value="[Yes]" vertex="1">
+          <mxGeometry height="20" width="30" x="650" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="sys_act4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=10;" value="Verify, encrypt &amp;&#xa;return ledger data" vertex="1">
+          <mxGeometry height="50" width="170" x="505" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="edge11" edge="1" parent="1" source="decision3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="sys_act4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="label_no3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;" value="[No]" vertex="1">
+          <mxGeometry height="20" width="30" x="595" y="815" as="geometry" />
+        </mxCell>
+        <mxCell id="report_act1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Display verified&#xa;ledger report" vertex="1">
+          <mxGeometry height="50" width="170" x="165" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="edge12" edge="1" parent="1" source="sys_act4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="report_act1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="report_act2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Review &amp; use&#xa;ledger data" vertex="1">
+          <mxGeometry height="50" width="170" x="165" y="950" as="geometry" />
+        </mxCell>
+        <mxCell id="edge13" edge="1" parent="1" source="report_act1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="report_act2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="end" parent="1" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1">
+          <mxGeometry height="20" width="20" x="240" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="edge14" edge="1" parent="1" source="report_act2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

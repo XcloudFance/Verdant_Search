@@ -1,0 +1,219 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Activity Diagram - Complete Search Flow">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1600">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Swimlanes -->
+        <mxCell id="swimlane_user" value="User" style="swimlane;startSize=40;" vertex="1" parent="1">
+          <mxGeometry x="80" y="60" width="220" height="1480" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="swimlane_system" value="Search System" style="swimlane;startSize=40;" vertex="1" parent="1">
+          <mxGeometry x="300" y="60" width="280" height="1480" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="swimlane_retrieval" value="Retrieval Engine" style="swimlane;startSize=40;" vertex="1" parent="1">
+          <mxGeometry x="580" y="60" width="280" height="1480" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="swimlane_rag" value="RAG Service" style="swimlane;startSize=40;" vertex="1" parent="1">
+          <mxGeometry x="860" y="60" width="260" height="1480" as="geometry" />
+        </mxCell>
+        
+        <!-- Initial Node -->
+        <mxCell id="initial" value="" style="ellipse;fillColor=#000;strokeColor=#000;" vertex="1" parent="swimlane_user">
+          <mxGeometry x="95" y="80" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Activities -->
+        <mxCell id="act1" value="Enter Search Query" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_user">
+          <mxGeometry x="40" y="140" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act2" value="Receive Query" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_system">
+          <mxGeometry x="70" y="140" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act3" value="Validate and Preprocess Query" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_system">
+          <mxGeometry x="70" y="240" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="decision1" value="Valid Query?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_system">
+          <mxGeometry x="80" y="340" width="120" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act4_error" value="Return Error Message" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_system">
+          <mxGeometry x="70" y="460" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act5" value="Execute Keyword Search (BM25)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="70" y="340" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act6" value="Execute Vector Search (HNSW)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="70" y="440" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Fork -->
+        <mxCell id="fork1" value="" style="line;strokeWidth=3;html=1;fillColor=#000;rotation=90;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="130" y="270" width="20" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Join -->
+        <mxCell id="join1" value="" style="line;strokeWidth=3;html=1;fillColor=#000;rotation=90;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="130" y="530" width="20" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act7" value="Fusion with RRF" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="70" y="620" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="decision2" value="Top K Results &gt; 0?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="65" y="720" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act8_no_results" value="Return Empty Result Set" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="70" y="840" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act9" value="Apply Multimodal Reranking" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_retrieval">
+          <mxGeometry x="70" y="940" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act10" value="Inject Context into Prompt" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_rag">
+          <mxGeometry x="60" y="940" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act11" value="Generate Answer with LLM" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_rag">
+          <mxGeometry x="60" y="1040" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act12" value="Add Inline Citations" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_rag">
+          <mxGeometry x="60" y="1140" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act13" value="Format Response" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_system">
+          <mxGeometry x="70" y="1240" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="act14" value="Display Results and Answer" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_user">
+          <mxGeometry x="40" y="1240" width="140" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="decision3" value="Satisfied with Answer?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="swimlane_user">
+          <mxGeometry x="35" y="1340" width="150" height="80" as="geometry" />
+        </mxCell>
+        
+        <!-- Final Node -->
+        <mxCell id="final" value="" style="ellipse;fillColor=#000;strokeColor=#000;" vertex="1" parent="swimlane_user">
+          <mxGeometry x="95" y="1450" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="final_inner" value="" style="ellipse;fillColor=#fff;strokeColor=#000;" vertex="1" parent="swimlane_user">
+          <mxGeometry x="100" y="1455" width="20" height="20" as="geometry" />
+        </mxCell>
+        
+        <!-- Transitions -->
+        <mxCell id="trans1" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="initial" target="act1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans2" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act1" target="act2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans3" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act2" target="act3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans4" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act3" target="decision1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans5" value="No" style="endArrow=classic;html=1;" edge="1" parent="1" source="decision1" target="act4_error">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans6" value="Yes" style="endArrow=classic;html=1;" edge="1" parent="1" source="decision1" target="fork1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans7" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="fork1" target="act5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans8" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="fork1" target="act6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans9" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act5" target="join1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans10" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act6" target="join1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans11" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="join1" target="act7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans12" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act7" target="decision2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans13" value="No" style="endArrow=classic;html=1;" edge="1" parent="1" source="decision2" target="act8_no_results">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans14" value="Yes" style="endArrow=classic;html=1;" edge="1" parent="1" source="decision2" target="act9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans15" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act9" target="act10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans16" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act10" target="act11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans17" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act11" target="act12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans18" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act12" target="act13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans19" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act13" target="act14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans20" value="" style="endArrow=classic;html=1;" edge="1" parent="1" source="act14" target="decision3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans21" value="Yes" style="endArrow=classic;html=1;" edge="1" parent="1" source="decision3" target="final">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="trans22" value="No" style="endArrow=classic;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="decision3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="1380" as="sourcePoint" />
+            <mxPoint x="190" y="170" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="60" y="1440" />
+              <mxPoint x="60" y="170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="trans22_label" value="Ask Follow-up" style="text;html=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="60" y="800" width="100" height="20" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
