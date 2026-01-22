@@ -1,8 +1,8 @@
-# Verdant Search - 完整启动指南
+# Verdant Search - Complete Startup Guide
 
-一个完整的混合搜索引擎，包含用户认证、搜索历史和AI搜索功能。
+A complete hybrid search engine with user authentication, search history, and AI search capabilities.
 
-## 🏗️ 系统架构
+## 🏗️ System Architecture
 
 ```
 Frontend (React) 
@@ -14,111 +14,111 @@ Python FastAPI (8001)
 PostgreSQL + pgvector (5432)
 ```
 
-## 📋 前置要求
+## 📋 Prerequisites
 
-- **Docker & Docker Compose** - 运行PostgreSQL
-- **Go 1.21+** - Go后端
-- **Python 3.9+** - Python搜索引擎
-- **Node.js 18+** - 前端
+- **Docker & Docker Compose** - For running PostgreSQL
+- **Go 1.21+** - Go backend
+- **Python 3.9+** - Python search engine
+- **Node.js 18+** - Frontend
 
-## 🚀 快速启动（推荐）
+## 🚀 Quick Start (Recommended)
 
-### 方式一：使用启动脚本（最简单）
+### Option 1: Using Startup Script (Easiest)
 
 ```bash
-# 给脚本添加执行权限
+# Add execution permissions to scripts
 chmod +x start.sh stop.sh
 
-# 启动所有服务
+# Start all services
 ./start.sh
 
-# 停止所有服务
+# Stop all services
 ./stop.sh
 ```
 
-### 方式二：手动启动（分步骤）
+### Option 2: Manual Startup (Step by Step)
 
-#### 第1步：启动PostgreSQL
+#### Step 1: Start PostgreSQL
 
 ```bash
-# 启动PostgreSQL容器
+# Start PostgreSQL container
 docker-compose up -d
 
-# 查看是否启动成功
+# Check if started successfully
 docker ps
 docker logs verdant_postgres
 ```
 
-#### 第2步：启动Python搜索API
+#### Step 2: Start Python Search API
 
 ```bash
 cd backend/python
 
-# 创建虚拟环境（首次）
+# Create virtual environment (first time)
 python -m venv venv
 
-# 激活虚拟环境
-source venv/bin/activate  # Windows: venv\Scripts\activate
+# Activate virtual environment
+source venv/bin/activate  # Windows: venv\\Scripts\\activate
 
-# 安装依赖（首次或更新后）
+# Install dependencies (first time or after updates)
 pip install -r requirements.txt
 
-# 启动Python API
+# Start Python API
 python main.py
 ```
 
-**运行在**: `http://localhost:8001`
+**Running on**: `http://localhost:8001`
 
-⚠️ **首次运行会下载CLIP模型（~500MB），请耐心等待**
+⚠️ **First run will download CLIP model (~500MB), please be patient**
 
-#### 第3步：启动Go后端
+#### Step 3: Start Go Backend
 
-打开新终端：
+Open a new terminal:
 
 ```bash
 cd backend/go
 
-# 安装Go依赖（首次）
+# Install Go dependencies (first time)
 go mod download
 go get gorm.io/driver/postgres
 
-# 启动Go后端
+# Start Go backend
 go run main.go
 ```
 
-**运行在**: `http://localhost:8080`
+**Running on**: `http://localhost:8080`
 
-#### 第4步：启动前端
+#### Step 4: Start Frontend
 
-再打开一个新终端：
+Open another new terminal:
 
 ```bash
 cd frontend
 
-# 安装依赖（首次）
+# Install dependencies (first time)
 npm install
 
-# 启动前端
+# Start frontend
 npm run dev
 ```
 
-**运行在**: `http://localhost:5173`
+**Running on**: `http://localhost:5173`
 
-## 📊 索引测试数据
+## 📊 Index Test Data
 
-启动所有服务后，索引示例文档：
+After starting all services, index sample documents:
 
 ```bash
 cd backend/python
-source venv/bin/activate  # 激活虚拟环境
+source venv/bin/activate  # Activate virtual environment
 python index_sample_data.py
 ```
 
-这会索引10个示例文档用于测试搜索功能。
+This will index 10 sample documents for testing search functionality.
 
-## ✅ 验证服务状态
+## ✅ Verify Service Status
 
-### 检查所有服务
+### Check All Services
 
 ```bash
 # PostgreSQL
@@ -131,168 +131,168 @@ curl http://localhost:8001/health
 curl http://localhost:8080/health
 
 # Frontend
-# 浏览器打开 http://localhost:5173
+# Open browser at http://localhost:5173
 ```
 
-### 检查数据库
+### Check Database
 
 ```bash
-# 查看文档数量
+# View document count
 docker exec -it verdant_postgres psql -U verdant -d verdant_search -c "SELECT COUNT(*) FROM documents;"
 
-# 查看用户数量
+# View user count
 docker exec -it verdant_postgres psql -U verdant -d verdant_search -c "SELECT COUNT(*) FROM users;"
 ```
 
-## 🎯 使用流程
+## 🎯 Usage Flow
 
-1. **打开浏览器** → `http://localhost:5173`
-2. **注册账号** → 点击"Register"
-   - 邮箱格式：`test@example.com`
-   - 密码至少6位
-3. **搜索测试** → 输入查询词如"machine learning"
-4. **查看历史** → 点击右上角头像 → Search History
+1. **Open browser** → `http://localhost:5173`
+2. **Register account** → Click "Register"
+   - Email format: `test@example.com`
+   - Password minimum 6 characters
+3. **Test search** → Enter query like "machine learning"
+4. **View history** → Click avatar in top right → Search History
 
-## 🔍 功能特性
+## 🔍 Features
 
-### 混合搜索
-- ✅ **BM25关键词匹配** (40%权重)
-- ✅ **向量语义搜索** (60%权重) 
-- ✅ **中文分词** (jieba)
-- ✅ **HNSW快速检索**
+### Hybrid Search
+- ✅ **BM25 keyword matching** (40% weight)
+- ✅ **Vector semantic search** (60% weight) 
+- ✅ **Chinese word segmentation** (jieba)
+- ✅ **HNSW fast retrieval**
 
-### 用户功能
-- ✅ 用户注册/登录（JWT认证）
-- ✅ 搜索历史记录
-- ✅ 个人资料显示
+### User Features
+- ✅ User registration/login (JWT authentication)
+- ✅ Search history tracking
+- ✅ Personal profile display
 
-### API端点
+### API Endpoints
 
 **Go Backend (8080)**:
-- `POST /api/auth/register` - 注册
-- `POST /api/auth/login` - 登录
-- `GET /api/search?q=query` - 搜索
-- `GET /api/history` - 历史记录
+- `POST /api/auth/register` - Register
+- `POST /api/auth/login` - Login
+- `GET /api/search?q=query` - Search
+- `GET /api/history` - History
 
 **Python API (8001)**:
-- `POST /api/search` - 混合搜索
-- `POST /api/index` - 索引文档
-- `POST /api/tokenize` - 分词测试
-- `GET /api/documents` - 列出文档
+- `POST /api/search` - Hybrid search
+- `POST /api/index` - Index documents
+- `POST /api/tokenize` - Tokenization test
+- `GET /api/documents` - List documents
 
-## 📝 数据库信息
+## 📝 Database Information
 
-**PostgreSQL连接信息**:
+**PostgreSQL Connection**:
 - Host: `localhost`
 - Port: `5432`
 - Database: `verdant_search`
 - User: `verdant`
 - Password: `verdant123`
 
-**数据表**:
-- `users` - 用户信息
-- `search_histories` - 搜索历史
-- `documents` - 文档内容（分词后）
-- `document_embeddings` - 向量索引
+**Tables**:
+- `users` - User information
+- `search_histories` - Search history
+- `documents` - Document content (tokenized)
+- `document_embeddings` - Vector index
 
-## 🐛 常见问题
+## 🐛 Common Issues
 
-### PostgreSQL无法启动
+### PostgreSQL Won't Start
 ```bash
 docker-compose down
 docker-compose up -d
 docker logs verdant_postgres
 ```
 
-### Python依赖安装失败
+### Python Dependencies Installation Failed
 ```bash
-# 更新pip
+# Update pip
 pip install --upgrade pip
 
-# 如果torch安装慢，使用国内源
+# If torch installation is slow, use Chinese mirror
 pip install torch -i https://pypi.tuna.tsinghua.edu.cn/simple
 
-# 重新安装
+# Reinstall
 pip install -r requirements.txt
 ```
 
-### Go无法连接数据库
+### Go Cannot Connect to Database
 ```bash
-# 确认PostgreSQL运行
+# Confirm PostgreSQL is running
 docker ps | grep verdant_postgres
 
-# 安装PostgreSQL驱动
+# Install PostgreSQL driver
 cd backend/go
 go get gorm.io/driver/postgres
 ```
 
-### 搜索返回空结果
+### Search Returns Empty Results
 ```bash
-# 1. 检查是否已索引数据
+# 1. Check if data is indexed
 curl http://localhost:8001/api/documents
 
-# 2. 如果没有，运行索引脚本
+# 2. If not, run indexing script
 cd backend/python
 python index_sample_data.py
 
-# 3. 检查Python API日志
-# 查看终端输出
+# 3. Check Python API logs
+# View terminal output
 ```
 
-### 端口被占用
-修改配置文件中的端口：
-- Go: 修改环境变量 `PORT`
-- Python: 修改 `backend/python/config.py` 中的 `PORT`
-- Frontend: 修改 `frontend/vite.config.js`
+### Port Already in Use
+Modify ports in configuration files:
+- Go: Modify `PORT` environment variable
+- Python: Modify `PORT` in `backend/python/config.py`
+- Frontend: Modify `frontend/vite.config.js`
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 verdant_search/
-├── frontend/              # React前端
+├── frontend/              # React frontend
 ├── backend/
-│   ├── go/               # Go Gin API（认证、历史）
-│   └── python/           # Python搜索引擎（BM25+向量）
-├── docker-compose.yml    # PostgreSQL配置
-├── init.sql             # 数据库初始化脚本
-├── start.sh             # 启动脚本
-├── stop.sh              # 停止脚本
-└── README.md            # 本文件
+│   ├── go/               # Go Gin API (auth, history)
+│   └── python/           # Python search engine (BM25+vector)
+├── docker-compose.yml    # PostgreSQL configuration
+├── init.sql             # Database initialization script
+├── start.sh             # Startup script
+├── stop.sh              # Stop script
+└── README.md            # This file
 ```
 
-## 🔧 开发模式
+## 🔧 Development Mode
 
-### 实时日志查看
+### Real-time Log Viewing
 
 ```bash
-# 所有服务日志（如果使用start.sh）
+# All service logs (if using start.sh)
 tail -f logs/*.log
 
-# 单独查看
+# View individually
 tail -f logs/python.log
 tail -f logs/go.log
 tail -f logs/frontend.log
 ```
 
-### 热重载
+### Hot Reload
 
-- **Frontend**: Vite自动热重载
-- **Python**: `uvicorn --reload`已启用
-- **Go**: 使用`air`工具（需要安装）
+- **Frontend**: Vite automatic hot reload
+- **Python**: `uvicorn --reload` enabled
+- **Go**: Use `air` tool (requires installation)
 
-## 📚 下一步
+## 📚 Next Steps
 
-1. ✅ 索引你自己的数据（使用`/api/index`）
-2. ✅ 调整BM25和向量权重（`backend/python/config.py`）
-3. ✅ 添加更多过滤器（日期、来源等）
-4. ✅ 实现图片搜索（CLIP支持）
-5. ✅ 部署到生产环境
+1. ✅ Index your own data (use `/api/index`)
+2. ✅ Adjust BM25 and vector weights (`backend/python/config.py`)
+3. ✅ Add more filters (date, source, etc.)
+4. ✅ Implement image search (CLIP support)
+5. ✅ Deploy to production
 
-## 🎉 完成！
+## 🎉 Done!
 
-现在访问 **http://localhost:5173** 开始搜索吧！
+Now visit **http://localhost:5173** to start searching!
 
-有问题查看日志或提issue。
+Check logs or submit an issue if you have problems.
 
 ---
 
