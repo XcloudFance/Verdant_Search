@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography, Tabs, Tab, Paper, Stack, Button, Skeleton, Pagination, IconButton } from '@mui/material';
+import {
+  Box, Container, Typography, Tabs, Tab, Paper, Stack, Button, Skeleton,
+  Pagination, IconButton, Chip, Switch, FormControlLabel, Drawer, Tooltip,
+  Divider
+} from '@mui/material';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SearchIcon from '@mui/icons-material/Search';
+import PushPinIcon from '@mui/icons-material/PushPin';
+import PushPinOutlinedIcon from '@mui/icons-material/PushPinOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import TimerIcon from '@mui/icons-material/Timer';
 import Navbar from '../components/layout/Navbar';
 import AmbientBackground from '../components/common/AmbientBackground';
 import AISummary from '../components/features/AISummary';
@@ -26,43 +36,56 @@ const Results = () => {
     const [tab, setTab] = useState(0);
     const [chatQuestion, setChatQuestion] = useState(null);
 
-    // 搜索历史栈
+    // Reranker toggle
+    const [rerankerEnabled, setRerankerEnabled] = useState(false);
+
+    // Stage timings
+    const [stageTimings, setStageTimings] = useState(null);
+
+    // Research Workspace (pinned docs)
+    const [pinnedDocs, setPinnedDocs] = useState([]);
+    const [workspaceOpen, setWorkspaceOpen] = useState(false);
+
+    // Search history stack
     const [searchHistory, setSearchHistory] = useState([]);
     const [canGoBack, setCanGoBack] = useState(false);
 
     const { addToHistory } = useHistory();
 
-    // 处理点击问题 - 触发新搜索
     const handleQuestionClick = (question) => {
-        console.log('Question clicked, starting new search:', question);
-
-        // 保存当前搜索到历史
         if (query) {
             setSearchHistory(prev => [...prev, { query, results, page: currentPage }]);
             setCanGoBack(true);
         }
-
-        // 触发新搜索
         navigate(`/results?q=${encodeURIComponent(question)}`);
     };
 
-    // 返回上一次搜索
     const handleGoBack = () => {
         if (searchHistory.length > 0) {
             const previous = searchHistory[searchHistory.length - 1];
             setSearchHistory(prev => prev.slice(0, -1));
             setCanGoBack(searchHistory.length > 1);
-
-            // 恢复上一次搜索
             navigate(`/results?q=${encodeURIComponent(previous.query)}&page=${previous.page || 1}`);
         }
     };
 
+    const togglePin = (item) => {
+        const id = item.id || item.url || item.title;
+        setPinnedDocs(prev => {
+            const already = prev.some(p => (p.id || p.url || p.title) === id);
+            if (already) return prev.filter(p => (p.id || p.url || p.title) !== id);
+            return [...prev, item];
+        });
+    };
+
+    const isPinned = (item) => {
+        const id = item.id || item.url || item.title;
+        return pinnedDocs.some(p => (p.id || p.url || p.title) === id);
+    };
+
     useEffect(() => {
         const fetchResults = async () => {
-            // 优先检查是否有图片搜索结果（通过 state 传递）
             if (location.state?.imageSearch && location.state?.results) {
-                console.log('Using image search results from state');
                 setResults(location.state.results);
                 setTotal(location.state.total || 0);
                 setTotalPages(location.state.totalPages || 0);
@@ -76,40 +99,29 @@ const Results = () => {
                 return;
             }
 
-            console.log('Fetching results:', { query, currentPage, pageSize });
             setLoading(true);
+            setStageTimings(null);
 
             try {
-                // 指向 Python 后端 (8001)，使用 POST 方法
                 const url = `http://localhost:8001/api/search`;
-                console.log('Fetch URL:', url, 'Method: POST');
-
                 const response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         query: query,
                         page: currentPage,
-                        page_size: pageSize
+                        page_size: pageSize,
+                        reranker_enabled: rerankerEnabled,
                     })
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Search response:', {
-                        resultsCount: data.results?.length || 0,
-                        total: data.total,
-                        page: data.page,
-                        totalPages: data.total_pages
-                    });
-
                     setResults(data.results || []);
                     setTotal(data.total || 0);
                     setTotalPages(data.total_pages || 0);
+                    if (data.stage_timings) setStageTimings(data.stage_timings);
                 } else {
-                    console.error('Search failed with status:', response.status);
                     setResults([]);
                     setTotal(0);
                     setTotalPages(0);
@@ -121,8 +133,6 @@ const Results = () => {
                 setTotalPages(0);
             } finally {
                 setLoading(false);
-
-                // Add to history only on first page
                 if (currentPage === 1 && query && query !== '[Image Search]') {
                     addToHistory(query);
                 }
@@ -130,15 +140,33 @@ const Results = () => {
         };
 
         fetchResults();
-    }, [query, currentPage, pageSize]);  // ✅ 移除 addToHistory，避免无限循环
+    }, [query, currentPage, pageSize, rerankerEnabled]);
 
     const handlePageChange = (event, value) => {
-        // 更新URL参数
         const params = new URLSearchParams(searchParams);
         params.set('page', value);
         navigate(`/results?${params.toString()}`);
-        // 滚动到顶部
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const getRankDeltaChip = (delta) => {
+        if (delta == null) return null;
+        if (delta === 0) return null;
+        const up = delta > 0;
+        return (
+            <Chip
+                label={`${up ? '+' : ''}${delta}`}
+                size="small"
+                sx={{
+                    bgcolor: up ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
+                    color: up ? '#10b981' : '#ef4444',
+                    fontWeight: 700,
+                    fontSize: 11,
+                    height: 20,
+                    ml: 0.5,
+                }}
+            />
+        );
     };
 
     return (
@@ -157,9 +185,44 @@ const Results = () => {
                     </Tabs>
                 </Box>
 
-                <Container maxWidth="xl" sx={{ display: 'flex', mt: 4, gap: 4 }}>
+                <Container maxWidth="xl" sx={{ display: 'flex', mt: 4, gap: 2 }}>
                     {/* Main Results */}
                     <Box sx={{ flex: 2, maxWidth: '800px', ml: { md: 10 } }}>
+
+                        {/* Reranker Toggle + Stage Timings */}
+                        <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={rerankerEnabled}
+                                        onChange={e => setRerankerEnabled(e.target.checked)}
+                                        size="small"
+                                        sx={{
+                                            '& .MuiSwitch-switchBase.Mui-checked': { color: '#10b981' },
+                                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': { bgcolor: 'rgba(16,185,129,0.5)' },
+                                        }}
+                                    />
+                                }
+                                label={
+                                    <Typography variant="body2" color="text.secondary">
+                                        Reranker {rerankerEnabled ? <Chip label="ON" size="small" sx={{ bgcolor: 'rgba(16,185,129,0.2)', color: '#10b981', fontSize: 10, height: 18 }} /> : <Chip label="OFF" size="small" sx={{ bgcolor: 'rgba(107,114,128,0.2)', color: '#9ca3af', fontSize: 10, height: 18 }} />}
+                                    </Typography>
+                                }
+                            />
+                            {stageTimings && (
+                                <Stack direction="row" spacing={1} alignItems="center">
+                                    <TimerIcon sx={{ fontSize: 14, color: 'text.disabled' }} />
+                                    {Object.entries(stageTimings).map(([k, v]) => (
+                                        <Chip
+                                            key={k}
+                                            label={`${k.replace('_ms', '')}: ${v}ms`}
+                                            size="small"
+                                            sx={{ bgcolor: 'rgba(255,255,255,0.05)', color: 'text.secondary', fontSize: 10, height: 18 }}
+                                        />
+                                    ))}
+                                </Stack>
+                            )}
+                        </Box>
 
                         {/* Back Button */}
                         {canGoBack && (
@@ -179,7 +242,7 @@ const Results = () => {
                                         }
                                     }}
                                 >
-                                    返回上一次搜索
+                                    Back to previous search
                                 </Button>
                             </Box>
                         )}
@@ -202,7 +265,7 @@ const Results = () => {
                         {/* Results Count */}
                         {!loading && total > 0 && (
                             <Typography variant="body2" color="text.secondary" mb={2}>
-                                找到约 {total} 条结果 (第 {currentPage} 页，共 {totalPages} 页)
+                                About {total} results (page {currentPage} of {totalPages})
                             </Typography>
                         )}
 
@@ -219,36 +282,74 @@ const Results = () => {
                             ) : results.length > 0 ? (
                                 results.map((item, index) => (
                                     <Box key={index}>
-                                        <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
-                                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: 'background.paper', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>
-                                                {item.url && item.url.length > 8 ? item.url[8] : '🔍'}
-                                            </Box>
-                                            <Stack>
-                                                <Typography variant="caption" color="text.primary">
-                                                    {item.displayUrl ? item.displayUrl.split(' > ')[0] : (item.url || 'Internal Document')}
+                                        <Stack direction="row" alignItems="flex-start" spacing={1} mb={0.5}>
+                                            <Box sx={{ flex: 1 }}>
+                                                <Stack direction="row" alignItems="center" spacing={1} mb={0.5}>
+                                                    <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: 'background.paper', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}>
+                                                        {item.url && item.url.length > 8 ? item.url[8] : '🔍'}
+                                                    </Box>
+                                                    <Stack>
+                                                        <Typography variant="caption" color="text.primary">
+                                                            {item.displayUrl ? item.displayUrl.split(' > ')[0] : (item.url || 'Internal Document')}
+                                                        </Typography>
+                                                        <Typography variant="caption" color="text.secondary">{item.displayUrl || item.url || 'No URL'}</Typography>
+                                                    </Stack>
+                                                </Stack>
+
+                                                <Stack direction="row" alignItems="center" mb={0.5}>
+                                                    <Typography
+                                                        component={item.url ? "a" : "div"}
+                                                        href={item.url || undefined}
+                                                        target={item.url ? "_blank" : undefined}
+                                                        rel={item.url ? "noopener noreferrer" : undefined}
+                                                        variant="h5"
+                                                        color="secondary.main"
+                                                        sx={{
+                                                            textDecoration: 'none',
+                                                            '&:hover': { textDecoration: item.url ? 'underline' : 'none', cursor: item.url ? 'pointer' : 'default' },
+                                                            flex: 1,
+                                                        }}
+                                                    >
+                                                        {item.title}
+                                                    </Typography>
+                                                    {/* Rank delta badge */}
+                                                    {rerankerEnabled && getRankDeltaChip(item.rank_delta)}
+                                                    {/* Relevance score */}
+                                                    {item.score != null && (
+                                                        <Chip
+                                                            label={Number(item.score).toFixed(3)}
+                                                            size="small"
+                                                            sx={{
+                                                                ml: 1,
+                                                                bgcolor: item.score >= 0.8 ? 'rgba(16,185,129,0.15)' : item.score >= 0.5 ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.15)',
+                                                                color: item.score >= 0.8 ? '#10b981' : item.score >= 0.5 ? '#f59e0b' : '#ef4444',
+                                                                fontSize: 11,
+                                                                height: 20,
+                                                            }}
+                                                        />
+                                                    )}
+                                                </Stack>
+
+                                                <Typography variant="body2" color="text.secondary" mb={1}>
+                                                    {item.snippet}
                                                 </Typography>
-                                                <Typography variant="caption" color="text.secondary">{item.displayUrl || item.url || 'No URL'}</Typography>
-                                            </Stack>
+                                            </Box>
+
+                                            {/* Pin Button */}
+                                            <Tooltip title={isPinned(item) ? 'Remove from Workspace' : 'Pin to Workspace'}>
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => { togglePin(item); setWorkspaceOpen(true); }}
+                                                    sx={{
+                                                        color: isPinned(item) ? '#10b981' : 'text.disabled',
+                                                        '&:hover': { color: '#10b981', bgcolor: 'rgba(16,185,129,0.1)' },
+                                                        mt: 0.5,
+                                                    }}
+                                                >
+                                                    {isPinned(item) ? <PushPinIcon fontSize="small" /> : <PushPinOutlinedIcon fontSize="small" />}
+                                                </IconButton>
+                                            </Tooltip>
                                         </Stack>
-                                        <Typography
-                                            component={item.url ? "a" : "div"}
-                                            href={item.url || undefined}
-                                            target={item.url ? "_blank" : undefined}
-                                            rel={item.url ? "noopener noreferrer" : undefined}
-                                            variant="h5"
-                                            color="secondary.main"
-                                            sx={{
-                                                textDecoration: 'none',
-                                                '&:hover': { textDecoration: item.url ? 'underline' : 'none', cursor: item.url ? 'pointer' : 'default' },
-                                                display: 'block',
-                                                mb: 1
-                                            }}
-                                        >
-                                            {item.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            {item.snippet}
-                                        </Typography>
 
                                         {/* Result Images */}
                                         {item.images && item.images.length > 0 && (
@@ -280,10 +381,10 @@ const Results = () => {
                             ) : (
                                 <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 3 }}>
                                     <Typography variant="h6" color="text.secondary">
-                                        没有找到相关结果
+                                        No results found
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" mt={1}>
-                                        尝试使用不同的关键词搜索
+                                        Try different keywords
                                     </Typography>
                                 </Paper>
                             )}
@@ -304,25 +405,20 @@ const Results = () => {
                                         '& .MuiPaginationItem-root': {
                                             color: 'text.primary',
                                             borderColor: 'rgba(255,255,255,0.1)',
-                                            '&:hover': {
-                                                bgcolor: 'rgba(16, 185, 129, 0.1)',
-                                            },
+                                            '&:hover': { bgcolor: 'rgba(16, 185, 129, 0.1)' },
                                         },
                                         '& .Mui-selected': {
                                             bgcolor: 'primary.main',
                                             color: 'white',
-                                            '&:hover': {
-                                                bgcolor: 'primary.dark',
-                                            },
+                                            '&:hover': { bgcolor: 'primary.dark' },
                                         },
                                     }}
                                 />
                             </Box>
                         )}
-
                     </Box>
 
-                    {/* Sidebar */}
+                    {/* People Also Ask Sidebar */}
                     <Box sx={{ flex: 1, display: { xs: 'none', lg: 'block' }, maxWidth: '400px' }}>
                         <PeopleAlsoAsk
                             query={query}
@@ -331,7 +427,112 @@ const Results = () => {
                             onQuestionClick={handleQuestionClick}
                         />
                     </Box>
+
+                    {/* Research Workspace Toggle Button */}
+                    <Box sx={{ display: { xs: 'none', xl: 'flex' }, alignItems: 'flex-start', pt: 1 }}>
+                        <Tooltip title={workspaceOpen ? 'Close Workspace' : `Research Workspace (${pinnedDocs.length} pinned)`}>
+                            <IconButton
+                                onClick={() => setWorkspaceOpen(v => !v)}
+                                sx={{
+                                    bgcolor: pinnedDocs.length > 0 ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)',
+                                    border: '1px solid',
+                                    borderColor: pinnedDocs.length > 0 ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.1)',
+                                    color: pinnedDocs.length > 0 ? '#10b981' : 'text.secondary',
+                                    '&:hover': { bgcolor: 'rgba(16,185,129,0.15)' },
+                                }}
+                            >
+                                {workspaceOpen ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Container>
+
+                {/* Research Workspace Drawer */}
+                <Drawer
+                    anchor="right"
+                    open={workspaceOpen}
+                    onClose={() => setWorkspaceOpen(false)}
+                    variant="persistent"
+                    PaperProps={{
+                        sx: {
+                            width: 320,
+                            bgcolor: '#111117',
+                            borderLeft: '1px solid rgba(255,255,255,0.08)',
+                            top: 0,
+                            height: '100vh',
+                        }
+                    }}
+                >
+                    <Box sx={{ p: 2, borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box>
+                            <Typography variant="subtitle1" fontWeight={600}>Research Workspace</Typography>
+                            <Typography variant="caption" color="text.secondary">{pinnedDocs.length} pinned document{pinnedDocs.length !== 1 ? 's' : ''}</Typography>
+                        </Box>
+                        <IconButton size="small" onClick={() => setWorkspaceOpen(false)} sx={{ color: 'text.secondary' }}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                    <Box sx={{ p: 2, overflow: 'auto', flex: 1 }}>
+                        {pinnedDocs.length === 0 ? (
+                            <Box sx={{ textAlign: 'center', pt: 4 }}>
+                                <PushPinOutlinedIcon sx={{ fontSize: 40, color: 'text.disabled', mb: 1 }} />
+                                <Typography variant="body2" color="text.secondary">
+                                    Pin documents from search results to compare them here.
+                                </Typography>
+                            </Box>
+                        ) : (
+                            <Stack spacing={1.5}>
+                                {pinnedDocs.map((doc, i) => {
+                                    const docId = doc.id || doc.url || doc.title;
+                                    return (
+                                        <Paper key={i} sx={{ p: 1.5, bgcolor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 1.5 }}>
+                                            <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                                                <Box sx={{ flex: 1, mr: 1 }}>
+                                                    <Typography
+                                                        variant="body2"
+                                                        fontWeight={600}
+                                                        component={doc.url ? 'a' : 'span'}
+                                                        href={doc.url || undefined}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        sx={{ textDecoration: 'none', color: 'secondary.main', '&:hover': { textDecoration: 'underline' } }}
+                                                    >
+                                                        {doc.title || 'Untitled'}
+                                                    </Typography>
+                                                    {doc.url && (
+                                                        <Typography variant="caption" color="text.disabled" noWrap sx={{ display: 'block' }}>
+                                                            {doc.url}
+                                                        </Typography>
+                                                    )}
+                                                    {doc.snippet && (
+                                                        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                                                            {doc.snippet.slice(0, 120)}{doc.snippet.length > 120 ? '...' : ''}
+                                                        </Typography>
+                                                    )}
+                                                </Box>
+                                                <IconButton
+                                                    size="small"
+                                                    onClick={() => togglePin(doc)}
+                                                    sx={{ color: '#ef4444', '&:hover': { bgcolor: 'rgba(239,68,68,0.1)' }, flexShrink: 0 }}
+                                                >
+                                                    <CloseIcon fontSize="small" />
+                                                </IconButton>
+                                            </Stack>
+                                        </Paper>
+                                    );
+                                })}
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() => setPinnedDocs([])}
+                                    sx={{ borderColor: 'rgba(239,68,68,0.3)', color: '#ef4444', '&:hover': { bgcolor: 'rgba(239,68,68,0.08)' }, mt: 1 }}
+                                >
+                                    Clear All
+                                </Button>
+                            </Stack>
+                        )}
+                    </Box>
+                </Drawer>
 
                 {/* Chat Widget */}
                 <ChatWidget

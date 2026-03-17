@@ -1,7 +1,7 @@
 # Verdant Search Backend
 
 Backend services for Verdant Search, including Go Gin API and Python FastAPI submodule.
-
+his
 ## Architecture
 
 - **Go (Gin)**: Main API server handling authentication, search, and history

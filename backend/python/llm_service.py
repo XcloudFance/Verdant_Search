@@ -91,134 +91,152 @@ Provide a clear overview:"""
             return f"Unable to generate summary at this time. Please try again later."
     
     def chat_with_context(
-        self, 
-        user_message: str, 
+        self,
+        user_message: str,
         search_results: List[Dict],
         query: str,
         chat_history: Optional[List[Dict]] = None
-    ) -> str:
+    ):
         """
-        Chat with AI about search results (supports Multimodal/Images)
+        Chat with AI about search results (supports Multimodal/Images).
+
+        On the first turn (no chat_history), the full context — text snippets
+        and inline images labeled by result index — is injected directly into
+        the user message.  Subsequent turns send only the user text; the model
+        already has the context in its conversation history.
+
+        Returns:
+            Tuple[str, Optional[str]]: (response_text, built_prompt)
+            built_prompt is a human-readable representation of what was sent,
+            only populated on the first turn (for the frontend prompt viewer).
         """
-        # Prepare text context
-        context = self._prepare_results_context(search_results)
-        
-        # Extract images from results
-        images = []
-        try:
-            for result in search_results:
-                if result.get("images"):
-                    for img in result["images"]:
-                        if img.get("base64_data"):
-                            images.append(img)
-                            # Limit total images to avoid token limits
-                            if len(images) >= 4:
-                                break
-                if len(images) >= 4:
+        is_first = not chat_history
+
+        # Minimal system prompt — context is NOT repeated here
+        system_prompt = (
+            "You are a helpful AI assistant embedded in the Verdant Search engine. "
+            "Answer questions based on the search context provided in the conversation. "
+            "Reference specific results when answering (e.g., \"According to Result 1...\"). "
+            "Use markdown formatting. Be concise but informative. Always respond in English."
+        )
+
+        messages = list(chat_history) if chat_history else []
+        built_prompt: Optional[str] = None
+
+        if is_first and search_results:
+            context = self._prepare_results_context(search_results)
+
+            # Collect labeled images (max 4 total)
+            labeled_images: List[Dict] = []  # {"result_idx": int, "title": str, "base64": str}
+            for i, result in enumerate(search_results, 1):
+                if len(labeled_images) >= 4:
                     break
-        except Exception as e:
-            print(f"Error extracting images: {e}")
-        
-        has_images = len(images) > 0
-        if has_images:
-            print(f"🖼️ Found {len(images)} images in context")
+                for img in (result.get("images") or []):
+                    if img.get("base64_data") and len(labeled_images) < 4:
+                        labeled_images.append({
+                            "result_idx": i,
+                            "title": result.get("title", "Untitled"),
+                            "base64": img["base64_data"],
+                        })
 
-        # Build system prompt
-        system_prompt = f"""You are a helpful AI assistant embedded in the Verdant Search engine.
+            if labeled_images:
+                print(f"🖼️  Attaching {len(labeled_images)} labeled images to first user message")
 
-**Current Search Query**: "{query}"
+            # ── Anthropic ──────────────────────────────────────────────────
+            if self.provider == "anthropic":
+                first_content: List[Dict] = []
+                for limg in labeled_images:
+                    first_content.append({
+                        "type": "text",
+                        "text": f"[Image from Result {limg['result_idx']}: {limg['title']}]",
+                    })
+                    first_content.append({
+                        "type": "image",
+                        "source": {
+                            "type": "base64",
+                            "media_type": "image/jpeg",
+                            "data": limg["base64"],
+                        },
+                    })
+                first_content.append({
+                    "type": "text",
+                    "text": (
+                        f'Search Query: "{query}"\n\n'
+                        f"Search Results:\n{context}\n\n"
+                        f"Question: {user_message}"
+                    ),
+                })
+                messages.append({"role": "user", "content": first_content})
 
-**Available Search Results**:
-{context}
+            # ── OpenAI ─────────────────────────────────────────────────────
+            elif self.provider == "openai":
+                first_content = []
+                for limg in labeled_images:
+                    first_content.append({
+                        "type": "text",
+                        "text": f"[Image from Result {limg['result_idx']}: {limg['title']}]",
+                    })
+                    first_content.append({
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{limg['base64']}",
+                            "detail": "auto",
+                        },
+                    })
+                first_content.append({
+                    "type": "text",
+                    "text": (
+                        f'Search Query: "{query}"\n\n'
+                        f"Search Results:\n{context}\n\n"
+                        f"Question: {user_message}"
+                    ),
+                })
+                messages.append({"role": "user", "content": first_content})
 
-**Your Role**:
-- Answer questions about the search results above
-- Provide insights, summaries, and explanations
-- If images are provided, analyze them relevant to the user's question
-- Reference specific results when answering (e.g., "According to Result 1...")
-- Always respond in English
+            # Build human-readable prompt for the frontend debug viewer
+            img_note = ""
+            if labeled_images:
+                labels = ", ".join(
+                    f"Result {li['result_idx']} ({li['title']})" for li in labeled_images
+                )
+                img_note = f"\n[{len(labeled_images)} image(s) attached inline: {labels}]\n"
+            built_prompt = (
+                f"[SYSTEM]\n{system_prompt}\n\n"
+                f"[USER — Turn 1]{img_note}\n"
+                f'Search Query: "{query}"\n\n'
+                f"Search Results:\n{context}\n\n"
+                f"Question: {user_message}"
+            )
 
-**Guidelines**:
-- Be concise but informative
-- Use markdown formatting
-- If the user asks about an image, describe what you see in the provided context images
-"""
+        else:
+            # Subsequent turns: plain text only — context already in history
+            messages.append({"role": "user", "content": user_message})
 
         try:
             if self.provider == "openai":
-                messages = [{"role": "system", "content": system_prompt}]
-                
-                # Add history
-                if chat_history:
-                    messages.extend(chat_history)
-                
-                # Build current user message content
-                user_content = [{"type": "text", "text": user_message}]
-                
-                # Add images if available
-                for img in images:
-                    base64_data = img.get("base64_data")
-                    if base64_data:
-                        user_content.append({
-                            "type": "image_url",
-                            "image_url": {
-                                "url": f"data:image/jpeg;base64,{base64_data}",
-                                "detail": "auto"
-                            }
-                        })
-                
-                messages.append({"role": "user", "content": user_content})
-                
                 response = self.client.chat.completions.create(
                     model=self.model,
-                    messages=messages,
+                    messages=[{"role": "system", "content": system_prompt}] + messages,
                     temperature=0.7,
-                    max_tokens=1000
+                    max_tokens=1000,
                 )
-                return response.choices[0].message.content
-            
+                return response.choices[0].message.content, built_prompt
+
             elif self.provider == "anthropic":
-                messages = []
-                
-                # Add history
-                if chat_history:
-                    messages.extend(chat_history)
-                
-                # Build current user message content
-                user_content = []
-                
-                # Add images first (Anthropic recommendation)
-                for img in images:
-                    base64_data = img.get("base64_data")
-                    if base64_data:
-                        user_content.append({
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": "image/jpeg", # Assuming JPEG for simplicity
-                                "data": base64_data
-                            }
-                        })
-                
-                # Add text
-                user_content.append({"type": "text", "text": user_message})
-                
-                messages.append({"role": "user", "content": user_content})
-                
                 response = self.client.messages.create(
                     model=self.model,
                     system=system_prompt,
                     messages=messages,
                     max_tokens=1000,
-                    temperature=0.7
+                    temperature=0.7,
                 )
-                return response.content[0].text
-        
+                return response.content[0].text, built_prompt
+
         except Exception as e:
             print(f"LLM Chat Error ({self.provider}): {str(e)}")
             import traceback
             traceback.print_exc()
-            return "I apologize, but I'm having trouble processing your request right now. Please try again."
+            return "I apologize, but I'm having trouble processing your request right now. Please try again.", None
     
     def generate_related_questions(self, query: str, search_results: List[Dict]) -> List[str]:
         """

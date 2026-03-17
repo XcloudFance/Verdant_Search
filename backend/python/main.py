@@ -11,12 +11,20 @@ from index_service import get_index_service, IndexService
 from llm_service import get_llm_service, LLMService
 from cache_service import get_cache_service, CacheService
 from analytics_router import router as analytics_router
+from crawler_admin_router import router as crawler_admin_router
+from index_admin_router import router as index_admin_router
+from reranker_admin_router import router as reranker_admin_router
+from config_admin_router import router as config_admin_router
 from config import settings
 
 
 app = FastAPI(title="Verdant Search - Python API", version="1.0.0")
 
 app.include_router(analytics_router)
+app.include_router(crawler_admin_router)
+app.include_router(index_admin_router)
+app.include_router(reranker_admin_router)
+app.include_router(config_admin_router)
 
 
 # CORS configuration
@@ -54,6 +62,8 @@ class SearchRequest(BaseModel):
     page: Optional[int] = 1
     page_size: Optional[int] = 10
     top_k: Optional[int] = None  # 保留兼容性，如果不提供则使用 page * page_size
+    reranker_enabled: Optional[bool] = False  # Enable multimodal listwise reranker (Stage 2)
+    filters: Optional[Dict[str, Any]] = None   # Metadata filtering (date_range, source_type, content_type)
 
 class ImageInfo(BaseModel):
     url: str
@@ -74,6 +84,9 @@ class SearchResult(BaseModel):
     score: float
     source_type: str
     images: Optional[List[ImageInfo]] = None
+    pre_rank: Optional[int] = None    # Position before reranking
+    post_rank: Optional[int] = None   # Position after reranking
+    rank_delta: Optional[int] = None  # Positive = moved up
 
 class SearchResponse(BaseModel):
     query: str
@@ -82,6 +95,7 @@ class SearchResponse(BaseModel):
     page: int
     page_size: int
     total_pages: int
+    stage_timings: Optional[Dict[str, float]] = None  # Per-stage latency breakdown (bm25_ms, hnsw_ms, etc.)
 
 class IndexDocumentRequest(BaseModel):
     title: str
@@ -119,6 +133,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+    debug_prompt: Optional[str] = None
 
 class QuestionsRequest(BaseModel):
     query: str
@@ -183,46 +198,58 @@ async def search(
     Returns paginated results ranked by combined score
     """
     try:
+        import time as _time
         # 计算需要获取的总结果数（获取更多结果以便分页）
         # 获取前 max(100, page * page_size) 个结果
         if request.top_k is not None:
             fetch_count = request.top_k
         else:
             fetch_count = max(100, request.page * request.page_size)
-        
+
         # Perform hybrid search
+        _search_start = _time.time()
         search_results = await search_service.search(
             query=request.query,
             session=db,
-            top_k=fetch_count
+            top_k=fetch_count,
+            reranker_enabled=request.reranker_enabled or False,
         )
-        
+        _search_elapsed = (_time.time() - _search_start) * 1000
+
+        # Extract stage timings if returned by search service
+        stage_timings: Optional[Dict[str, float]] = None
+        if isinstance(search_results, dict) and "timings" in search_results:
+            stage_timings = search_results["timings"]
+            search_results = search_results["results"]
+        else:
+            stage_timings = {"total_ms": _search_elapsed}
+
         # 总结果数
         total_results = len(search_results)
-        
+
         # 计算分页
         page = max(1, request.page)
         page_size = request.page_size
         start_idx = (page - 1) * page_size
         end_idx = start_idx + page_size
-        
+
         # 分页切片
         paginated_results = search_results[start_idx:end_idx]
-        
+
         # Fetch full document details for current page
         results = []
         index_service = get_index_service()
-        
+
         for result in paginated_results:
             doc_id = result["document_id"]
             score = result["score"]
-            
+
             # Get document from database
             document = await index_service.get_document(doc_id, db)
             if document:
                 # Create snippet (first 200 chars of content)
                 snippet = document.content[:200] + "..." if len(document.content) > 200 else document.content
-                
+
                 results.append(SearchResult(
                     id=document.id,
                     title=document.title,
@@ -230,19 +257,23 @@ async def search(
                     snippet=snippet,
                     score=score,
                     source_type=document.source_type or "text",
-                    images=document.images  # 传递图片数据
+                    images=document.images,
+                    pre_rank=result.get("pre_rank"),
+                    post_rank=result.get("post_rank"),
+                    rank_delta=result.get("rank_delta"),
                 ))
-        
+
         # 计算总页数
         total_pages = (total_results + page_size - 1) // page_size
-        
+
         response = SearchResponse(
             query=request.query,
             results=results,
             total=total_results,
             page=page,
             page_size=page_size,
-            total_pages=total_pages
+            total_pages=total_pages,
+            stage_timings=stage_timings
         )
         return response
     
@@ -505,9 +536,12 @@ async def chat_with_ai(
     """
     try:
         search_results = request.results or []
-        
-        # If document_ids are provided, fetch full details from DB
-        if request.document_ids:
+        is_first = not request.history
+
+        # Only fetch full document context (including images) on the first turn.
+        # Subsequent turns already have context in the conversation history sent
+        # by the frontend, so re-fetching would waste tokens.
+        if is_first and request.document_ids:
             fetched_results = []
             for doc_id in request.document_ids:
                 doc = await index_service.get_document(doc_id, db)
@@ -516,21 +550,21 @@ async def chat_with_ai(
                         "id": doc.id,
                         "title": doc.title,
                         "url": doc.url,
-                        "snippet": doc.content,  # Use full content for context
+                        "snippet": doc.content,
                         "source_type": doc.source_type,
-                        "images": doc.images  # Include images
+                        "images": doc.images,
                     })
             if fetched_results:
                 search_results = fetched_results
-        
-        response = llm_service.chat_with_context(
+
+        response_text, debug_prompt = llm_service.chat_with_context(
             user_message=request.message,
             search_results=search_results,
             query=request.query,
-            chat_history=request.history
+            chat_history=request.history,
         )
-        
-        return ChatResponse(response=response)
+
+        return ChatResponse(response=response_text, debug_prompt=debug_prompt)
     
     except Exception as e:
         import traceback

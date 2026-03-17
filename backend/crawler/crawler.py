@@ -6,6 +6,11 @@ import logging
 import time
 import signal
 import sys
+import uuid
+import socket
+import json
+import urllib.request
+import threading
 from typing import List, Optional
 from threading import Thread, Event, Lock
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -17,10 +22,10 @@ from content_extractor import ContentExtractor
 from crawler_config import (
     USER_AGENT, REQUEST_TIMEOUT, MAX_RETRIES, REQUEST_DELAY,
     NUM_WORKERS, DEFAULT_SEED_URLS, MAX_DEPTH,
-    DRISSION_MODE, HEADLESS, BROWSER_PATH
+    DRISSION_MODE, HEADLESS, BROWSER_PATH,
+    BACKEND_API_URL,
 )
 
-# 配置日志
 logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s [%(name)s] %(message)s',
@@ -34,7 +39,6 @@ loop_lock = Lock()
 
 
 def get_event_loop():
-    """获取或创建 event loop"""
     global loop
     with loop_lock:
         if loop is None:
@@ -43,428 +47,504 @@ def get_event_loop():
         return loop
 
 
+def _post_json(url: str, data: dict, timeout: int = 5):
+    """Simple stdlib JSON POST — no extra dependencies needed."""
+    try:
+        body = json.dumps(data).encode("utf-8")
+        req = urllib.request.Request(
+            url, data=body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        logger.debug(f"HTTP POST {url} failed: {e}")
+        return None
+
+
 class CrawlerWorker:
     """爬虫工作线程 - 使用 DrissionPage"""
-    
-    def __init__(self, worker_id: int, stop_event: Event, browser_instance=None):
-        self.worker_id = worker_id
-        self.stop_event = stop_event
+
+    def __init__(self, worker_id: str, worker_idx: int, stop_event: Event,
+                 browser_instance=None):
+        self.worker_id   = worker_id    # UUID — used for Redis keys & registration
+        self.worker_idx  = worker_idx   # int  — human-readable index for logs
+        self.stop_event  = stop_event
         self.url_manager = URLManager()
         self.content_extractor = ContentExtractor()
         self.page = None
         self.mode = DRISSION_MODE
-        self.browser_instance = browser_instance  # 全局浏览器实例
-        
+        self.browser_instance = browser_instance
+
+        # Runtime counters (written to Redis every heartbeat)
+        self._jobs_completed = 0
+        self._jobs_failed    = 0
+        self._start_time     = time.time()
+        self._current_url    = None
+
+    # ── Page creation ──────────────────────────────────────────────────────────
+
     def _create_page(self):
-        """创建 DrissionPage 页面对象"""
         try:
             if self.mode == 's':
-                # Session 模式（快速）
                 self.page = SessionPage(timeout=REQUEST_TIMEOUT)
                 self.page.set.user_agent(USER_AGENT)
-                logger.info(f"Worker {self.worker_id}: Using SessionPage (fast mode)")
+                logger.info(f"Worker-{self.worker_idx}: Using SessionPage (fast mode)")
             else:
-                # Driver 模式（浏览器）- 多标签页模式
                 if self.browser_instance:
-                    # 从全局浏览器创建新标签页
                     self.page = self.browser_instance.new_tab()
                     self.page.set.timeouts(base=REQUEST_TIMEOUT, page_load=REQUEST_TIMEOUT)
-                    logger.info(f"Worker {self.worker_id}: Created new tab in global browser")
+                    logger.info(f"Worker-{self.worker_idx}: Created new tab in global browser")
                 else:
-                    # 回退到独立控制（不推荐用于并发）
                     co = ChromiumOptions()
                     if HEADLESS:
                         co.headless()
                     if BROWSER_PATH:
                         co.set_browser_path(BROWSER_PATH)
-                    co.set_argument('--no-sandbox')
-                    co.set_argument('--disable-dev-shm-usage')
+                    co.set_argument("--no-sandbox")
+                    co.set_argument("--disable-dev-shm-usage")
                     co.set_user_agent(USER_AGENT)
-                    
                     self.page = ChromiumPage(addr_or_opts=co)
                     self.page.set.timeouts(base=REQUEST_TIMEOUT, page_load=REQUEST_TIMEOUT)
-                    logger.info(f"Worker {self.worker_id}: Created standalone ChromiumPage")
-                    
+                    logger.info(f"Worker-{self.worker_idx}: Created standalone ChromiumPage")
         except Exception as e:
-            logger.error(f"Worker {self.worker_id}: Failed to create page: {e}")
+            logger.error(f"Worker-{self.worker_idx}: Failed to create page: {e}")
             raise
-    
-    # ... (fetch_page and index_document remain unchanged) ...
-    # 为了避免代码过长被截断，我先保留 run 和 cleanup 部分稍后处理
-    
+
+    # ── Heartbeat ──────────────────────────────────────────────────────────────
+
+    def _heartbeat_loop(self):
+        """Send heartbeat to Redis DB 1 every 10 s, and POST to backend every 30 s."""
+        backend_interval = 30
+        last_backend_hb  = 0
+
+        while not self.stop_event.is_set():
+            try:
+                r = self.url_manager.redis_client
+                elapsed = max(time.time() - self._start_time, 1)
+                ppm = round(self._jobs_completed / elapsed * 60, 1)
+
+                # --- Redis heartbeat key (TTL 30 s) ---
+                r.setex(f"crawler:heartbeat:{self.worker_id}", 30,
+                        str(time.time()))
+
+                # --- Redis live-status key (TTL 60 s) ---
+                r.setex(f"crawler:worker:{self.worker_id}:status", 60,
+                        json.dumps({
+                            "worker_id":      self.worker_id,
+                            "worker_idx":     self.worker_idx,
+                            "url":            self._current_url,
+                            "jobs_completed": self._jobs_completed,
+                            "jobs_failed":    self._jobs_failed,
+                            "pages_per_min":  ppm,
+                            "timestamp":      time.time(),
+                        }))
+
+                # --- HTTP heartbeat to backend (less frequent) ---
+                now = time.time()
+                if now - last_backend_hb >= backend_interval:
+                    _post_json(
+                        f"{BACKEND_API_URL}/api/v1/admin/crawler/workers/{self.worker_id}/heartbeat",
+                        {
+                            "jobs_completed": self._jobs_completed,
+                            "jobs_failed":    self._jobs_failed,
+                            "pages_per_min":  ppm,
+                            "current_url":    self._current_url,
+                        },
+                    )
+                    last_backend_hb = now
+
+            except Exception as e:
+                logger.debug(f"Worker-{self.worker_idx}: Heartbeat error: {e}")
+
+            time.sleep(10)
+
+    # ── Fetch ──────────────────────────────────────────────────────────────────
+
     def fetch_page(self, url: str) -> Optional[str]:
-        """获取网页内容"""
         if not self.page:
             self._create_page()
-        
+
         retry_count = 0
         while retry_count < MAX_RETRIES:
             try:
-                # 访问页面
                 self.page.get(url)
-                
-                # 等待页面加载和 JS 渲染（如果是浏览器模式）
                 if self.mode == 'd':
-                    logger.debug(f"Worker {self.worker_id}: Waiting 3s for JS rendering...")
-                    time.sleep(3)  # 等待 JS 渲染完成
-                
-                # 获取 HTML
+                    time.sleep(3)
                 html = self.page.html
-                
                 if not html or len(html) < 100:
-                    logger.warning(f"Worker {self.worker_id}: Empty or too short HTML from {url}")
                     return None
-                
                 return html
-            
+
             except (ElementNotFoundError, PageDisconnectedError) as e:
-                logger.warning(f"Worker {self.worker_id}: Page error for {url}: {e}")
-                retry_count += 1
-                if retry_count < MAX_RETRIES:
-                    time.sleep(2 ** retry_count)  # 指数退避
-                    # 重新创建页面 (Close old tab, open new one)
-                    try:
-                        if self.page:
-                            self.page.close() if self.mode == 'd' and self.browser_instance else (self.page.quit() if hasattr(self.page, 'quit') else None)
-                    except:
-                        pass
-                    self.page = None
-            except Exception as e:
-                logger.warning(f"Worker {self.worker_id}: Failed to fetch {url}: {e}")
+                logger.warning(f"Worker-{self.worker_idx}: Page error for {url}: {e}")
                 retry_count += 1
                 if retry_count < MAX_RETRIES:
                     time.sleep(2 ** retry_count)
-        
+                    try:
+                        if self.page:
+                            if self.mode == 'd' and self.browser_instance:
+                                self.page.close()
+                            elif hasattr(self.page, 'quit'):
+                                self.page.quit()
+                    except Exception:
+                        pass
+                    self.page = None
+            except Exception as e:
+                logger.warning(f"Worker-{self.worker_idx}: Failed to fetch {url}: {e}")
+                retry_count += 1
+                if retry_count < MAX_RETRIES:
+                    time.sleep(2 ** retry_count)
+
         return None
 
-    # ... index_document ...
+    # ── Index ──────────────────────────────────────────────────────────────────
 
-    # 需要完整包含 CrawlerWorker 类的方法，因为我要修改 run 中的清理逻辑
-    async def index_document(self, title: str, content: str, url: str, images: list = None):
-         # ... (same as before)
-            import sys
-            import os
-            
-            # 添加 Python 目录到路径
-            python_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'python')
-            if python_dir not in sys.path:
-                sys.path.insert(0, python_dir)
-            
-            from database import AsyncSessionLocal
-            from index_service import get_index_service
-            
-            # 创建数据库会话
-            async with AsyncSessionLocal() as session:
-                index_service = get_index_service()
-                
-                # 索引文档
-                doc_id = await index_service.index_document(
-                    title=title,
-                    content=content,
-                    url=url,
-                    source_type="web",
-                    images=images,  # 传递图片数据
-                    metadata={
-                        "crawled_at": time.time(),
-                        "worker_id": self.worker_id,
-                        "crawler_mode": self.mode
-                    },
-                    session=session
-                )
-                
-                logger.info(f"Worker {self.worker_id}: Indexed document {doc_id} from {url}")
-                return doc_id
-        
+    async def index_document(self, title: str, content: str, url: str,
+                             images: list = None):
+        import sys
+        import os
+
+        python_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'python'
+        )
+        if python_dir not in sys.path:
+            sys.path.insert(0, python_dir)
+
+        from database import AsyncSessionLocal
+        from index_service import get_index_service
+
+        async with AsyncSessionLocal() as session:
+            index_service = get_index_service()
+            doc_id = await index_service.index_document(
+                title=title,
+                content=content,
+                url=url,
+                source_type="web",
+                images=images,
+                metadata={
+                    "crawled_at": time.time(),
+                    "worker_id":  self.worker_id,
+                    "worker_idx": self.worker_idx,
+                    "crawler_mode": self.mode,
+                },
+                session=session,
+            )
+            logger.info(f"Worker-{self.worker_idx}: Indexed doc {doc_id} from {url}")
+            return doc_id
+
+    # ── Process URL ────────────────────────────────────────────────────────────
+
     def process_url(self, task: dict):
-        # ... (same as before)
-        """处理单个URL"""
-        url = task['url']
+        url   = task['url']
         depth = task.get('depth', 0)
-        
-        logger.info(f"Worker {self.worker_id}: Processing {url} (depth={depth})")
-        
+
+        logger.info(f"Worker-{self.worker_idx}: Processing {url} (depth={depth})")
+
         if self.url_manager.is_visited(url):
-            logger.debug(f"Worker {self.worker_id}: URL already visited (skipping): {url}")
+            logger.debug(f"Worker-{self.worker_idx}: Already visited, skipping: {url}")
             return
-        
+
         self.url_manager.mark_visited(url)
         self.url_manager.check_and_rest_if_needed()
-        
+
         html = self.fetch_page(url)
         if not html:
             return
-        
+
         extracted = self.content_extractor.extract(html, url)
         if not extracted:
-            logger.debug(f"Worker {self.worker_id}: No content extracted from {url}")
             return
-        
+
         images = []
         try:
             from image_extractor import get_image_extractor
-            image_extractor = get_image_extractor()
-            images = image_extractor.extract_images(html, url)
+            images = get_image_extractor().extract_images(html, url)
             if images:
-                logger.info(f"Worker {self.worker_id}: Extracted {len(images)} images from {url}")
+                logger.info(f"Worker-{self.worker_idx}: Extracted {len(images)} images from {url}")
         except Exception as e:
-            logger.warning(f"Worker {self.worker_id}: Failed to extract images from {url}: {e}")
-        
-        # 索引到数据库（使用共享的 event loop）
+            logger.warning(f"Worker-{self.worker_idx}: Image extraction failed: {e}")
+
         max_retries = 3
         for attempt in range(max_retries):
             try:
-                event_loop = get_event_loop()
                 future = asyncio.run_coroutine_threadsafe(
                     self.index_document(
                         title=extracted['title'],
                         content=extracted['content'],
                         url=url,
-                        images=images
+                        images=images,
                     ),
-                    event_loop
+                    get_event_loop(),
                 )
                 future.result(timeout=REQUEST_TIMEOUT)
-                break # 成功则退出循环
+                break
             except Exception as e:
                 import traceback
                 if attempt < max_retries - 1:
-                    # 如果是死锁，通常消息包含 "DeadlockDetectedError"
-                    logger.warning(f"Worker {self.worker_id}: Retrying index {url} (attempt {attempt+1}/{max_retries}) due to error: {e}")
-                    import random
-                    time.sleep(1 + attempt + random.random()) # 随机退避，减少再次死锁概率
+                    logger.warning(
+                        f"Worker-{self.worker_idx}: Retrying index {url} "
+                        f"(attempt {attempt+1}/{max_retries}): {e}"
+                    )
+                    time.sleep(1 + attempt)
                 else:
-                    logger.error(f"Worker {self.worker_id}: Failed to index {url} after {max_retries} attempts: {e}")
-                    logger.error(f"Worker {self.worker_id} Traceback:\n{traceback.format_exc()}")
-        
+                    logger.error(
+                        f"Worker-{self.worker_idx}: Failed to index {url} "
+                        f"after {max_retries} attempts: {e}\n{traceback.format_exc()}"
+                    )
+
         if MAX_DEPTH == 0 or depth < MAX_DEPTH:
             links = self.url_manager.extract_links(url, html)
             if links:
                 added = self.url_manager.add_urls(links, depth + 1)
-                logger.debug(f"Worker {self.worker_id}: Added {added} new links from {url}")
-        
+                logger.debug(f"Worker-{self.worker_idx}: Added {added} new links from {url}")
+
         time.sleep(REQUEST_DELAY)
 
+    # ── Status helper ──────────────────────────────────────────────────────────
+
     def _report_status(self, status: str, url: str = None):
-        # ... (same as before)
+        self._current_url = url if status == "processing" else None
         try:
-            import json
-            import time
-            key = f"crawler:worker:{self.worker_id}:status"
+            key  = f"crawler:worker:{self.worker_id}:status"
+            elapsed = max(time.time() - self._start_time, 1)
+            ppm  = round(self._jobs_completed / elapsed * 60, 1)
             data = {
-                "worker_id": self.worker_id,
-                "status": status,
-                "url": url,
-                "timestamp": time.time()
+                "worker_id":      self.worker_id,
+                "worker_idx":     self.worker_idx,
+                "status":         status,
+                "url":            url,
+                "jobs_completed": self._jobs_completed,
+                "jobs_failed":    self._jobs_failed,
+                "pages_per_min":  ppm,
+                "timestamp":      time.time(),
             }
-            self.url_manager.redis_client.set(key, json.dumps(data), ex=60)
+            self.url_manager.redis_client.setex(key, 60, json.dumps(data))
         except Exception as e:
-            logger.error(f"Worker {self.worker_id}: Failed to report status: {e}")
+            logger.debug(f"Worker-{self.worker_idx}: _report_status error: {e}")
+
+    # ── Main run loop ──────────────────────────────────────────────────────────
 
     def run(self):
-        """运行爬虫工作线程"""
-        logger.info(f"Worker {self.worker_id} started")
-        
+        logger.info(f"Worker-{self.worker_idx} started (id={self.worker_id[:8]}…)")
+
+        # Start background heartbeat thread
+        hb_thread = threading.Thread(target=self._heartbeat_loop, daemon=True)
+        hb_thread.start()
+
         try:
             while not self.stop_event.is_set():
                 try:
                     task = self.url_manager.get_next_url()
-                    
                     if task is None:
-                        logger.debug(f"Worker {self.worker_id}: Queue empty, waiting...")
+                        logger.debug(f"Worker-{self.worker_idx}: Queue empty, waiting…")
                         time.sleep(5)
                         continue
-                    
+
                     self._report_status("processing", task['url'])
-                    self.process_url(task)
+                    try:
+                        self.process_url(task)
+                        self._jobs_completed += 1
+                    except Exception as e:
+                        self._jobs_failed += 1
+                        logger.error(f"Worker-{self.worker_idx}: process_url error: {e}")
                     self._report_status("idle")
 
-                
                 except KeyboardInterrupt:
-                    logger.info(f"Worker {self.worker_id}: Received interrupt signal")
                     break
                 except Exception as e:
-                    logger.error(f"Worker {self.worker_id}: Error in main loop: {e}")
+                    logger.error(f"Worker-{self.worker_idx}: Main loop error: {e}")
                     time.sleep(1)
         finally:
-            # 清理资源
             if self.page:
                 try:
                     if self.mode == 'd' and self.browser_instance:
-                        # 多标签页模式：只关闭当前标签页
-                        logger.info(f"Worker {self.worker_id}: Closing tab")
                         self.page.close()
                     elif hasattr(self.page, 'quit'):
-                        # 独立模式或 Session 模式：退出
                         self.page.quit()
-                except:
+                except Exception:
                     pass
-        
-        logger.info(f"Worker {self.worker_id} stopped")
 
+        logger.info(f"Worker-{self.worker_idx} stopped")
+
+
+# ──────────────────────────────────────────────────────────────────────────────
 
 class WebCrawler:
     """多线程网页爬虫管理器"""
-    
-    def __init__(self, num_workers: int = NUM_WORKERS, seed_urls: Optional[List[str]] = None):
-        self.num_workers = num_workers
-        self.seed_urls = seed_urls or DEFAULT_SEED_URLS
-        self.url_manager = URLManager()
+
+    def __init__(self, num_workers: int = NUM_WORKERS,
+                 seed_urls: Optional[List[str]] = None):
+        self.num_workers      = num_workers
+        self.seed_urls        = seed_urls or DEFAULT_SEED_URLS
+        self.url_manager      = URLManager()
         self.workers: List[Thread] = []
-        self.stop_event = Event()
-        self.executor = None
-        
-        # 全局浏览器实例（用于多 Worker 共享，实现多 Tab 并发）
+        self.stop_event       = Event()
         self.browser_instance = None
-        
-        # 注册信号处理
-        signal.signal(signal.SIGINT, self._signal_handler)
+
+        # Assign a UUID to each worker thread
+        self.worker_uuids = [str(uuid.uuid4()) for _ in range(num_workers)]
+
+        signal.signal(signal.SIGINT,  self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
-    
+
     def _signal_handler(self, signum, frame):
-        """处理终止信号"""
-        logger.info(f"Received signal {signum}, stopping crawler...")
+        logger.info(f"Received signal {signum}, stopping crawler…")
         self.stop()
         sys.exit(0)
-    
+
+    def _get_host_info(self):
+        hostname = socket.gethostname()
+        try:
+            ip = socket.gethostbyname(hostname)
+        except Exception:
+            ip = "127.0.0.1"
+        return hostname, ip
+
+    def _register_workers(self):
+        """Register all worker threads with the Python backend."""
+        hostname, ip = self._get_host_info()
+        caps = ["js_render"] if DRISSION_MODE == 'd' else ["fast"]
+
+        for idx, worker_uuid in enumerate(self.worker_uuids):
+            result = _post_json(
+                f"{BACKEND_API_URL}/api/v1/admin/crawler/workers/register",
+                {
+                    "worker_id":   worker_uuid,
+                    "hostname":    f"{hostname}-worker-{idx}",
+                    "ip_address":  ip,
+                    "version":     "1.0.0",
+                    "capabilities": caps,
+                },
+            )
+            if result and result.get("registered"):
+                logger.info(f"Worker-{idx} registered (id={worker_uuid[:8]}…)")
+            else:
+                logger.warning(
+                    f"Worker-{idx} could not register with backend at {BACKEND_API_URL} "
+                    f"(running in offline mode)"
+                )
+
     def initialize_seeds(self):
-        # ... (same as before)
         queue_size = self.url_manager.get_queue_size()
-        
         if queue_size == 0:
             logger.info(f"Initializing with {len(self.seed_urls)} seed URLs")
             added = self.url_manager.add_urls(self.seed_urls, depth=0)
             logger.info(f"Added {added} seed URLs to queue")
         else:
-            logger.info(f"Queue already has {queue_size} URLs, skipping seed initialization")
-    
+            logger.info(f"Queue has {queue_size} URLs, resuming from last state")
+
     def start(self):
-        """启动爬虫"""
-        logger.info(f"Starting web crawler with {self.num_workers} workers (threads)")
+        logger.info(f"Starting web crawler with {self.num_workers} workers")
         logger.info(f"Mode: {DRISSION_MODE} ({'Session' if DRISSION_MODE == 's' else 'Browser'})")
-        
-        # 初始化全局浏览器（如果处于浏览器模式）
+
+        # Initialize global browser for browser mode
         if DRISSION_MODE == 'd':
             try:
                 co = ChromiumOptions()
-                # 强制连接到 9222 端口 (复用用户浏览器)
                 co.set_local_port(9222)
-                
                 if HEADLESS:
                     co.headless()
                 if BROWSER_PATH:
                     co.set_browser_path(BROWSER_PATH)
-                co.set_argument('--no-sandbox')
-                co.set_argument('--disable-dev-shm-usage')
+                co.set_argument("--no-sandbox")
+                co.set_argument("--disable-dev-shm-usage")
                 co.set_user_agent(USER_AGENT)
-                
-                # 启动全局浏览器
                 self.browser_instance = ChromiumPage(addr_or_opts=co)
                 logger.info("Initialized global ChromiumPage for multi-tab concurrency")
             except Exception as e:
                 logger.error(f"Failed to create global browser: {e}")
                 raise
-        
-        # 启动 event loop 线程
+
+        # Register workers with backend
+        self._register_workers()
+
+        # Start event loop thread
         self._start_event_loop()
-        
-        # 初始化种子URL
+
+        # Initialize seed URLs
         self.initialize_seeds()
-        
-        # 启动工作线程
+
+        # Start worker threads
         for i in range(self.num_workers):
-            # 传递全局浏览器实例
-            worker = Thread(target=self._worker_thread, args=(i,), daemon=True)
+            worker = Thread(
+                target=self._worker_thread,
+                args=(i, self.worker_uuids[i]),
+                daemon=True,
+            )
             worker.start()
             self.workers.append(worker)
-            logger.info(f"Started worker {i}")
-        
-        # 监控状态
+            logger.info(f"Started worker-{i} (id={self.worker_uuids[i][:8]}…)")
+
         self._monitor()
-    
+
     def _start_event_loop(self):
-        # ... (same)
         def run_loop():
             event_loop = asyncio.new_event_loop()
             asyncio.set_event_loop(event_loop)
             global loop
             loop = event_loop
             event_loop.run_forever()
-        
+
         loop_thread = Thread(target=run_loop, daemon=True)
         loop_thread.start()
-        time.sleep(0.5)  # 等待 loop 启动
-    
-    def _worker_thread(self, worker_id: int):
-        """工作线程入口"""
+        time.sleep(0.5)
+
+    def _worker_thread(self, worker_idx: int, worker_uuid: str):
         try:
-            # 传递 self.browser_instance
-            worker = CrawlerWorker(worker_id, self.stop_event, self.browser_instance)
+            worker = CrawlerWorker(
+                worker_uuid, worker_idx, self.stop_event, self.browser_instance
+            )
             worker.run()
         except Exception as e:
-            logger.error(f"Worker {worker_id} crashed: {e}")
-    
-    # _monitor same...
+            logger.error(f"Worker-{worker_idx} crashed: {e}")
+
     def _monitor(self):
-        """监控爬虫状态"""
         try:
             while not self.stop_event.is_set():
-                # 检查工作线程状态
-                alive_workers = sum(1 for w in self.workers if w.is_alive())
-                
-                # 获取统计信息
-                queue_size = self.url_manager.get_queue_size()
+                alive = sum(1 for w in self.workers if w.is_alive())
+                queue_size   = self.url_manager.get_queue_size()
                 visited_count = self.url_manager.get_visited_count()
-                
                 logger.info(
-                    f"Status: {alive_workers}/{self.num_workers} workers alive, "
+                    f"Status: {alive}/{self.num_workers} workers alive, "
                     f"Queue: {queue_size}, Visited: {visited_count}"
                 )
-                
-                # 如果所有worker都停止了，退出
-                if alive_workers == 0:
-                    logger.warning("All workers stopped, exiting...")
+                if alive == 0:
+                    logger.warning("All workers stopped, exiting…")
                     break
-                
-                time.sleep(30)  # 每30秒输出一次状态
-        
+                time.sleep(30)
         except KeyboardInterrupt:
-            logger.info("Monitor received interrupt signal")
             self.stop()
 
     def stop(self):
-        """停止爬虫"""
-        logger.info("Stopping all workers...")
+        logger.info("Stopping all workers…")
         self.stop_event.set()
-        
-        # 等待所有工作线程结束
+
         for i, worker in enumerate(self.workers):
             worker.join(timeout=10)
             if worker.is_alive():
-                logger.warning(f"Worker {i} did not stop gracefully")
-        
-        # 停止 event loop
+                logger.warning(f"Worker-{i} did not stop gracefully")
+
         global loop
         if loop:
             loop.call_soon_threadsafe(loop.stop)
-            
-        # 关闭全局浏览器
+
         if self.browser_instance:
             try:
                 self.browser_instance.quit()
                 logger.info("Closed global browser")
-            except:
+            except Exception:
                 pass
-        
-        # 保存状态
+
         self.url_manager.save()
-        
         logger.info("Crawler stopped")
-    
+
     def get_stats(self) -> dict:
-        """获取爬虫统计信息"""
         return {
-            'num_workers': self.num_workers,
-            'queue_size': self.url_manager.get_queue_size(),
-            'visited_count': self.url_manager.get_visited_count(),
-            'alive_workers': sum(1 for w in self.workers if w.is_alive()),
+            "num_workers":   self.num_workers,
+            "worker_uuids":  self.worker_uuids,
+            "queue_size":    self.url_manager.get_queue_size(),
+            "visited_count": self.url_manager.get_visited_count(),
+            "alive_workers": sum(1 for w in self.workers if w.is_alive()),
         }

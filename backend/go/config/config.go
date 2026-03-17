@@ -13,6 +13,7 @@ type Config struct {
 	DBUser    string
 	DBPass    string
 	DBName    string
+	RedisAddr string
 }
 
 // LoadConfig loads configuration from environment variables with defaults
@@ -25,6 +26,7 @@ func LoadConfig() *Config {
 		DBUser:    getEnv("DB_USER", "verdant"),
 		DBPass:    getEnv("DB_PASS", "verdant123"),
 		DBName:    getEnv("DB_NAME", "verdant_search"),
+		RedisAddr: getEnv("REDIS_ADDR", "localhost:6379"),
 	}
 }
 

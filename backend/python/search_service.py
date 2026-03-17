@@ -7,6 +7,7 @@ from models import Document, DocumentEmbedding, ImageEmbedding
 from embedding_service import get_embedding_service
 from tokenizer_service import get_tokenizer_service
 from config import settings
+from reranker_service import get_reranker_service
 import redis
 import json
 import time
@@ -31,20 +32,22 @@ class SearchService:
         try:
             # Save latest trace
             self.redis_client.set("search:latest_trace", json.dumps(trace_data), ex=3600)
-            
+
             # Update search history (keep last 100)
             history_item = {
                 "query": trace_data["query"],
                 "timestamp": trace_data["timestamp"],
                 "total_results": len(trace_data["final_results"]),
-                "top_score": trace_data["final_results"][0]["score"] if trace_data["final_results"] else 0
+                "top_score": trace_data["final_results"][0]["score"] if trace_data["final_results"] else 0,
+                "stage_timings_ms": trace_data.get("stage_timings_ms", {}),
+                "reranker_enabled": trace_data.get("reranker_enabled", False),
             }
             self.redis_client.lpush("search:history", json.dumps(history_item))
             self.redis_client.ltrim("search:history", 0, 99)
-            
+
             # Update keyword stats (legacy - for analytics)
             self.redis_client.zincrby("search:keywords", 1, trace_data["query"])
-            
+
             # Add to RediSearch suggestion index
             from suggestion_service import get_suggestion_service
             suggestion_service = get_suggestion_service()
@@ -56,46 +59,74 @@ class SearchService:
     def preprocess_query(self, query: str) -> str:
         """
         Preprocess search query with tokenization
-        
+
         Returns tokenized query
         """
         tokens = self.tokenizer_service.tokenize(query, mode="search")
         return " ".join(tokens)
+
     async def search(
         self,
         query: str,
         session: AsyncSession,
-        top_k: int = None
+        top_k: int = None,
+        reranker_enabled: bool = False,
+        reranker_top_k: int = 20,
     ) -> List[Dict[str, Any]]:
         """
-        Hybrid search combining BM25 and vector similarity
-        
+        Two-stage hybrid search.
+
+        Stage 1: BM25 keyword retrieval + HNSW dense vector retrieval, fused
+                 via Reciprocal Rank Fusion (RRF).
+        Stage 2 (optional): Multimodal listwise LTR reranker over the top-K
+                 candidates from Stage 1.
+
         Args:
-            query: Search query text (will be tokenized)
-            session: Database session
-            top_k: Number of results to return
-        
+            query:             Search query text (will be tokenized for BM25).
+            session:           Active async database session.
+            top_k:             Number of results to return (default from settings).
+            reranker_enabled:  Whether to run the Stage 2 LTR reranker.
+            reranker_top_k:    How many Stage 1 results to pass to the reranker.
+
         Returns:
-            List of search results with scores
+            List of result dicts with ``document_id``, ``score``, and
+            (when reranker is active) ``pre_rank``, ``post_rank``,
+            ``rank_delta``.
         """
         if top_k is None:
             top_k = settings.TOP_K_RESULTS
-        
+
         # Tokenize query for BM25
         tokenized_query = self.preprocess_query(query)
-        
+
         # Get query embedding (use original query for semantic search)
         query_embedding = self.embedding_service.encode_text(query)[0]
-        
-        # 1. Vector search using HNSW index
+
+        # Stage 1a — Vector search using HNSW index
+        t0 = time.time()
         vector_results = await self._vector_search(query_embedding, session, top_k * 2)
-        
-        # 2. BM25 full-text search (with tokenized query)
+        vector_ms = (time.time() - t0) * 1000
+
+        # Stage 1b — BM25 full-text search (with tokenized query)
+        t0 = time.time()
         bm25_results = await self._bm25_search(tokenized_query, session, top_k * 2)
-        
-        # 3. Combine and re-rank results
-        combined_results = self._hybrid_rerank(vector_results, bm25_results, top_k)
-        
+        bm25_ms = (time.time() - t0) * 1000
+
+        # Stage 1c — RRF fusion
+        t0 = time.time()
+        combined_results = self._rrf_fusion(vector_results, bm25_results, top_k)
+        rrf_ms = (time.time() - t0) * 1000
+
+        # Stage 2 — Optional LTR reranker
+        reranker_ms = 0.0
+        if reranker_enabled and combined_results:
+            t0 = time.time()
+            reranker = get_reranker_service()
+            reranker_input = combined_results[:reranker_top_k]
+            reranked = await reranker.rerank(query, reranker_input, session)
+            reranker_ms = (time.time() - t0) * 1000
+            combined_results = reranked + combined_results[reranker_top_k:]
+
         # Log trace data
         self._log_search_trace({
             "query": query,
@@ -106,12 +137,15 @@ class SearchService:
             "vector_top_5": dict(list(vector_results.items())[:5]),
             "bm25_top_5": dict(list(bm25_results.items())[:5]),
             "final_results": combined_results,
-            "weights": {
-                "vector": settings.VECTOR_WEIGHT,
-                "bm25": settings.BM25_WEIGHT
-            }
+            "reranker_enabled": reranker_enabled,
+            "stage_timings_ms": {
+                "vector_ms": round(vector_ms, 2),
+                "bm25_ms": round(bm25_ms, 2),
+                "rrf_ms": round(rrf_ms, 2),
+                "reranker_ms": round(reranker_ms, 2),
+            },
         })
-        
+
         return combined_results
     
     async def search_by_image(
@@ -227,16 +261,59 @@ class SearchService:
             traceback.print_exc()
             return {}
     
+    def _rrf_fusion(
+        self,
+        vector_results: Dict[int, float],
+        bm25_results: Dict[int, float],
+        top_k: int,
+    ) -> List[Dict[str, Any]]:
+        """
+        Reciprocal Rank Fusion of vector and BM25 result lists.
+
+        RRF score for document d = sum over each list L of  1 / (k + rank_L(d))
+        where rank is 0-indexed and k=60 (standard RRF constant).
+
+        Returns the top_k documents sorted by descending RRF score.
+        """
+        k = 60  # RRF constant
+
+        # Sort each result list by score descending to derive rank order
+        vector_ranked = sorted(vector_results.items(), key=lambda x: x[1], reverse=True)
+        bm25_ranked = sorted(bm25_results.items(), key=lambda x: x[1], reverse=True)
+
+        # Build rank maps: document_id -> 0-indexed rank position
+        vector_rank: Dict[int, int] = {
+            doc_id: rank for rank, (doc_id, _) in enumerate(vector_ranked)
+        }
+        bm25_rank: Dict[int, int] = {
+            doc_id: rank for rank, (doc_id, _) in enumerate(bm25_ranked)
+        }
+
+        # Compute RRF score for every document appearing in either list
+        all_doc_ids = set(vector_rank.keys()) | set(bm25_rank.keys())
+        rrf_scores: Dict[int, float] = {}
+        for doc_id in all_doc_ids:
+            score = 0.0
+            if doc_id in vector_rank:
+                score += 1.0 / (k + vector_rank[doc_id])
+            if doc_id in bm25_rank:
+                score += 1.0 / (k + bm25_rank[doc_id])
+            rrf_scores[doc_id] = score
+
+        sorted_results = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        return [{"document_id": doc_id, "score": score} for doc_id, score in sorted_results]
+
     def _hybrid_rerank(
         self,
         vector_results: Dict[int, float],
         bm25_results: Dict[int, float],
-        top_k: int
+        top_k: int,
     ) -> List[Dict[str, Any]]:
         """
-        Combine and re-rank results from vector and BM25 search
-        
-        Uses weighted combination of scores
+        Legacy weighted-sum fusion of vector and BM25 scores.
+
+        Kept for backward compatibility.  The primary search pipeline now uses
+        ``_rrf_fusion`` instead.
         """
         # Normalize scores to 0-1 range
         def normalize_scores(scores: Dict[int, float]) -> Dict[int, float]:
@@ -250,33 +327,26 @@ class SearchService:
                 k: (v - min_score) / (max_score - min_score)
                 for k, v in scores.items()
             }
-        
+
         norm_vector = normalize_scores(vector_results)
         norm_bm25 = normalize_scores(bm25_results)
-        
-        # Combine scores with weights
+
+        # Combine scores with configured weights
         all_doc_ids = set(norm_vector.keys()) | set(norm_bm25.keys())
-        combined_scores = {}
-        
+        combined_scores: Dict[int, float] = {}
+
         for doc_id in all_doc_ids:
             vector_score = norm_vector.get(doc_id, 0.0)
             bm25_score = norm_bm25.get(doc_id, 0.0)
-            
-            # Weighted combination
-            combined_score = (
-                settings.VECTOR_WEIGHT * vector_score +
-                settings.BM25_WEIGHT * bm25_score
+            combined_scores[doc_id] = (
+                settings.VECTOR_WEIGHT * vector_score
+                + settings.BM25_WEIGHT * bm25_score
             )
-            combined_scores[doc_id] = combined_score
-        
-        # Sort by combined score
+
         sorted_results = sorted(
-            combined_scores.items(),
-            key=lambda x: x[1],
-            reverse=True
+            combined_scores.items(), key=lambda x: x[1], reverse=True
         )[:top_k]
-        
-        # Return document IDs and scores
+
         return [
             {"document_id": doc_id, "score": score}
             for doc_id, score in sorted_results

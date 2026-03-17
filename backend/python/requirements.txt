@@ -18,4 +18,6 @@ beautifulsoup4
 lxml
 pybloom-live
 redis[hiredis]>=4.5.0
+anthropic>=0.40.0
+psutil>=5.9.0
 

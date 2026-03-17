@@ -115,8 +115,6 @@ class PostingListManager:
         session: AsyncSession
     ):
         """创建posting记录"""
-        import json
-        
         # 插入posting
         insert_query = text("""
             INSERT INTO postings (term_id, document_id, term_frequency, positions)
@@ -128,7 +126,7 @@ class PostingListManager:
             "term_id": term_id,
             "document_id": document_id,
             "term_frequency": term_frequency,
-            "positions": json.dumps(positions)  # 转换为 JSON 字符串
+            "positions": positions  # Pass list directly - asyncpg handles array conversion
         })
         
         # ========== 移除实时统计更新，避免死锁 ==========

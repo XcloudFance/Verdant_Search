@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, JSON, ForeignKey, Float, UniqueConstraint
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from pgvector.sqlalchemy import Vector
@@ -56,7 +57,7 @@ class Posting(Base):
     term_id = Column(Integer, ForeignKey("terms.id", ondelete="CASCADE"), nullable=False, index=True)
     document_id = Column(Integer, ForeignKey("documents.id", ondelete="CASCADE"), nullable=False, index=True)
     term_frequency = Column(Integer, nullable=False)  # TF: frequency in this document
-    positions = Column(JSON)  # Array of positions where term appears
+    positions = Column(ARRAY(Integer))  # Array of positions where term appears
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     __table_args__ = (

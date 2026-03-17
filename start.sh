@@ -1,121 +1,165 @@
 #!/bin/bash
+# ==============================================================
+#  Verdant Search — One-Click Start Script
+#  Starts all services: PostgreSQL, Redis, Python API, Go API, Frontend
+#  Runs database migrations automatically on every startup.
+# ==============================================================
 
-# Verdant Search - Quick Start Script
-# This script starts all services in the correct order
+set -e
 
-set -e  # Exit on error
-
-echo "======================================"
-echo "Verdant Search - Starting Services"
-echo "======================================"
-echo ""
-
-# Colors for output
+# ── Colors ────────────────────────────────────────────────────
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-NC='\033[0m' # No Color
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
 
-# Check if docker is running
-if ! docker info > /dev/null 2>&1; then
-    echo -e "${RED}Error: Docker is not running${NC}"
-    echo "Please start Docker Desktop and try again"
-    exit 1
-fi
+ok()   { echo -e "  ${GREEN}✓ $*${NC}"; }
+warn() { echo -e "  ${YELLOW}⚠ $*${NC}"; }
+err()  { echo -e "  ${RED}✗ $*${NC}"; exit 1; }
+step() { echo -e "\n${CYAN}${BOLD}[$1]${NC} $2"; }
 
-# Step 1: Start PostgreSQL
-echo -e "${YELLOW}[1/4] Starting PostgreSQL...${NC}"
-docker-compose up -d
-echo "Waiting for PostgreSQL to be ready..."
-sleep 5
-echo -e "${GREEN}✓ PostgreSQL started${NC}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+mkdir -p logs
+
 echo ""
+echo -e "${BOLD}============================================${NC}"
+echo -e "${BOLD}       Verdant Search — Starting Up        ${NC}"
+echo -e "${BOLD}============================================${NC}"
 
-# Step 2: Start Python API
-echo -e "${YELLOW}[2/4] Starting Python Search API...${NC}"
-echo "Note: This will take a while on first run (downloading CLIP model ~500MB)"
+# ── Step 0: Check prerequisites ───────────────────────────────
+step "0/5" "Checking prerequisites..."
+
+command -v docker >/dev/null 2>&1 || err "Docker not found. Install Docker first."
+docker info >/dev/null 2>&1     || err "Docker is not running. Please start Docker."
+command -v python3 >/dev/null 2>&1 || err "python3 not found."
+command -v go >/dev/null 2>&1      || err "go not found. Install Go 1.21+."
+command -v node >/dev/null 2>&1    || err "node not found. Install Node.js 18+."
+command -v npm >/dev/null 2>&1     || err "npm not found."
+
+ok "All prerequisites satisfied"
+
+# ── Step 1: Start PostgreSQL + Redis via Docker Compose ───────
+step "1/5" "Starting PostgreSQL + Redis..."
+
+docker-compose up -d
+
+# Wait for PostgreSQL to be healthy
+echo -n "  Waiting for PostgreSQL"
+for i in $(seq 1 30); do
+    if docker exec verdant_postgres pg_isready -U verdant -q 2>/dev/null; then
+        echo ""
+        ok "PostgreSQL is ready"
+        break
+    fi
+    echo -n "."
+    sleep 1
+    if [ "$i" -eq 30 ]; then
+        echo ""
+        err "PostgreSQL did not become ready in 30 seconds. Check: docker-compose logs postgres"
+    fi
+done
+
+# Wait for Redis to be healthy
+echo -n "  Waiting for Redis"
+for i in $(seq 1 15); do
+    if docker exec verdant_redis redis-cli ping >/dev/null 2>&1; then
+        echo ""
+        ok "Redis is ready"
+        break
+    fi
+    echo -n "."
+    sleep 1
+    if [ "$i" -eq 15 ]; then
+        echo ""
+        warn "Redis may not be ready yet, continuing anyway..."
+    fi
+done
+
+# ── Step 2: Set up Python environment + install deps ──────────
+step "2/5" "Setting up Python environment..."
+
 cd backend/python
 
-# Check if venv exists
 if [ ! -d "venv" ]; then
-    echo "Creating Python virtual environment..."
+    echo "  Creating virtual environment..."
     python3 -m venv venv
 fi
 
-# Activate venv and install dependencies
 source venv/bin/activate
-echo "Installing Python dependencies..."
+
+# Install/update dependencies quietly
+echo "  Installing Python dependencies (this may take a while on first run)..."
 pip install -q -r requirements.txt
+ok "Python dependencies installed"
 
-# Start Python API in background using uvicorn
-echo "Starting Python API on port 8001..."
-uvicorn main:app --host 0.0.0.0 --port 8001 --reload > ../../logs/python.log 2>&1 &
+# ── Step 3: Run database migrations ───────────────────────────
+step "3/5" "Running database migrations..."
+
+python migrate.py
+cd "$SCRIPT_DIR"
+
+# ── Step 4: Start backend services ────────────────────────────
+step "4/5" "Starting backend services..."
+
+# -- Python API --
+echo "  Starting Python Search API on :8001..."
+cd backend/python
+source venv/bin/activate
+uvicorn main:app --host 0.0.0.0 --port 8001 \
+    > "$SCRIPT_DIR/logs/python.log" 2>&1 &
 PYTHON_PID=$!
-echo $PYTHON_PID > ../../logs/python.pid
-cd ../..
+echo $PYTHON_PID > "$SCRIPT_DIR/logs/python.pid"
+cd "$SCRIPT_DIR"
+ok "Python API started (PID $PYTHON_PID)  → logs/python.log"
 
-echo -e "${GREEN}✓ Python API started (PID: $PYTHON_PID)${NC}"
-echo "  Logs: logs/python.log"
-echo ""
-
-# Step 3: Start Go Backend
-echo -e "${YELLOW}[3/4] Starting Go Backend...${NC}"
+# -- Go API --
+echo "  Starting Go Backend API on :8080..."
 cd backend/go
-
-# Install Go dependencies
-echo "Installing Go dependencies..."
-go mod download
-go get gorm.io/driver/postgres
-go mod tidy
-
-# Start Go backend in background
-echo "Starting Go API on port 8080..."
-go run main.go > ../../logs/go.log 2>&1 &
+go run main.go > "$SCRIPT_DIR/logs/go.log" 2>&1 &
 GO_PID=$!
-echo $GO_PID > ../../logs/go.pid
-cd ../..
+echo $GO_PID > "$SCRIPT_DIR/logs/go.pid"
+cd "$SCRIPT_DIR"
+ok "Go API started (PID $GO_PID)  → logs/go.log"
 
-echo -e "${GREEN}✓ Go Backend started (PID: $GO_PID)${NC}"
-echo "  Logs: logs/go.log"
-echo ""
+# ── Step 5: Start frontend ─────────────────────────────────────
+step "5/5" "Starting Frontend..."
 
-# Step 4: Start Frontend
-echo -e "${YELLOW}[4/4] Starting Frontend...${NC}"
 cd frontend
 
 if [ ! -d "node_modules" ]; then
-    echo "Installing Node dependencies..."
+    echo "  Installing Node dependencies..."
     npm install
 fi
 
-echo "Starting Frontend on port 5173..."
-npm run dev > ../logs/frontend.log 2>&1 &
+npm run dev > "$SCRIPT_DIR/logs/frontend.log" 2>&1 &
 FRONTEND_PID=$!
-echo $FRONTEND_PID > ../logs/frontend.pid
-cd ..
+echo $FRONTEND_PID > "$SCRIPT_DIR/logs/frontend.pid"
+cd "$SCRIPT_DIR"
+ok "Frontend started (PID $FRONTEND_PID)  → logs/frontend.log"
 
-echo -e "${GREEN}✓ Frontend started (PID: $FRONTEND_PID)${NC}"
-echo "  Logs: logs/frontend.log"
+# ── Done ──────────────────────────────────────────────────────
 echo ""
-
-echo "======================================"
-echo -e "${GREEN}All services started successfully!${NC}"
-echo "======================================"
+echo -e "${BOLD}============================================${NC}"
+echo -e "${GREEN}${BOLD}  All services started successfully! 🚀${NC}"
+echo -e "${BOLD}============================================${NC}"
 echo ""
-echo "Service URLs:"
-echo "  Frontend:    http://localhost:5173"
-echo "  Go API:      http://localhost:8080"
-echo "  Python API:  http://localhost:8001"
-echo "  PostgreSQL:  localhost:5432"
+echo -e "  ${BOLD}Service URLs:${NC}"
+echo -e "  ${GREEN}●${NC} Frontend       http://localhost:5173"
+echo -e "  ${GREEN}●${NC} Admin Panel    http://localhost:5173/admin"
+echo -e "  ${GREEN}●${NC} Go API         http://localhost:8080"
+echo -e "  ${GREEN}●${NC} Python API     http://localhost:8001"
+echo -e "  ${GREEN}●${NC} API Docs       http://localhost:8001/docs"
+echo -e "  ${GREEN}●${NC} RedisInsight   http://localhost:8002"
 echo ""
-echo "Process IDs (for stopping):"
-echo "  Python: $PYTHON_PID (saved to logs/python.pid)"
-echo "  Go:     $GO_PID (saved to logs/go.pid)"
-echo "  Frontend: $FRONTEND_PID (saved to logs/frontend.pid)"
+echo -e "  ${BOLD}Useful commands:${NC}"
+echo -e "  tail -f logs/python.log    # Python API logs"
+echo -e "  tail -f logs/go.log        # Go API logs"
+echo -e "  tail -f logs/frontend.log  # Frontend logs"
+echo -e "  ./stop.sh                  # Stop all services"
 echo ""
-echo "To stop all services, run: ./stop.sh"
-echo "To view logs: tail -f logs/*.log"
+echo -e "  ${YELLOW}Tip: First run downloads the CLIP model (~500MB).${NC}"
+echo -e "  ${YELLOW}     Index test data: cd backend/python && python index_sample_data.py${NC}"
 echo ""
-echo "Next steps:"
-echo "  1. Index sample data: cd backend/python && python index_sample_data.py"
-echo "  2. Open http://localhost:5173 and start searching!"

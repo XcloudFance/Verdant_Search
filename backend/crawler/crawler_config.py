@@ -67,3 +67,6 @@ ALLOWED_DOMAINS: List[str] = []  # 例如: ["python.org", "docs.python.org"]
 
 # 最大爬取深度（0表示不限制）
 MAX_DEPTH = int(os.getenv("CRAWLER_MAX_DEPTH", 0))
+
+# Backend API URL for worker registration & heartbeat
+BACKEND_API_URL = os.getenv("BACKEND_API_URL", "http://localhost:8001")

@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     # Anthropic Configuration
     ANTHROPIC_API_KEY: str = "123"
     ANTHROPIC_BASE_URL: str = "http://localhost:5201"
-    ANTHROPIC_MODEL: str = "claude-haiku-4-5"
+    ANTHROPIC_MODEL: str = "claude-haiku-4-5-20251001"
     
     # Redis Cache Configuration
     REDIS_HOST: str = "localhost"

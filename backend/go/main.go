@@ -19,6 +19,9 @@ func main() {
 		log.Fatal("Failed to connect to database:", err)
 	}
 
+	// Initialise Redis client for crawler fleet management
+	handlers.InitRedis(cfg.RedisAddr)
+
 	// Set Gin to release mode in production
 	// gin.SetMode(gin.ReleaseMode)
 
@@ -57,6 +60,30 @@ func main() {
 			history.POST("", handlers.AddToHistory)
 			history.DELETE("/:id", handlers.DeleteHistory)
 			history.DELETE("", handlers.ClearHistory)
+		}
+
+		// Crawler fleet management routes
+		crawlers := api.Group("/v1/crawlers")
+		{
+			crawlers.POST("/register", handlers.RegisterCrawler())
+			crawlers.GET("", handlers.GetCrawlerFleet())
+			crawlers.DELETE("/:worker_id", handlers.DeregisterCrawler())
+			crawlers.POST("/:worker_id/heartbeat", handlers.CrawlerHeartbeat())
+			crawlers.GET("/:worker_id/logs", handlers.GetCrawlerLogs())
+			crawlers.POST("/:worker_id/logs", handlers.SubmitCrawlLog())
+
+			// Jobs
+			crawlers.GET("/jobs", handlers.GetCrawlJobs())
+			crawlers.POST("/jobs", handlers.CreateCrawlJob())
+			crawlers.PATCH("/jobs/:id", handlers.UpdateCrawlJob())
+			crawlers.DELETE("/jobs/:id", handlers.DeleteCrawlJob())
+
+			// Queue
+			crawlers.GET("/queue/stats", handlers.GetQueueStats())
+
+			// Groups
+			crawlers.GET("/groups", handlers.GetCrawlerGroups())
+			crawlers.POST("/groups", handlers.CreateCrawlerGroup())
 		}
 	}
 

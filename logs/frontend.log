@@ -3,7 +3,16 @@
 > vite
 
 
-  VITE v7.3.1  ready in 562 ms
+  VITE v7.3.1  ready in 189 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
+23:59:12 [vite] (client) hmr update /src/pages/admin/AnalyticsPanel.jsx
+00:00:28 [vite] (client) hmr update /src/pages/admin/AdminOverview.jsx
+00:00:35 [vite] (client) hmr update /src/pages/admin/AdminOverview.jsx
+00:00:44 [vite] (client) hmr update /src/pages/admin/AdminOverview.jsx
+00:01:54 [vite] (client) hmr update /src/pages/admin/AdminOverview.jsx
+00:29:17 [vite] (client) hmr update /src/pages/admin/CrawlerPanel.jsx
+12:59:16 [vite] (client) hmr update /src/components/features/ChatWidget.jsx
+12:59:19 [vite] (client) ✨ new dependencies optimized: @mui/icons-material/DataObject, @mui/icons-material/ChatBubbleOutline
+12:59:19 [vite] (client) ✨ optimized dependencies changed. reloading
