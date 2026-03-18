@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import AmbientBackground from '../components/common/AmbientBackground';
 import { useAuth } from '../context/AuthContext';
 import AnimatedPage from '../components/layout/AnimatedPage';
+import { PYTHON_API } from '../config';
 
 const SearchBar = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -63,7 +64,7 @@ const Home = () => {
                 return;
             }
             try {
-                const res = await fetch(`http://localhost:8001/api/suggestions?q=${encodeURIComponent(query)}`);
+                const res = await fetch(`${PYTHON_API}/api/suggestions?q=${encodeURIComponent(query)}`);
                 if (res.ok) {
                     const data = await res.json();
                     setSuggestions(data.suggestions || []);
@@ -101,7 +102,7 @@ const Home = () => {
 
             try {
                 // Use python backend port 8001
-                const response = await fetch('http://localhost:8001/api/search/image', {
+                const response = await fetch(`${PYTHON_API}/api/search/image`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ image: base64String, top_k: 10 })

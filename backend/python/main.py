@@ -27,31 +27,17 @@ app.include_router(reranker_admin_router)
 app.include_router(config_admin_router)
 
 
-# CORS configuration
+# CORS — allow all origins so the frontend can be served from any host.
+# JWT is passed in the Authorization header (not cookies), so
+# allow_credentials=False is compatible with allow_origins=["*"].
+import os as _os
+_cors_origins = _os.getenv("ALLOWED_ORIGINS", "*").split(",")
+_use_wildcard = _cors_origins == ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://localhost:5174",
-        "http://localhost:5175",
-        "http://localhost:5176",
-        "http://localhost:5177",
-        "http://localhost:5178",
-        "http://localhost:5179",
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "http://127.0.0.1:5173",
-        "http://127.0.0.1:5174",
-        "http://127.0.0.1:5175",
-        "http://127.0.0.1:5176",
-        "http://127.0.0.1:5177",
-        "http://127.0.0.1:5178",
-        "http://127.0.0.1:5179"
-    ],
-
-
-
-    allow_credentials=True,
+    allow_origins=_cors_origins,
+    allow_origin_regex=None if _use_wildcard else None,
+    allow_credentials=not _use_wildcard,   # credentials incompatible with wildcard
     allow_methods=["*"],
     allow_headers=["*"],
 )

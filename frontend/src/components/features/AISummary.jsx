@@ -7,6 +7,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import SearchIcon from '@mui/icons-material/Search';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { PYTHON_API } from '../../config';
 
 const AISummary = ({ query, results, searchLoading, onSuggestedSearch }) => {
     const [summary, setSummary] = useState('');
@@ -23,7 +24,7 @@ const AISummary = ({ query, results, searchLoading, onSuggestedSearch }) => {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:8001/api/llm/summary', {
+            const response = await fetch(`${PYTHON_API}/api/llm/summary`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -62,7 +63,7 @@ const AISummary = ({ query, results, searchLoading, onSuggestedSearch }) => {
         // 基于当前查询和结果，生成建议的follow-up搜索
         // 这里我们可以调用 suggest-questions API 或者从summary中提取关键词
         try {
-            const response = await fetch('http://localhost:8001/api/llm/suggest-questions', {
+            const response = await fetch(`${PYTHON_API}/api/llm/suggest-questions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

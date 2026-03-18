@@ -2,6 +2,7 @@ vpn_gfw_dataset_high_quality.csv
 
 # ── Environment & Secrets ─────────────────────────────────────
 .env
+frontend/.env
 *.env.local
 
 # ── Python ────────────────────────────────────────────────────

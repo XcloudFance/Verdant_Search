@@ -15,7 +15,7 @@ import {
   Circle as DotIcon,
 } from '@mui/icons-material';
 
-const PYTHON_API = 'http://localhost:8001';
+import { PYTHON_API } from '../../config';
 
 const SURF   = '#0d0d1a';
 const BORDER = 'rgba(255,255,255,0.07)';

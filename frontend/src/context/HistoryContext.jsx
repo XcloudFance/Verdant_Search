@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { GO_API } from '../config';
 
 const HistoryContext = createContext(null);
 
@@ -15,7 +16,7 @@ export const HistoryProvider = ({ children }) => {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:8080/api/history', {
+            const response = await fetch(`${GO_API}/api/history`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -36,7 +37,7 @@ export const HistoryProvider = ({ children }) => {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:8080/api/history', {
+            const response = await fetch(`${GO_API}/api/history`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,7 +60,7 @@ export const HistoryProvider = ({ children }) => {
         if (!token) return;
 
         try {
-            const response = await fetch('http://localhost:8080/api/history', {
+            const response = await fetch(`${GO_API}/api/history`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -79,7 +80,7 @@ export const HistoryProvider = ({ children }) => {
         if (!token) return;
 
         try {
-            const response = await fetch(`http://localhost:8080/api/history/${id}`, {
+            const response = await fetch(`${GO_API}/api/history/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

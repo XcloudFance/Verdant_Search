@@ -18,7 +18,7 @@ import AddCommentIcon from '@mui/icons-material/AddComment';
 import { useNavigate } from 'react-router-dom';
 
 // ── helpers ─────────────────────────────────────────────────────────────────
-const API = 'http://localhost:8001';
+import { PYTHON_API as API } from '../../config';
 
 function formatRelativeTime(iso) {
     if (!iso) return '';

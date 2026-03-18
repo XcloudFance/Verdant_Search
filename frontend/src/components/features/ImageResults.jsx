@@ -8,7 +8,7 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 
-const API = 'http://localhost:8001';
+import { PYTHON_API as API } from '../../config';
 const PAGE_SIZE = 40;
 
 const imgSrc = (img) => {

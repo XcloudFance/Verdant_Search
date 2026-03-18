@@ -9,6 +9,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import SpaIcon from '@mui/icons-material/Spa';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { PYTHON_API } from '../../config';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -73,7 +74,7 @@ const Navbar = ({ initialQuery = '' }) => {
                 return;
             }
             try {
-                const res = await fetch(`http://localhost:8001/api/suggestions?q=${encodeURIComponent(query)}`);
+                const res = await fetch(`${PYTHON_API}/api/suggestions?q=${encodeURIComponent(query)}`);
                 if (res.ok) {
                     const data = await res.json();
                     setSuggestions(data.suggestions || []);
@@ -110,7 +111,7 @@ const Navbar = ({ initialQuery = '' }) => {
 
             try {
                 // Use python backend port 8001
-                const response = await fetch('http://localhost:8001/api/search/image', {
+                const response = await fetch(`${PYTHON_API}/api/search/image`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ image: base64String, top_k: 10 })

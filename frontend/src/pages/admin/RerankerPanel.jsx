@@ -9,7 +9,7 @@ import {
   CheckCircle as OnlineIcon, Cancel as OfflineIcon
 } from '@mui/icons-material';
 
-const PYTHON_API = 'http://localhost:8001';
+import { PYTHON_API } from '../../config';
 
 export default function RerankerPanel() {
   const [status, setStatus] = useState(null);

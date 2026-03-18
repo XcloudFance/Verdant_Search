@@ -21,6 +21,7 @@ import PeopleAlsoAsk from '../components/features/PeopleAlsoAsk';
 import ImageResults from '../components/features/ImageResults';
 import { useHistory } from '../context/HistoryContext';
 import AnimatedPage from '../components/layout/AnimatedPage';
+import { PYTHON_API } from '../config';
 
 const Results = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -116,7 +117,7 @@ const Results = () => {
             setStageTimings(null);
 
             try {
-                const url = `http://localhost:8001/api/search`;
+                const url = `${PYTHON_API}/api/search`;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Paper, Typography, Skeleton, Stack } from '@mui/material';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { PYTHON_API } from '../../config';
 
 const PeopleAlsoAsk = ({ query, results, searchLoading, onQuestionClick }) => {
     const [questions, setQuestions] = useState([]);
@@ -16,7 +17,7 @@ const PeopleAlsoAsk = ({ query, results, searchLoading, onQuestionClick }) => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:8001/api/llm/suggest-questions', {
+            const response = await fetch(`${PYTHON_API}/api/llm/suggest-questions`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

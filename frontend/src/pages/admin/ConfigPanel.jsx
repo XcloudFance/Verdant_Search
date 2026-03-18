@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import { Save as SaveIcon, Restore as ResetIcon, History as HistoryIcon } from '@mui/icons-material';
 
-const PYTHON_API = 'http://localhost:8001';
+import { PYTHON_API } from '../../config';
 
 function TabPanel({ children, value, index }) {
   return value === index ? <Box sx={{ pt: 2 }}>{children}</Box> : null;

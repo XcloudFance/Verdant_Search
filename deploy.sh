@@ -62,12 +62,23 @@ step "2/6" "Configuring environment..."
 if [ ! -f ".env" ]; then
     echo ""
     echo -e "  ${YELLOW}No .env file found. Let's set up your configuration.${NC}"
-    echo -e "  ${YELLOW}(Press Enter to accept defaults shown in brackets)${NC}"
+    echo -e "  ${YELLOW}(Press Enter to accept the default shown in brackets)${NC}"
     echo ""
 
     cp .env.example .env
 
-    # Prompt for the most important value: the LLM API key
+    # ── Server host (critical for external deployment) ────────
+    echo -n "  Server host/IP for external access (default: localhost): "
+    read -r SERVER_HOST
+    SERVER_HOST="${SERVER_HOST:-localhost}"
+    # Write frontend env too (Vite needs VITE_ prefix)
+    cat > frontend/.env << FRONTENV
+VITE_PYTHON_API_URL=http://${SERVER_HOST}:8001
+VITE_GO_API_URL=http://${SERVER_HOST}:8080
+FRONTENV
+    ok "Frontend API URLs set to http://${SERVER_HOST}:800{1,8}"
+
+    # ── LLM API key ───────────────────────────────────────────
     echo -n "  LLM Provider [anthropic / openai] (default: anthropic): "
     read -r LLM_PROVIDER_INPUT
     LLM_PROVIDER_INPUT="${LLM_PROVIDER_INPUT:-anthropic}"
@@ -91,12 +102,20 @@ if [ ! -f ".env" ]; then
         fi
     fi
 
-    # JWT secret
+    # ── JWT secret ────────────────────────────────────────────
     JWT_SECRET=$(LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c 48 2>/dev/null || echo "verdant-jwt-secret-please-change-me")
     sed -i "s|^JWT_SECRET=.*|JWT_SECRET=${JWT_SECRET}|" .env
     ok ".env created from template"
 else
     ok ".env already exists — skipping setup"
+    # Sync frontend/.env from existing .env if frontend/.env is missing
+    if [ ! -f "frontend/.env" ]; then
+        cat > frontend/.env << 'FRONTENV'
+VITE_PYTHON_API_URL=http://localhost:8001
+VITE_GO_API_URL=http://localhost:8080
+FRONTENV
+        warn "frontend/.env not found — defaulted to localhost. Edit frontend/.env to change."
+    fi
 fi
 
 # Export vars for child processes
@@ -216,13 +235,14 @@ echo -e "${BOLD}${GREEN}╔═════════════════�
 echo -e "${BOLD}${GREEN}║          Verdant Search is running! 🚀           ║${NC}"
 echo -e "${BOLD}${GREEN}╚══════════════════════════════════════════════════╝${NC}"
 echo ""
+HOST="${SERVER_HOST:-localhost}"
 echo -e "  ${BOLD}Service URLs:${NC}"
-echo -e "  ${GREEN}●${NC}  Frontend        →  http://localhost:5173"
-echo -e "  ${GREEN}●${NC}  Admin Panel     →  http://localhost:5173/admin"
-echo -e "  ${GREEN}●${NC}  Python API      →  http://localhost:8001"
-echo -e "  ${GREEN}●${NC}  API Docs        →  http://localhost:8001/docs"
-echo -e "  ${GREEN}●${NC}  Go API          →  http://localhost:8080"
-echo -e "  ${GREEN}●${NC}  RedisInsight    →  http://localhost:8002"
+echo -e "  ${GREEN}●${NC}  Frontend        →  http://${HOST}:5173"
+echo -e "  ${GREEN}●${NC}  Admin Panel     →  http://${HOST}:5173/admin"
+echo -e "  ${GREEN}●${NC}  Python API      →  http://${HOST}:8001"
+echo -e "  ${GREEN}●${NC}  API Docs        →  http://${HOST}:8001/docs"
+echo -e "  ${GREEN}●${NC}  Go API          →  http://${HOST}:8080"
+echo -e "  ${GREEN}●${NC}  RedisInsight    →  http://${HOST}:8002"
 echo ""
 echo -e "  ${BOLD}Log tailing:${NC}"
 echo -e "  tail -f logs/python.log     # Search API + AI"

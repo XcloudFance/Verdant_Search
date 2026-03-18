@@ -10,7 +10,7 @@ import {
   Refresh as RefreshIcon, Build as BuildIcon, Visibility as ViewIcon
 } from '@mui/icons-material';
 
-const PYTHON_API = 'http://localhost:8001';
+import { PYTHON_API } from '../../config';
 
 function TabPanel({ children, value, index }) {
   return value === index ? <Box sx={{ pt: 3 }}>{children}</Box> : null;
