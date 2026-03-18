@@ -16,9 +16,30 @@ import DataObjectIcon from '@mui/icons-material/DataObject';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import AddCommentIcon from '@mui/icons-material/AddComment';
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 // ── helpers ─────────────────────────────────────────────────────────────────
 import { PYTHON_API as API } from '../../config';
+
+// ── Markdown renderer styled for chat bubbles ────────────────────────────────
+const mdComponents = (isUser) => ({
+    p:      ({ children }) => <Typography variant="body2" sx={{ m: 0, mb: 0.5, color: isUser ? 'white' : 'text.primary', lineHeight: 1.6 }}>{children}</Typography>,
+    strong: ({ children }) => <strong style={{ fontWeight: 700 }}>{children}</strong>,
+    em:     ({ children }) => <em>{children}</em>,
+    code:   ({ inline, children }) => inline
+        ? <Box component="code" sx={{ bgcolor: isUser ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.08)', px: 0.6, py: 0.1, borderRadius: 0.5, fontFamily: 'monospace', fontSize: '0.78em' }}>{children}</Box>
+        : <Box component="pre" sx={{ bgcolor: 'rgba(0,0,0,0.35)', p: 1.2, borderRadius: 1, overflowX: 'auto', my: 0.5, fontSize: '0.78em', fontFamily: 'monospace', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}><code>{children}</code></Box>,
+    ul:     ({ children }) => <Box component="ul" sx={{ m: 0, mb: 0.5, pl: 2.5 }}>{children}</Box>,
+    ol:     ({ children }) => <Box component="ol" sx={{ m: 0, mb: 0.5, pl: 2.5 }}>{children}</Box>,
+    li:     ({ children }) => <Typography component="li" variant="body2" sx={{ color: isUser ? 'white' : 'text.primary', lineHeight: 1.6 }}>{children}</Typography>,
+    h1:     ({ children }) => <Typography variant="subtitle1" fontWeight={700} sx={{ mt: 0.5, mb: 0.25, color: isUser ? 'white' : 'text.primary' }}>{children}</Typography>,
+    h2:     ({ children }) => <Typography variant="subtitle2" fontWeight={700} sx={{ mt: 0.5, mb: 0.25, color: isUser ? 'white' : 'text.primary' }}>{children}</Typography>,
+    h3:     ({ children }) => <Typography variant="body2"   fontWeight={700} sx={{ mt: 0.5, mb: 0.25, color: isUser ? 'white' : 'text.primary' }}>{children}</Typography>,
+    blockquote: ({ children }) => <Box sx={{ borderLeft: '3px solid rgba(16,185,129,0.5)', pl: 1.5, my: 0.5, color: 'text.secondary' }}>{children}</Box>,
+    hr:     () => <Divider sx={{ my: 1 }} />,
+    a:      ({ href, children }) => <Box component="a" href={href} target="_blank" rel="noopener noreferrer" sx={{ color: isUser ? 'rgba(255,255,255,0.9)' : '#10b981', textDecoration: 'underline', '&:hover': { opacity: 0.8 } }}>{children}</Box>,
+});
 
 function formatRelativeTime(iso) {
     if (!iso) return '';
@@ -495,10 +516,13 @@ const ChatWidget = ({ query, results, externalQuestion, onQuestionSent }) => {
                                                     p: 1.5, borderRadius: 2,
                                                     bgcolor: 'rgba(251,191,36,0.08)',
                                                     border: '1px solid rgba(251,191,36,0.2)',
+                                                    color: '#d97706',
+                                                    '& p': { color: '#d97706', fontSize: '0.75rem' },
+                                                    '& code': { fontSize: '0.72rem' },
                                                 }}>
-                                                    <Typography variant="caption" sx={{ whiteSpace: 'pre-wrap', color: '#d97706' }}>
-                                                        {message.content.replace(/\*\*/g, '').replace(/`([^`]+)`/g, '$1')}
-                                                    </Typography>
+                                                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents(false)}>
+                                                        {message.content}
+                                                    </ReactMarkdown>
                                                 </Box>
                                             );
                                         }
@@ -521,9 +545,15 @@ const ChatWidget = ({ query, results, externalQuestion, onQuestionSent }) => {
                                                     bgcolor: message.role === 'user' ? 'primary.main' : 'background.paper',
                                                     color: message.role === 'user' ? 'white' : 'text.primary',
                                                 }}>
-                                                    <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
-                                                        {message.content}
-                                                    </Typography>
+                                                    {message.role === 'user' ? (
+                                                        <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', color: 'white' }}>
+                                                            {message.content}
+                                                        </Typography>
+                                                    ) : (
+                                                        <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents(false)}>
+                                                            {message.content}
+                                                        </ReactMarkdown>
+                                                    )}
                                                 </Paper>
                                                 {message.role === 'user' && (
                                                     <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
