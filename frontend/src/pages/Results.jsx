@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box, Container, Typography, Tabs, Tab, Paper, Stack, Button, Skeleton,
   Pagination, IconButton, Chip, Switch, FormControlLabel, Drawer, Tooltip,
-  Divider
+  Divider, LinearProgress
 } from '@mui/material';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -18,6 +18,7 @@ import AmbientBackground from '../components/common/AmbientBackground';
 import AISummary from '../components/features/AISummary';
 import ChatWidget from '../components/features/ChatWidget';
 import PeopleAlsoAsk from '../components/features/PeopleAlsoAsk';
+import ImageResults from '../components/features/ImageResults';
 import { useHistory } from '../context/HistoryContext';
 import AnimatedPage from '../components/layout/AnimatedPage';
 
@@ -29,7 +30,8 @@ const Results = () => {
     const currentPage = parseInt(searchParams.get('page')) || 1;
     const pageSize = parseInt(searchParams.get('page_size')) || 10;
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);   // true only on first load (no previous results)
+    const [searching, setSearching] = useState(false); // true while any search is in-flight
     const [results, setResults] = useState([]);
     const [total, setTotal] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -46,25 +48,34 @@ const Results = () => {
     const [pinnedDocs, setPinnedDocs] = useState([]);
     const [workspaceOpen, setWorkspaceOpen] = useState(false);
 
-    // Search history stack
+    // Search history stack — tracks every query change (navbar or suggestions)
     const [searchHistory, setSearchHistory] = useState([]);
     const [canGoBack, setCanGoBack] = useState(false);
+    const prevQueryRef = useRef(null);
 
     const { addToHistory } = useHistory();
 
-    const handleQuestionClick = (question) => {
-        if (query) {
-            setSearchHistory(prev => [...prev, { query, results, page: currentPage }]);
+    // Push to back-stack whenever query changes (catches both navbar and suggestion clicks)
+    useEffect(() => {
+        if (prevQueryRef.current !== null && prevQueryRef.current !== query && query) {
+            setSearchHistory(prev => [...prev, { query: prevQueryRef.current, page: currentPage }]);
             setCanGoBack(true);
         }
+        prevQueryRef.current = query;
+    }, [query]);
+
+    const handleQuestionClick = (question) => {
         navigate(`/results?q=${encodeURIComponent(question)}`);
     };
 
     const handleGoBack = () => {
         if (searchHistory.length > 0) {
             const previous = searchHistory[searchHistory.length - 1];
-            setSearchHistory(prev => prev.slice(0, -1));
-            setCanGoBack(searchHistory.length > 1);
+            setSearchHistory(prev => {
+                const next = prev.slice(0, -1);
+                setCanGoBack(next.length > 0);
+                return next;
+            });
             navigate(`/results?q=${encodeURIComponent(previous.query)}&page=${previous.page || 1}`);
         }
     };
@@ -99,7 +110,9 @@ const Results = () => {
                 return;
             }
 
-            setLoading(true);
+            // Only show skeleton on first-ever load (no results yet)
+            if (results.length === 0) setLoading(true);
+            setSearching(true);
             setStageTimings(null);
 
             try {
@@ -133,6 +146,7 @@ const Results = () => {
                 setTotalPages(0);
             } finally {
                 setLoading(false);
+                setSearching(false);
                 if (currentPage === 1 && query && query !== '[Image Search]') {
                     addToHistory(query);
                 }
@@ -185,7 +199,45 @@ const Results = () => {
                     </Tabs>
                 </Box>
 
-                <Container maxWidth="xl" sx={{ display: 'flex', mt: 4, gap: 2 }}>
+                {/* Search-in-progress bar — shows while fetching, doesn't block results */}
+                {searching && (
+                    <LinearProgress
+                        sx={{
+                            position: 'sticky',
+                            top: 0,
+                            zIndex: 1200,
+                            height: 2,
+                            bgcolor: 'transparent',
+                            '& .MuiLinearProgress-bar': { bgcolor: '#10b981' },
+                        }}
+                    />
+                )}
+
+                {/* ── Images Tab — full-width, no sidebar, no left margin ── */}
+                {tab === 1 && (
+                    <Container maxWidth="xl" sx={{ mt: 2, px: { xs: 2, sm: 3, md: 5 } }}>
+                        {canGoBack && (
+                            <Box sx={{ mb: 2 }}>
+                                <Button
+                                    startIcon={<ArrowBackIcon />}
+                                    onClick={handleGoBack}
+                                    variant="outlined"
+                                    size="small"
+                                    sx={{
+                                        borderColor: 'rgba(255,255,255,0.2)',
+                                        color: 'text.secondary',
+                                        '&:hover': { borderColor: 'primary.main', color: 'primary.main', bgcolor: 'rgba(16,185,129,0.1)' },
+                                    }}
+                                >
+                                    Back to previous search
+                                </Button>
+                            </Box>
+                        )}
+                        <ImageResults query={query} active />
+                    </Container>
+                )}
+
+                <Container maxWidth="xl" sx={{ display: tab === 1 ? 'none' : 'flex', mt: 4, gap: 2 }}>
                     {/* Main Results */}
                     <Box sx={{ flex: 2, maxWidth: '800px', ml: { md: 10 } }}>
 
@@ -204,7 +256,7 @@ const Results = () => {
                                     />
                                 }
                                 label={
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography variant="body2" color="text.secondary" component="span">
                                         Reranker {rerankerEnabled ? <Chip label="ON" size="small" sx={{ bgcolor: 'rgba(16,185,129,0.2)', color: '#10b981', fontSize: 10, height: 18 }} /> : <Chip label="OFF" size="small" sx={{ bgcolor: 'rgba(107,114,128,0.2)', color: '#9ca3af', fontSize: 10, height: 18 }} />}
                                     </Typography>
                                 }
@@ -259,6 +311,9 @@ const Results = () => {
                             </Box>
                         )}
 
+                        {/* ── All Tab content ── */}
+                        {tab === 0 && <>
+
                         {/* AI Overview */}
                         <AISummary query={query} results={results} searchLoading={loading} onSuggestedSearch={handleQuestionClick} />
 
@@ -270,7 +325,7 @@ const Results = () => {
                         )}
 
                         {/* Search Results List */}
-                        <Stack spacing={4}>
+                        <Stack spacing={4} sx={{ opacity: searching && results.length > 0 ? 0.55 : 1, transition: 'opacity 0.15s' }}>
                             {loading ? (
                                 [1, 2, 3].map((i) => (
                                     <Box key={i}>
@@ -416,6 +471,8 @@ const Results = () => {
                                 />
                             </Box>
                         )}
+
+                        </>} {/* end tab === 0 */}
                     </Box>
 
                     {/* People Also Ask Sidebar */}

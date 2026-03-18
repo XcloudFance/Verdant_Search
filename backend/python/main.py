@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 from sqlalchemy.ext.asyncio import AsyncSession
 import uvicorn
 
@@ -339,6 +339,169 @@ async def search_by_image(
             detail=f"Image search failed: {str(e)}"
         )
 
+# ── Text → Images search models ───────────────────────────────────────────────
+
+class ImagesSearchRequest(BaseModel):
+    query: str
+    page: int = 1
+    page_size: int = 20
+
+
+class ImageSearchResult(BaseModel):
+    image_key: str
+    base64_data: Optional[str] = None
+    image_url: Optional[str] = None
+    alt_text: Optional[str] = None
+    width: Optional[int] = None
+    height: Optional[int] = None
+    source_title: str
+    source_url: Optional[str] = None
+    source_snippet: Optional[str] = None
+    document_id: int
+    image_index: int
+    score: float
+
+
+class ImagesSearchResponse(BaseModel):
+    query: str
+    images: List[ImageSearchResult]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int
+
+
+@app.post("/api/search/images", response_model=ImagesSearchResponse)
+async def search_images_by_text(
+    request: ImagesSearchRequest,
+    db: AsyncSession = Depends(get_db),
+    search_service: SearchService = Depends(get_search_service),
+):
+    """
+    Text-query image search combining:
+      1. CLIP text→image vector search  (image_embeddings table)
+      2. BM25 document text search      (expand matching docs to their images)
+    Fused via Reciprocal Rank Fusion at the (document_id, image_index) level.
+    """
+    import math
+    from sqlalchemy import select as sa_select
+    from sqlalchemy import text as sql_text
+    from models import Document
+
+    query    = request.query
+    page     = max(1, request.page)
+    psize    = max(1, request.page_size)
+    top_k    = 60
+
+    # ── 1. CLIP text → image vector search ───────────────────────────────────
+    try:
+        query_emb = search_service.embedding_service.encode_text(query)[0]
+        emb_str   = str(query_emb.tolist())
+
+        vec_q = sql_text(f"""
+            SELECT ie.document_id, ie.image_index,
+                   1 - (ie.embedding <=> '{emb_str}'::vector) AS similarity
+            FROM image_embeddings ie
+            ORDER BY ie.embedding <=> '{emb_str}'::vector
+            LIMIT :limit
+        """)
+        vec_rows = (await db.execute(vec_q, {"limit": top_k})).fetchall()
+    except Exception as e:
+        print(f"Image vector search error: {e}")
+        vec_rows = []
+
+    # {(doc_id, img_idx): rank}
+    image_vec_rank: Dict[Tuple[int, int], int] = {
+        (r.document_id, r.image_index): i for i, r in enumerate(vec_rows)
+    }
+
+    # ── 2. BM25 doc search → expand to images ────────────────────────────────
+    try:
+        tokenized    = search_service.preprocess_query(query)
+        bm25_scores  = await search_service._bm25_search(tokenized, db, top_k)
+    except Exception as e:
+        print(f"BM25 search error: {e}")
+        bm25_scores = {}
+
+    bm25_doc_rank: Dict[int, int] = {
+        doc_id: i
+        for i, (doc_id, _) in enumerate(
+            sorted(bm25_scores.items(), key=lambda x: x[1], reverse=True)
+        )
+    }
+
+    # ── 3. Fetch document metadata ────────────────────────────────────────────
+    all_doc_ids = {d for (d, _) in image_vec_rank} | set(bm25_doc_rank)
+    if not all_doc_ids:
+        return ImagesSearchResponse(
+            query=query, images=[], total=0,
+            page=page, page_size=psize, total_pages=0,
+        )
+
+    stmt = sa_select(Document).where(Document.id.in_(list(all_doc_ids)))
+    doc_map: Dict[int, Document] = {
+        d.id: d for d in (await db.execute(stmt)).scalars().all()
+    }
+
+    # ── 4. RRF fusion at (doc_id, image_index) level ─────────────────────────
+    k = 60
+    rrf: Dict[Tuple[int, int], float] = {}
+
+    for (doc_id, img_idx), rank in image_vec_rank.items():
+        key = (doc_id, img_idx)
+        rrf[key] = rrf.get(key, 0.0) + 1.0 / (k + rank)
+
+    for doc_id, rank in bm25_doc_rank.items():
+        doc = doc_map.get(doc_id)
+        if not doc or not doc.images:
+            continue
+        for img_idx in range(len(doc.images)):
+            key = (doc_id, img_idx)
+            rrf[key] = rrf.get(key, 0.0) + 1.0 / (k + rank)
+
+    sorted_keys = sorted(rrf.items(), key=lambda x: x[1], reverse=True)
+
+    # ── 5. Paginate + build response ──────────────────────────────────────────
+    total      = len(sorted_keys)
+    page_slice = sorted_keys[(page - 1) * psize: page * psize]
+
+    images_out: List[ImageSearchResult] = []
+    for (doc_id, img_idx), score in page_slice:
+        doc = doc_map.get(doc_id)
+        if not doc or not doc.images or img_idx >= len(doc.images):
+            continue
+        img = doc.images[img_idx]
+        if not img.get("base64_data") and not img.get("url"):
+            continue  # skip images with no displayable data
+
+        content   = doc.content or ""
+        snippet   = content[:160] + "…" if len(content) > 160 else content
+
+        images_out.append(ImageSearchResult(
+            image_key     = f"{doc_id}:{img_idx}",
+            base64_data   = img.get("base64_data"),
+            image_url     = img.get("url"),
+            alt_text      = img.get("alt_text"),
+            width         = img.get("width"),
+            height        = img.get("height"),
+            source_title  = doc.title,
+            source_url    = doc.url,
+            source_snippet= snippet,
+            document_id   = doc_id,
+            image_index   = img_idx,
+            score         = round(score, 6),
+        ))
+
+    return ImagesSearchResponse(
+        query      = query,
+        images     = images_out,
+        total      = total,
+        page       = page,
+        page_size  = psize,
+        total_pages= math.ceil(total / psize) if psize > 0 else 0,
+    )
+
+
 @app.get("/api/suggestions")
 async def get_suggestions(
     q: str,
@@ -573,6 +736,69 @@ async def chat_with_ai(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Chat failed: {str(e)}"
         )
+
+@app.get("/api/chat/session")
+async def get_chat_session(query: str):
+    """Load a chat session from Redis by query keyword."""
+    import re, redis as redis_lib, json
+    from datetime import datetime
+    try:
+        r = redis_lib.Redis(
+            host=settings.REDIS_HOST, port=settings.REDIS_PORT,
+            db=settings.REDIS_DB, password=settings.REDIS_PASSWORD,
+            decode_responses=True,
+        )
+        slug = re.sub(r"[^a-z0-9]+", "_", query.lower().strip())[:120].strip("_")
+        key = f"chat:session:{slug}"
+        data = r.get(key)
+        if not data:
+            return {"found": False, "session_key": key}
+        session = json.loads(data)
+        # Attach TTL so frontend can show expiry info
+        ttl = r.ttl(key)
+        return {"found": True, **session, "ttl_seconds": ttl}
+    except Exception as e:
+        return {"found": False, "error": str(e)}
+
+
+class SessionSaveRequest(BaseModel):
+    query: str
+    history: List[Dict[str, Any]]
+
+
+@app.post("/api/chat/session")
+async def save_chat_session(request: SessionSaveRequest):
+    """Persist a chat session to Redis (TTL: 7 days). Key = chat:session:{query_slug}."""
+    import re, redis as redis_lib, json
+    from datetime import datetime, timezone
+    try:
+        r = redis_lib.Redis(
+            host=settings.REDIS_HOST, port=settings.REDIS_PORT,
+            db=settings.REDIS_DB, password=settings.REDIS_PASSWORD,
+            decode_responses=True,
+        )
+        slug = re.sub(r"[^a-z0-9]+", "_", request.query.lower().strip())[:120].strip("_")
+        key = f"chat:session:{slug}"
+        now = datetime.now(timezone.utc).isoformat()
+
+        # Preserve original created_at if session already exists
+        existing = r.get(key)
+        created_at = json.loads(existing).get("created_at", now) if existing else now
+
+        user_turns = [m for m in request.history if m.get("role") == "user"]
+        session = {
+            "query": request.query,
+            "session_key": key,
+            "history": request.history,
+            "created_at": created_at,
+            "last_updated": now,
+            "message_count": len(user_turns),
+        }
+        r.setex(key, 7 * 24 * 3600, json.dumps(session))
+        return {"saved": True, "session_key": key, "message_count": len(user_turns)}
+    except Exception as e:
+        return {"saved": False, "error": str(e)}
+
 
 @app.post("/api/llm/suggest-questions", response_model=QuestionsResponse)
 async def suggest_questions(

@@ -1,1 +1,43 @@
 vpn_gfw_dataset_high_quality.csv
+
+# ── Environment & Secrets ─────────────────────────────────────
+.env
+*.env.local
+
+# ── Python ────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+venv/
+.venv/
+*.db
+
+# ── Node / Frontend ───────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
+
+# ── Go ────────────────────────────────────────────────────────
+backend/go/verdant-api
+backend/go/verdant
+backend/go/*.db
+backend/go/test_parse
+
+# ── Logs & Runtime ────────────────────────────────────────────
+logs/*.log
+logs/*.pid
+
+# ── OS ────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Editor ────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
