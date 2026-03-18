@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }) => {
             const response = await fetch(`${GO_API}/api/auth/sso`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ access_token: auth0AccessToken }),
+                body: JSON.stringify({ id_token: auth0AccessToken }),
             });
             if (!response.ok) {
                 const err = await response.json();

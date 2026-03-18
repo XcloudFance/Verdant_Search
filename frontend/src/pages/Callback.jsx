@@ -6,7 +6,7 @@ import SpaIcon from '@mui/icons-material/Spa';
 import { useAuth } from '../context/AuthContext';
 
 export default function Callback() {
-  const { isAuthenticated, isLoading, getAccessTokenSilently, error } = useAuth0();
+  const { isAuthenticated, isLoading, getIdTokenClaims, error } = useAuth0();
   const { loginWithSSO } = useAuth();
   const navigate = useNavigate();
   const attempted = useRef(false);
@@ -15,17 +15,27 @@ export default function Callback() {
     if (isLoading || attempted.current) return;
 
     if (error) {
-      console.error('Auth0 error:', error);
+      console.error('[SSO] Auth0 error:', error);
       navigate('/login');
       return;
     }
 
     if (isAuthenticated) {
       attempted.current = true;
-      getAccessTokenSilently()
-        .then(token => loginWithSSO(token))
-        .then(ok => navigate(ok ? '/' : '/login'))
-        .catch(() => navigate('/login'));
+      // Use ID token (always a JWT) — access token requires audience config
+      getIdTokenClaims()
+        .then(claims => {
+          if (!claims?.__raw) throw new Error('No ID token');
+          return loginWithSSO(claims.__raw);
+        })
+        .then(ok => {
+          if (!ok) throw new Error('loginWithSSO returned false');
+          navigate('/');
+        })
+        .catch(err => {
+          console.error('[SSO] Callback failed:', err);
+          navigate('/login');
+        });
     }
   }, [isAuthenticated, isLoading, error]);
 
