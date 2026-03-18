@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -147,5 +148,75 @@ func Login(jwtSecret string) gin.HandlerFunc {
 			Token: token,
 			User:  user.ToResponse(),
 		})
+	}
+}
+
+// SSOLogin handles Auth0 SSO login — verifies the access token with Auth0's
+// /userinfo endpoint, then upserts the user and returns a Verdant JWT.
+func SSOLogin(jwtSecret, auth0Domain string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req struct {
+			AccessToken string `json:"access_token" binding:"required"`
+		}
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "access_token is required"})
+			return
+		}
+
+		// ── Verify with Auth0 /userinfo ────────────────────────────────────
+		userInfoURL := "https://" + auth0Domain + "/userinfo"
+		httpReq, _ := http.NewRequest("GET", userInfoURL, nil)
+		httpReq.Header.Set("Authorization", "Bearer "+req.AccessToken)
+
+		resp, err := http.DefaultClient.Do(httpReq)
+		if err != nil || resp.StatusCode != http.StatusOK {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid SSO token"})
+			return
+		}
+		defer resp.Body.Close()
+
+		var info struct {
+			Sub     string `json:"sub"`
+			Email   string `json:"email"`
+			Name    string `json:"name"`
+			Picture string `json:"picture"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&info); err != nil || info.Email == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Could not read user info from Auth0"})
+			return
+		}
+
+		// ── Upsert user ────────────────────────────────────────────────────
+		var user models.User
+		result := database.GetDB().Where("email = ?", info.Email).First(&user)
+		if result.Error != nil {
+			// New SSO user — create with a placeholder password hash
+			name := info.Name
+			if name == "" {
+				name = info.Email
+			}
+			avatar := string([]rune(name)[0])
+			// SSO users have no local password; store a unique non-usable hash
+			dummyHash, _ := bcrypt.GenerateFromPassword([]byte("sso:"+info.Sub), bcrypt.MinCost)
+			user = models.User{
+				Email:        info.Email,
+				Name:         name,
+				Avatar:       avatar,
+				PasswordHash: string(dummyHash),
+			}
+			if err := database.GetDB().Create(&user).Error; err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+				return
+			}
+		}
+
+		// ── Issue Verdant JWT ──────────────────────────────────────────────
+		token, err := utils.GenerateToken(user.ID, user.Email, jwtSecret)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
+			return
+		}
+
+		c.JSON(http.StatusOK, AuthResponse{Token: token, User: user.ToResponse()})
 	}
 }

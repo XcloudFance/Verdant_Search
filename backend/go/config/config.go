@@ -6,27 +6,29 @@ import (
 
 // Config holds all application configuration
 type Config struct {
-	Port      string
-	JWTSecret string
-	DBHost    string
-	DBPort    string
-	DBUser    string
-	DBPass    string
-	DBName    string
-	RedisAddr string
+	Port         string
+	JWTSecret    string
+	DBHost       string
+	DBPort       string
+	DBUser       string
+	DBPass       string
+	DBName       string
+	RedisAddr    string
+	Auth0Domain  string
 }
 
 // LoadConfig loads configuration from environment variables with defaults
 func LoadConfig() *Config {
 	return &Config{
-		Port:      getEnv("PORT", "8080"),
-		JWTSecret: getEnv("JWT_SECRET", "your-secret-key-change-this-in-production"),
-		DBHost:    getEnv("DB_HOST", "localhost"),
-		DBPort:    getEnv("DB_PORT", "5432"),
-		DBUser:    getEnv("DB_USER", "verdant"),
-		DBPass:    getEnv("DB_PASS", "verdant123"),
-		DBName:    getEnv("DB_NAME", "verdant_search"),
-		RedisAddr: getEnv("REDIS_ADDR", "localhost:6379"),
+		Port:        getEnv("PORT", "8080"),
+		JWTSecret:   getEnv("JWT_SECRET", "your-secret-key-change-this-in-production"),
+		DBHost:      getEnv("DB_HOST", "localhost"),
+		DBPort:      getEnv("DB_PORT", "5432"),
+		DBUser:      getEnv("DB_USER", "verdant"),
+		DBPass:      getEnv("DB_PASS", "verdant123"),
+		DBName:      getEnv("DB_NAME", "verdant_search"),
+		RedisAddr:   getEnv("REDIS_ADDR", "localhost:6379"),
+		Auth0Domain: getEnv("AUTH0_DOMAIN", "dev-mzxcgy6t1ssatho4.us.auth0.com"),
 	}
 }
 

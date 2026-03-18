@@ -71,6 +71,28 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const loginWithSSO = async (auth0AccessToken) => {
+        try {
+            const response = await fetch(`${GO_API}/api/auth/sso`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ access_token: auth0AccessToken }),
+            });
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error || 'SSO login failed');
+            }
+            const data = await response.json();
+            setUser(data.user);
+            localStorage.setItem('verdant_token', data.token);
+            localStorage.setItem('verdant_user', JSON.stringify(data.user));
+            return true;
+        } catch (error) {
+            console.error('SSO login error:', error);
+            return false;
+        }
+    };
+
     const logout = () => {
         setUser(null);
         localStorage.removeItem('verdant_token');
@@ -78,7 +100,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, loginWithSSO, logout, loading }}>
             {!loading && children}
         </AuthContext.Provider>
     );

@@ -1,0 +1,45 @@
+import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { Box, CircularProgress, Typography } from '@mui/material';
+import SpaIcon from '@mui/icons-material/Spa';
+import { useAuth } from '../context/AuthContext';
+
+export default function Callback() {
+  const { isAuthenticated, isLoading, getAccessTokenSilently, error } = useAuth0();
+  const { loginWithSSO } = useAuth();
+  const navigate = useNavigate();
+  const attempted = useRef(false);
+
+  useEffect(() => {
+    if (isLoading || attempted.current) return;
+
+    if (error) {
+      console.error('Auth0 error:', error);
+      navigate('/login');
+      return;
+    }
+
+    if (isAuthenticated) {
+      attempted.current = true;
+      getAccessTokenSilently()
+        .then(token => loginWithSSO(token))
+        .then(ok => navigate(ok ? '/' : '/login'))
+        .catch(() => navigate('/login'));
+    }
+  }, [isAuthenticated, isLoading, error]);
+
+  return (
+    <Box sx={{
+      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center', gap: 2,
+      bgcolor: '#070714',
+    }}>
+      <SpaIcon sx={{ fontSize: 40, color: '#10b981' }} />
+      <CircularProgress size={28} sx={{ color: '#10b981' }} />
+      <Typography sx={{ color: '#475569', fontSize: 14 }}>
+        Completing sign-in…
+      </Typography>
+    </Box>
+  );
+}

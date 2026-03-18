@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Paper, Typography, TextField, Button, Stack, Link } from '@mui/material';
+import { Box, Paper, Typography, TextField, Button, Stack, Link, Divider } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import { useAuth } from '../context/AuthContext';
 import AmbientBackground from '../components/common/AmbientBackground';
 import SpaIcon from '@mui/icons-material/Spa';
@@ -11,6 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({ email: '', password: '' });
     const { login } = useAuth();
+    const { loginWithRedirect } = useAuth0();
     const navigate = useNavigate();
 
     // Email validation
@@ -96,7 +98,34 @@ const Login = () => {
                         </Stack>
                     </form>
 
-                    <Box mt={3} textAlign="center">
+                    <Box mt={3}>
+                        <Divider sx={{ my: 2, '&::before, &::after': { borderColor: 'rgba(255,255,255,0.1)' } }}>
+                            <Typography variant="caption" color="text.secondary">or</Typography>
+                        </Divider>
+                        <Button
+                            fullWidth
+                            variant="outlined"
+                            onClick={() => loginWithRedirect()}
+                            sx={{
+                                borderColor: 'rgba(255,255,255,0.15)',
+                                color: 'text.secondary',
+                                py: 1.25,
+                                fontSize: 14,
+                                '&:hover': { borderColor: 'primary.main', color: 'primary.main', bgcolor: 'rgba(16,185,129,0.05)' },
+                                display: 'flex', gap: 1.5,
+                            }}
+                        >
+                            {/* Auth0 logo SVG */}
+                            <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+                                <circle cx="16" cy="16" r="16" fill="#EB5424"/>
+                                <path d="M22.3 10.7H9.7l2.1 6.5h8.4l2.1-6.5z" fill="white"/>
+                                <path d="M16 25.3l4.2-6H11.8l4.2 6z" fill="white" opacity="0.7"/>
+                            </svg>
+                            Continue with SSO
+                        </Button>
+                    </Box>
+
+                    <Box mt={2} textAlign="center">
                         <Typography variant="body2" color="text.secondary">
                             Don't have an account? <Link component="button" onClick={() => navigate('/register')} color="primary">Sign up</Link>
                         </Typography>

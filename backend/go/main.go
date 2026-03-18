@@ -47,6 +47,7 @@ func main() {
 		{
 			auth.POST("/register", handlers.Register(cfg.JWTSecret))
 			auth.POST("/login", handlers.Login(cfg.JWTSecret))
+			auth.POST("/sso", handlers.SSOLogin(cfg.JWTSecret, cfg.Auth0Domain))
 		}
 
 		// Search route (public)
