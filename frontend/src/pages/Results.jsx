@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Box, Container, Typography, Tabs, Tab, Paper, Stack, Button, Skeleton,
   Pagination, IconButton, Chip, Switch, FormControlLabel, Drawer, Tooltip,
-  Divider, LinearProgress
+  Divider, LinearProgress, TextField, Select, MenuItem, FormControl, InputLabel, Collapse
 } from '@mui/material';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -13,6 +13,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import TimerIcon from '@mui/icons-material/Timer';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import Navbar from '../components/layout/Navbar';
 import AmbientBackground from '../components/common/AmbientBackground';
 import AISummary from '../components/features/AISummary';
@@ -52,6 +53,17 @@ const Results = () => {
     // Search history stack — tracks every query change (navbar or suggestions)
     const [searchHistory, setSearchHistory] = useState([]);
     const [canGoBack, setCanGoBack] = useState(false);
+
+    // Metadata filters
+    const [filtersOpen, setFiltersOpen] = useState(false);
+    const [filterDateFrom, setFilterDateFrom] = useState('');
+    const [filterDateTo, setFilterDateTo] = useState('');
+    const [filterContentType, setFilterContentType] = useState('all');
+    const [filterSourceType, setFilterSourceType] = useState('');
+
+    // User preferences (loaded from API if logged in)
+    const [prefsLoaded, setPrefsLoaded] = useState(false);
+
     const prevQueryRef = useRef(null);
 
     const { addToHistory } = useHistory();
@@ -64,6 +76,30 @@ const Results = () => {
         }
         prevQueryRef.current = query;
     }, [query]);
+
+    // Load user preferences on mount
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token || prefsLoaded) return;
+        fetch('/api/user/profile', {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+                if (data) {
+                    if (data.reranker_enabled != null) setRerankerEnabled(data.reranker_enabled);
+                    if (data.results_per_page && !searchParams.get('page_size')) {
+                        setSearchParams(prev => {
+                            const p = new URLSearchParams(prev);
+                            p.set('page_size', String(data.results_per_page));
+                            return p;
+                        }, { replace: true });
+                    }
+                }
+                setPrefsLoaded(true);
+            })
+            .catch(() => setPrefsLoaded(true));
+    }, []);
 
     const handleQuestionClick = (question) => {
         navigate(`/results?q=${encodeURIComponent(question)}`);
@@ -126,6 +162,12 @@ const Results = () => {
                         page: currentPage,
                         page_size: pageSize,
                         reranker_enabled: rerankerEnabled,
+                        filters: {
+                            date_from: filterDateFrom || undefined,
+                            date_to: filterDateTo || undefined,
+                            content_type: filterContentType !== 'all' ? filterContentType : undefined,
+                            source_type: filterSourceType || undefined,
+                        },
                     })
                 });
 
@@ -155,7 +197,7 @@ const Results = () => {
         };
 
         fetchResults();
-    }, [query, currentPage, pageSize, rerankerEnabled]);
+    }, [query, currentPage, pageSize, rerankerEnabled, filterDateFrom, filterDateTo, filterContentType, filterSourceType]);
 
     const handlePageChange = (event, value) => {
         const params = new URLSearchParams(searchParams);
@@ -241,6 +283,75 @@ const Results = () => {
                 <Container maxWidth="xl" sx={{ display: tab === 1 ? 'none' : 'flex', mt: 4, gap: 2 }}>
                     {/* Main Results */}
                     <Box sx={{ flex: 2, maxWidth: '800px', ml: { md: 10 } }}>
+
+                        {/* Filter Panel */}
+                        <Box sx={{ mb: 2 }}>
+                            <Button
+                                size="small"
+                                startIcon={<FilterListIcon />}
+                                onClick={() => setFiltersOpen(v => !v)}
+                                variant={filtersOpen || filterDateFrom || filterDateTo || filterContentType !== 'all' || filterSourceType ? 'contained' : 'outlined'}
+                                sx={{
+                                    borderColor: 'rgba(255,255,255,0.2)',
+                                    color: filtersOpen || filterDateFrom || filterDateTo || filterContentType !== 'all' || filterSourceType ? 'white' : 'text.secondary',
+                                    bgcolor: filtersOpen || filterDateFrom || filterDateTo || filterContentType !== 'all' || filterSourceType ? 'rgba(16,185,129,0.3)' : 'transparent',
+                                    '&:hover': { borderColor: '#10b981', bgcolor: 'rgba(16,185,129,0.1)' },
+                                    fontSize: 12,
+                                }}
+                            >
+                                Filters {(filterDateFrom || filterDateTo || (filterContentType !== 'all') || filterSourceType) ? '●' : ''}
+                            </Button>
+                            <Collapse in={filtersOpen}>
+                                <Box sx={{ mt: 1.5, p: 2, bgcolor: 'rgba(255,255,255,0.03)', borderRadius: 2, border: '1px solid rgba(255,255,255,0.08)', display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                                    <TextField
+                                        label="Date from"
+                                        type="date"
+                                        size="small"
+                                        value={filterDateFrom}
+                                        onChange={e => setFilterDateFrom(e.target.value)}
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ width: 160, '& .MuiInputBase-root': { color: 'text.primary', fontSize: 13 } }}
+                                    />
+                                    <TextField
+                                        label="Date to"
+                                        type="date"
+                                        size="small"
+                                        value={filterDateTo}
+                                        onChange={e => setFilterDateTo(e.target.value)}
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ width: 160, '& .MuiInputBase-root': { color: 'text.primary', fontSize: 13 } }}
+                                    />
+                                    <FormControl size="small" sx={{ width: 150 }}>
+                                        <InputLabel sx={{ fontSize: 13 }}>Content type</InputLabel>
+                                        <Select
+                                            value={filterContentType}
+                                            onChange={e => setFilterContentType(e.target.value)}
+                                            label="Content type"
+                                            sx={{ fontSize: 13 }}
+                                        >
+                                            <MenuItem value="all">All</MenuItem>
+                                            <MenuItem value="text">Text only</MenuItem>
+                                            <MenuItem value="image">Has images</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                    <TextField
+                                        label="Source type"
+                                        size="small"
+                                        placeholder="e.g. web, pdf"
+                                        value={filterSourceType}
+                                        onChange={e => setFilterSourceType(e.target.value)}
+                                        sx={{ width: 160, '& .MuiInputBase-root': { fontSize: 13 } }}
+                                    />
+                                    <Button
+                                        size="small"
+                                        onClick={() => { setFilterDateFrom(''); setFilterDateTo(''); setFilterContentType('all'); setFilterSourceType(''); }}
+                                        sx={{ color: '#ef4444', fontSize: 12, '&:hover': { bgcolor: 'rgba(239,68,68,0.08)' } }}
+                                    >
+                                        Clear
+                                    </Button>
+                                </Box>
+                            </Collapse>
+                        </Box>
 
                         {/* Reranker Toggle + Stage Timings */}
                         <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>

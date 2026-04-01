@@ -13,7 +13,8 @@ import {
   Dashboard as DashboardIcon,
   ChevronLeft as CollapseIcon,
   ChevronRight as ExpandIcon,
-  Home as HomeIcon
+  Home as HomeIcon,
+  ManageSearch as ManageSearchIcon
 } from '@mui/icons-material';
 
 const DRAWER_WIDTH = 240;
@@ -25,6 +26,7 @@ const navItems = [
   { label: 'Index & DB', icon: <IndexIcon />, path: '/admin/index' },
   { label: 'Analytics', icon: <AnalyticsIcon />, path: '/admin/analytics' },
   { label: 'Reranker', icon: <RerankerIcon />, path: '/admin/reranker' },
+  { label: 'Search Debugger', icon: <ManageSearchIcon />, path: '/admin/search-debug' },
   { label: 'Configuration', icon: <ConfigIcon />, path: '/admin/config' },
 ];
 

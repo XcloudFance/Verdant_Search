@@ -72,6 +72,7 @@ class SearchService:
         top_k: int = None,
         reranker_enabled: bool = False,
         reranker_top_k: int = 20,
+        filters: dict = None,
     ) -> List[Dict[str, Any]]:
         """
         Two-stage hybrid search.
@@ -87,6 +88,8 @@ class SearchService:
             top_k:             Number of results to return (default from settings).
             reranker_enabled:  Whether to run the Stage 2 LTR reranker.
             reranker_top_k:    How many Stage 1 results to pass to the reranker.
+            filters:           Optional metadata filters (date_from, date_to,
+                               content_type, source_type).
 
         Returns:
             List of result dicts with ``document_id``, ``score``, and
@@ -102,6 +105,11 @@ class SearchService:
         # Get query embedding (use original query for semantic search)
         query_embedding = self.embedding_service.encode_text(query)[0]
 
+        # Apply metadata filters — pre-fetch allowed doc IDs
+        allowed_doc_ids = None
+        if filters:
+            allowed_doc_ids = await self._apply_filters(filters, session)
+
         # Stage 1a — Vector search using HNSW index
         t0 = time.time()
         vector_results = await self._vector_search(query_embedding, session, top_k * 2)
@@ -111,6 +119,11 @@ class SearchService:
         t0 = time.time()
         bm25_results = await self._bm25_search(tokenized_query, session, top_k * 2)
         bm25_ms = (time.time() - t0) * 1000
+
+        # Filter results to only allowed documents
+        if allowed_doc_ids is not None:
+            vector_results = {k: v for k, v in vector_results.items() if k in allowed_doc_ids}
+            bm25_results = {k: v for k, v in bm25_results.items() if k in allowed_doc_ids}
 
         # Stage 1c — RRF fusion
         t0 = time.time()
@@ -233,6 +246,39 @@ class SearchService:
             traceback.print_exc()
             return {}
     
+    async def _apply_filters(
+        self,
+        filters: Dict[str, Any],
+        session: AsyncSession,
+    ) -> set:
+        """Return set of document IDs matching the given metadata filters."""
+        conditions = ["1=1"]
+        params: Dict[str, Any] = {}
+
+        date_from = filters.get("date_from")
+        date_to = filters.get("date_to")
+        content_type = filters.get("content_type")
+        source_type = filters.get("source_type")
+
+        if date_from:
+            conditions.append("created_at >= :date_from")
+            params["date_from"] = date_from
+        if date_to:
+            conditions.append("created_at <= :date_to")
+            params["date_to"] = date_to
+        if content_type and content_type not in ("all", "All", ""):
+            if content_type == "image":
+                conditions.append("jsonb_array_length(COALESCE(images, '[]'::jsonb)) > 0")
+            elif content_type == "text":
+                conditions.append("jsonb_array_length(COALESCE(images, '[]'::jsonb)) = 0")
+        if source_type and source_type not in ("all", "All", ""):
+            conditions.append("source_type = :source_type")
+            params["source_type"] = source_type
+
+        sql = "SELECT id FROM documents WHERE " + " AND ".join(conditions)
+        result = await session.execute(text(sql), params)
+        return {row.id for row in result}
+
     async def _bm25_search(
         self,
         query: str,
@@ -351,6 +397,147 @@ class SearchService:
             {"document_id": doc_id, "score": score}
             for doc_id, score in sorted_results
         ]
+
+    async def search_debug(
+        self,
+        query: str,
+        session: AsyncSession,
+        top_k: int = 20,
+    ) -> Dict[str, Any]:
+        """
+        Run the full retrieval pipeline in debug mode.
+
+        Returns all intermediate results: tokenization, BM25, vector,
+        RRF fusion, and reranker — with per-stage timings.
+        """
+        import time as _time
+        from index_service import get_index_service
+
+        # ── Tokenization ──────────────────────────────────────────────────
+        tokens = self.tokenizer_service.tokenize(query, mode="search")
+        keywords = self.tokenizer_service.extract_keywords(query, top_k=10)
+        tokenized_query = " ".join(tokens)
+
+        # ── Stage 1a: BM25 ────────────────────────────────────────────────
+        t0 = _time.time()
+        bm25_results = await self._bm25_search(tokenized_query, session, top_k)
+        bm25_ms = (_time.time() - t0) * 1000
+
+        # ── Stage 1b: Vector ──────────────────────────────────────────────
+        query_embedding = self.embedding_service.encode_text(query)[0]
+        t0 = _time.time()
+        vector_results = await self._vector_search(query_embedding, session, top_k)
+        vector_ms = (_time.time() - t0) * 1000
+
+        # ── Stage 1c: RRF fusion ──────────────────────────────────────────
+        t0 = _time.time()
+        rrf_results = self._rrf_fusion(vector_results, bm25_results, top_k)
+        rrf_ms = (_time.time() - t0) * 1000
+
+        # ── Stage 2: Reranker ─────────────────────────────────────────────
+        reranker_results = None
+        reranker_ms = 0.0
+        try:
+            reranker = get_reranker_service()
+            t0 = _time.time()
+            reranked = await reranker.rerank(query, rrf_results[:10], session)
+            reranker_ms = (_time.time() - t0) * 1000
+            reranker_results = reranked
+        except Exception as _e:
+            print(f"Reranker debug error: {_e}")
+
+        # ── Enrich results with document metadata ─────────────────────────
+        index_service = get_index_service()
+
+        async def _enrich(doc_id: int, score: float, rank: int) -> Dict[str, Any]:
+            doc = await index_service.get_document(doc_id, session)
+            return {
+                "rank": rank + 1,
+                "document_id": doc_id,
+                "title": doc.title if doc else f"Doc #{doc_id}",
+                "url": doc.url if doc else "",
+                "snippet": (doc.content[:150] + "...") if doc and len(doc.content) > 150 else (doc.content if doc else ""),
+                "score": round(score, 6),
+                "source_type": doc.source_type if doc else "unknown",
+            }
+
+        bm25_ranked = sorted(bm25_results.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        bm25_display = [await _enrich(did, sc, i) for i, (did, sc) in enumerate(bm25_ranked)]
+
+        vec_ranked = sorted(vector_results.items(), key=lambda x: x[1], reverse=True)[:top_k]
+        vec_display = [await _enrich(did, sc, i) for i, (did, sc) in enumerate(vec_ranked)]
+
+        bm25_doc_ids = {did for did, _ in bm25_ranked}
+        vec_doc_ids = {did for did, _ in vec_ranked}
+        rrf_display = []
+        for i, r in enumerate(rrf_results):
+            did = r["document_id"]
+            doc = await index_service.get_document(did, session)
+            sources = []
+            if did in bm25_doc_ids:
+                sources.append("bm25")
+            if did in vec_doc_ids:
+                sources.append("vector")
+            rrf_display.append({
+                "rank": i + 1,
+                "document_id": did,
+                "title": doc.title if doc else f"Doc #{did}",
+                "snippet": (doc.content[:150] + "...") if doc and len(doc.content) > 150 else (doc.content if doc else ""),
+                "score": round(r["score"], 6),
+                "sources": sources,
+            })
+
+        reranker_display = None
+        if reranker_results:
+            reranker_display = []
+            for r in reranker_results:
+                did = r["document_id"]
+                doc = await index_service.get_document(did, session)
+                reranker_display.append({
+                    "document_id": did,
+                    "title": doc.title if doc else f"Doc #{did}",
+                    "snippet": (doc.content[:150] + "...") if doc and len(doc.content) > 150 else (doc.content if doc else ""),
+                    "pre_rank": (r.get("pre_rank") or 0) + 1,
+                    "post_rank": (r.get("post_rank") or 0) + 1,
+                    "rank_delta": r.get("rank_delta", 0),
+                    "score": round(r.get("score", 0), 6),
+                })
+
+        return {
+            "query": query,
+            "tokenization": {
+                "original": query,
+                "tokens": tokens,
+                "keywords": keywords,
+                "token_count": len(tokens),
+            },
+            "bm25": {
+                "results": bm25_display,
+                "time_ms": round(bm25_ms, 2),
+                "count": len(bm25_results),
+            },
+            "vector": {
+                "results": vec_display,
+                "time_ms": round(vector_ms, 2),
+                "count": len(vector_results),
+            },
+            "rrf": {
+                "results": rrf_display,
+                "time_ms": round(rrf_ms, 2),
+                "count": len(rrf_results),
+            },
+            "reranker": {
+                "results": reranker_display,
+                "time_ms": round(reranker_ms, 2),
+                "enabled": reranker_results is not None,
+            },
+            "stage_timings": {
+                "bm25_ms": round(bm25_ms, 2),
+                "vector_ms": round(vector_ms, 2),
+                "rrf_ms": round(rrf_ms, 2),
+                "reranker_ms": round(reranker_ms, 2),
+            },
+        }
 
     def get_suggestions(self, prefix: str, limit: int = 5, fuzzy: bool = True) -> List[str]:
         """

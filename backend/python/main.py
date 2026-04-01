@@ -171,6 +171,38 @@ async def tokenize_text(text: str):
         "token_count": len(tokens)
     }
 
+class SearchDebugRequest(BaseModel):
+    query: str
+    top_k: Optional[int] = 20
+
+
+@app.post("/api/admin/search-debug")
+async def search_debug_endpoint(
+    request: SearchDebugRequest,
+    db: AsyncSession = Depends(get_db),
+    search_service: SearchService = Depends(get_search_service),
+):
+    """
+    Full pipeline debug: runs BM25, vector, RRF, and reranker, returning
+    all intermediate results and stage timings. Used by the admin Search
+    Debugger panel.
+    """
+    try:
+        result = await search_service.search_debug(
+            query=request.query,
+            session=db,
+            top_k=request.top_k or 20,
+        )
+        return result
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Debug search failed: {str(e)}",
+        )
+
+
 @app.post("/api/search", response_model=SearchResponse)
 async def search(
     request: SearchRequest,
@@ -199,6 +231,7 @@ async def search(
             session=db,
             top_k=fetch_count,
             reranker_enabled=request.reranker_enabled or False,
+            filters=request.filters,
         )
         _search_elapsed = (_time.time() - _search_start) * 1000
 
