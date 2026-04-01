@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import History from './pages/History';
 import Callback from './pages/Callback';
+import Settings from './pages/Settings';
 import Layout from './components/layout/Layout';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminOverview from './pages/admin/AdminOverview';
@@ -25,7 +26,7 @@ function App() {
     <Auth0Provider
       domain="dev-mzxcgy6t1ssatho4.us.auth0.com"
       clientId="nOSSx5Y7RbqCcBZh5SDkvpvEKql5fEvo"
-      authorizationParams={{ redirect_uri: window.location.origin + '/callback' }}
+      authorizationParams={{ redirect_uri: window.location.origin + '/callback', scope: 'openid profile email' }}
     >
       <ThemeProvider theme={theme}>
         <CssBaseline />
@@ -40,6 +41,7 @@ function App() {
                   <Route path="/register" element={<Register />} />
                   <Route path="/history" element={<History />} />
                   <Route path="/callback" element={<Callback />} />
+                  <Route path="/settings" element={<Settings />} />
                 </Route>
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route index element={<AdminOverview />} />

@@ -1,0 +1,585 @@
+\documentclass{report}
+
+% Preamble: Include necessary packages
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{setspace}
+% Times 字体包在某些系统上可能缺少必要的字体文件
+% 如果需要 Times 字体，请确保安装了 texlive-fontsrecommended 包
+% \usepackage{times}
+% \usepackage{newtxtext}
+% \usepackage{newtxmath}
+% \usepackage{mathptmx}
+\usepackage{tocbibind}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{natbib}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{pdfpages}
+
+
+
+
+% \usepackage{pifont}  % 注释掉：系统缺少 pzdr 字体，且文档中未使用
+% 定义 \ding 命令的替代方案
+\newcommand{\ding}[1]{%
+  \ifnum#1=55
+    $\times$%  使用 × 符号替代 ding{55}
+  \else
+    \textbullet%  其他情况使用圆点
+  \fi
+}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{caption}
+% Configure packages
+\pgfplotsset{compat=1.18}
+\usetikzlibrary{mindmap, shapes.misc, positioning, calc, arrows.meta}
+
+% Code listing style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% Page geometry
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=25mm,
+    right=25mm,
+    top=25mm,
+    bottom=25mm
+}
+
+% Define title page elements
+\title{Project Title Goes Here}
+\author{Your Full Name \\ Your Student ID}
+\date{\today}
+
+\newcommand{\supervisor}{DR. CHIAM YIN KIA}
+\newcommand{\university}{Universiti Malaya}
+\newcommand{\faculty}{Faculty of Computer Science and Information Technology}
+\newcommand{\department}{Software Engineering}
+\newcommand{\studentname}{CAI HONGYI}
+\newcommand{\studentid}{S2175463}
+\newcommand{\programmecoursename}{WIA3002: ACADEMIC PROJECT I}
+\newcommand{\stakeholder}{Infinity Datatech Sdn. Bhd.}
+
+% 定义 frequirements 环境用于功能需求列表
+\newenvironment{frequirements}{%
+  \begin{enumerate}[nosep,leftmargin=*,topsep=0pt,partopsep=0pt]
+}{%
+  \end{enumerate}
+}
+
+% Begin document
+\begin{document}
+
+% ============================================================
+% TITLE PAGE
+% ============================================================
+\begin{titlepage}
+    \centering
+    \vspace*{1cm}
+      \begin{figure}
+        \centering
+        \includegraphics[width=1\linewidth]{png2pdf.pdf}
+
+        \label{fig:enter-label}
+    \end{figure}
+    {\Large \textbf{Final Year Project}} \\
+    \vspace{1cm}
+    {\Large \textbf{SEMESTER 1 2024/2025}} \\
+    \vspace{2cm}
+    {\Large \textbf{\MakeUppercase{Verdant-Search: AI-boosted Sharded Distributed Search Engine}}} \\
+    \vspace{2cm}
+    {\Large \textbf{SUPERVISOR:}} \\
+    \vspace{0.5cm}
+    {\Large \MakeUppercase{\supervisor}} \\
+    \vspace{2cm}
+    {\Large \textbf{PREPARED BY:}} \\
+    \vspace{0.5cm}
+    {\Large \MakeUppercase{\studentname}} \\
+    \vspace{0.5cm}
+    {\Large \MakeUppercase{\studentid}} \\
+    \vfill
+\end{titlepage}
+
+% ============================================================
+% ACKNOWLEDGEMENT
+% ============================================================
+\chapter*{Acknowledgement}
+\addcontentsline{toc}{chapter}{Acknowledgement}
+
+I would like to express my sincere gratitude to my academic supervisor, Dr. Chiam Yin Kia, for her invaluable guidance, insightful feedback, and unwavering support throughout the development of this project. Her expertise and mentorship have been instrumental in shaping both this work and my academic growth.
+
+I extend my profound appreciation to Infinity Datatech Sdn. Bhd. for their collaboration and support as the industry partner for this project. Special thanks to the Chief Technology Officer and the Product Manager at Infinity Datatech, who generously shared their time, expertise, and insights during our numerous interviews and consultation sessions. Their willingness to explain their current workflows, challenges, and requirements has been essential in developing a solution that addresses real-world industry needs.
+
+I am also grateful to the development and quality assurance teams at Infinity Datatech who participated in the requirements gathering sessions and provided valuable feedback during the system evaluation phase. Their practical insights have significantly contributed to the refinement of the platform's features and usability.
+
+Finally, I would like to thank my family and friends for their continuous encouragement and support throughout my academic journey.
+
+\clearpage
+
+% ============================================================
+% ABSTRACT
+% ============================================================
+\chapter*{Abstract}
+
+Enterprise document collections contain rich multimodal content including charts, tables, and visual layouts, yet existing search systems rank documents based solely on text. Commercial solutions like Google Enterprise Search and Perplexity ignore visual information that often carries critical insights in business reports and technical documentation. Current retrieval augmented generation systems also operate exclusively on text, missing opportunities to leverage visual evidence or enable iterative search refinement where AI responses improve subsequent retrieval from corporate knowledge bases.
+
+This work presents a production-ready enterprise search engine addressing these gaps through three core innovations. We develop a multimodal listwise reranker that extends methods like RankZephyr to jointly evaluate document text and visual layouts, enabling effective ranking of real-world business documents. Our iterative multimodal RAG framework creates a closed-loop system where LLM-generated insights refine subsequent searches through intelligent query rewriting, combining traditional search speed with AI reasoning capabilities. The end-to-end architecture prioritizes deployment efficiency through distributed crawling, compressed storage, and a two-stage pipeline where fast hybrid retrieval using BM25 inverted indexes and HNSW approximate nearest neighbor search identifies candidates, followed by expensive multimodal reranking on a focused set.
+
+This system delivers capabilities absent in existing enterprise solutions: true image-text hybrid search, visually grounded question answering over business documents, and conversational refinement where each interaction improves retrieval quality. The architecture balances efficiency with effectiveness, achieving sub-second query latency on million-document collections while maintaining sophisticated cross-modal reasoning. By addressing practical gaps in multimodal reranking, enterprise RAG, and scalable deployment, this work provides both framework and implementation for next-generation enterprise search systems that naturally understand the full richness of modern business documents.
+\clearpage
+
+% ============================================================
+% TABLE OF CONTENTS
+% ============================================================
+\tableofcontents
+\clearpage
+
+\listoftables
+\clearpage
+
+\listoffigures
+\clearpage
+
+% ============================================================
+% CHAPTER 1: INTRODUCTION
+% ============================================================
+\input{chapter1}
+
+% ============================================================
+% CHAPTER 2: LITERATURE REVIEW
+% ============================================================
+\input{chapter2}
+
+% ============================================================
+% CHAPTER 3: RESEARCH METHODOLOGY
+% ============================================================
+\chapter{Research Methodology}
+This chapter outlines the methodological approach used to develop the Verdant Search multimodal enterprise search engine for Infinity Datatech, detailing the software development lifecycle and the comprehensive data gathering techniques employed to define requirements and validate design decisions.
+
+\section{Software Development Methodology}
+
+To effectively navigate the dynamic requirements of building a novel multimodal search platform in close collaboration with an industry partner, this project adopted an Agile development methodology. Agile is a modern approach to project management and software development that emphasizes flexibility, customer collaboration, and iterative progress. Unlike traditional, linear approaches (like Waterfall) where requirements are fixed upfront, Agile embraces change and allows for requirements to evolve through a continuous feedback loop between the developer and stakeholders. This was particularly suitable for this academic-industry partnership where the complexity of integrating distributed crawling, hybrid retrieval, and multimodal reranking required frequent validation cycles.
+
+The core philosophy of Agile is centered on delivering value in small, incremental pieces, enabling rapid validation and adaptation throughout the project lifecycle. This iterative nature was crucial for ensuring the search engine met the precise and evolving needs of Infinity Datatech's technical teams, allowing for early detection of issues and continuous alignment with the company's enterprise knowledge management goals.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.8cm and 2.5cm,
+every node/.style={draw, rounded rectangle, text centered, minimum height=1cm, minimum width=2.5cm, text width=2.2cm, fill=blue!10},
+arrow/.style={-Latex, thick}]
+    \node (plan) {Plan};
+    \node (design) [right=of plan] {Design};
+    \node (build) [below=of design] {Build};
+    \node (test) [left=of build] {Test};
+    \node (review) [above=of test] {Review \& Feedback};
+    
+    \draw[arrow] (plan) -- (design);
+    \draw[arrow] (design) -- (build);
+    \draw[arrow] (build) -- (test);
+    \draw[arrow] (test) -- (review);
+    \draw[arrow] (review) to[bend left=15] (plan);
+    
+    \node[draw=none, fill=none, font=\bfseries, text=red] at ($(plan)!0.5!(build)$) {Iterate};
+\end{tikzpicture}
+\caption{The Agile Iterative Development Cycle}
+\label{fig:agile_cycle}
+\end{figure}
+
+
+\subsection{Implementing the Scrum Framework}
+To provide structure to the Agile approach, the project was managed using Scrum, a popular and effective Agile framework. Scrum organizes work into fixed-length iterations called Sprints, which in this project were set to two weeks. Each Sprint is a self-contained mini-project that results in a demonstrable and potentially usable increment of the final search engine system.
+
+The Scrum framework consists of key roles, artifacts (documents/tools), and events (meetings) that guided the project:
+
+\subsubsection{Scrum Roles}
+\begin{itemize}
+\item \textbf{Product Owner:} Key stakeholders at Infinity Datatech, primarily the Product Manager and technical leads, who defined the project vision and prioritized features based on organizational knowledge management needs.
+\item \textbf{Development Team:} A self-contained role filled by the sole developer on this academic project, responsible for building the full-stack search engine system including distributed crawling, indexing pipeline, and frontend interface.
+\item \textbf{Scrum Master:} A dual role fulfilled by the developer (for process facilitation) and the academic supervisor (for guidance and impediment removal), ensuring the Scrum framework was followed effectively and academic standards were met.
+\end{itemize}
+
+\subsubsection{Scrum Artifacts}
+\begin{itemize}
+\item \textbf{Product Backlog:} A master list of all features and requirements, prioritized in collaboration with Infinity Datatech based on technical value and enterprise search needs. Items ranged from core retrieval functionality to advanced features like multimodal reranking and iterative RAG.
+\item \textbf{Sprint Backlog:} A subset of high-priority tasks selected from the Product Backlog to be completed within a two-week Sprint, such as implementing the BM25 indexer or integrating CLIP embeddings.
+\item \textbf{Increment:} The tangible, working, and tested piece of software produced at the end of each Sprint, adding to previous functionality with deployable search components. For example, one Sprint's increment might be the hybrid retrieval module, while the next might add the conversational query rewriting feature.
+\end{itemize}
+
+\subsubsection{Scrum Events}
+The work was structured around a series of recurring events within each Sprint to ensure transparency and inspection:
+\begin{enumerate}
+\item \textbf{Sprint Planning:} Selecting items from the Product Backlog to define the Sprint Goal for search engine components.
+\item \textbf{Daily Check-ins:} Brief, regular syncs to discuss progress and obstacles in development.
+\item \textbf{Sprint Review:} A demonstration of the Sprint's increment to Infinity Datatech stakeholders to gather critical feedback on search quality and system performance.
+\item \textbf{Sprint Retrospective:} An internal reflection to identify process improvements for the next Sprint.
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+artifact/.style={rectangle, draw, fill=orange!20, minimum height=1.2cm, minimum width=2.8cm, align=center, font=\small},
+event/.style={rectangle, draw, fill=green!20, minimum height=1cm, minimum width=2.2cm, align=center, font=\small, rounded corners=0.5cm},
+arrow/.style={->, thick},
+sprint/.style={rectangle, draw, dashed, fill=gray!5, minimum height=3.5cm, minimum width=4.5cm}
+]
+
+% Top row - Planning phase
+\node[artifact] (product_backlog) {Product\\Backlog};
+\node[event, right=1.8cm of product_backlog] (sprint_planning) {Sprint\\Planning};
+\node[artifact, right=1.8cm of sprint_planning] (sprint_backlog) {Sprint\\Backlog};
+
+% Sprint box
+\node[sprint, below=1.5cm of sprint_planning] (sprint_container) {};
+\node[font=\bfseries] at ([yshift=1.4cm]sprint_container.center) {2-Week Sprint};
+\node[font=\small, align=center] at (sprint_container.center) {Daily Standups\\Development Work\\Collaboration};
+
+% Bottom row - Review phase  
+\node[artifact, below=1.5cm of sprint_container] (increment) {Working\\Increment};
+\node[event, left=1.8cm of increment] (sprint_review) {Sprint\\Review};
+\node[event, right=1.8cm of increment] (retrospective) {Sprint\\Retrospective};
+
+% Main flow arrows
+\draw[arrow] (product_backlog) -- (sprint_planning);
+\draw[arrow] (sprint_planning) -- (sprint_backlog);
+\draw[arrow] (sprint_backlog) -- (sprint_container.north);
+\draw[arrow] (sprint_container.south) -- (increment);
+\draw[arrow] (increment) -- (sprint_review);
+\draw[arrow] (increment) -- (retrospective);
+
+% Feedback loops
+\draw[arrow, bend left=25] (sprint_review) to node[above, font=\scriptsize] {Product Feedback} (product_backlog);
+\draw[arrow, bend right=25] (retrospective) to node[below, font=\scriptsize] {Process Improvements} (sprint_planning);
+
+\end{tikzpicture}
+\caption{The Scrum Framework - Clear Process Flow}
+\label{fig:scrum_framework}
+\end{figure}
+
+\subsection{Project Management and Workflow Tools}
+To support this Agile Scrum process, a specific set of digital tools was employed:
+\begin{itemize}
+\item \textbf{GitHub:} Used for version control and managing the \textbf{Product} and \textbf{Sprint Backlogs} via Projects and Issues features for tracking search engine development. Each module (crawling, indexing, retrieval, reranking, RAG) was tracked as separate epics.
+\item \textbf{Microsoft Teams:} Used for formal academic supervision meetings.
+\item \textbf{Lark:} Serves as the central collaboration hub for daily communication, task tracking, and sprint management, coordinating distributed system components and data ingestion pipelines.
+\end{itemize}
+
+
+\section{Data Gathering Techniques}
+To ensure the search engine met Infinity Datatech's specific requirements and addressed the inefficiencies of their current fragmented search processes, a comprehensive data gathering approach was employed. This combined multiple qualitative and quantitative methods, with a focus on understanding existing workflows, information retrieval needs, and stakeholder pain points. A key initial finding was that engineers spend significant time (30-45 minutes daily) searching across fragmented systems including Confluence, Google Drive, Git repositories, and local network shares. This fragmentation, combined with the inability to search visual content in technical documents, formed the core problems the new platform needed to solve.
+
+\subsection{Literature Review}
+The literature review (detailed in Chapter 2) explored existing academic research and industry practices in search engine architecture, learning-to-rank, vision-language models, and retrieval-augmented generation. This foundation was supplemented with:
+
+\begin{itemize}
+    \item Analysis of search engine architectures combining inverted indexes with dense retrieval, particularly hybrid approaches using BM25 and neural embeddings.
+    \item Evaluation of existing commercial and open-source solutions (Google Enterprise Search, Perplexity, Elasticsearch) to assess their suitability for Infinity Datatech's multimodal search requirements.
+    \item Examination of current approaches to LLM-based ranking (RankGPT, RankZephyr) and their potential extension to multimodal content.
+\end{itemize}
+
+\subsection{Stakeholder Interviews}
+A series of structured and semi-structured interviews were conducted with key stakeholders at Infinity Datatech. These interviews were crucial for understanding strategic goals, operational pain points associated with current search processes, and specific requirements for an enterprise search solution.
+
+\begin{table}[H]
+\centering
+\caption{Product Manager Interview Summary - Requirements Discovery}
+\label{tab:pm_interview}
+\begin{tabularx}{\textwidth}{|l|c|X|}
+\hline
+\textbf{Role} & \textbf{Sessions} & \textbf{Key Information Gathered} \\ 
+\hline
+Product Manager & 3 & Current search workflows, pain points (fragmented systems, terminology variations), feature priorities, and success metrics for enterprise search.
+
+\textbf{Example Q:} ``Can you describe the current challenges your technical teams face when searching for internal documentation?''
+
+\textbf{Outcome:} Engineers spend 30-45 minutes daily searching across fragmented systems (Confluence, Google Drive, Git repositories, local shares). Existing keyword search misses conceptually related documents due to terminology variations. Critical visual information in charts and diagrams is not searchable, forcing manual document browsing. No unified interface, requiring context switching between multiple tools.
+
+\textbf{Example Q:} ``What types of queries do your teams typically need answers for?''
+
+\textbf{Outcome:} Technical how-to questions requiring code examples and architecture diagrams. Troubleshooting queries needing logs, error messages, and past incident reports. Policy and compliance questions requiring exact citations. Comparative analysis requiring synthesis across multiple technical specifications. This revealed need for both precise retrieval and intelligent summarization. \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Product Manager Interview Summary - Feature Priorities}
+\label{tab:pm_priorities}
+\begin{tabularx}{\textwidth}{|l|c|X|}
+\hline
+\textbf{Role} & \textbf{Sessions} & \textbf{Key Information Gathered} \\ 
+\hline
+Product Manager & (continued) & Feature prioritization and evaluation criteria.
+
+\textbf{Example Q:} ``If you had to prioritize three capabilities for the search system, what would they be?''
+
+\textbf{Outcome:} \textbf{Priority 1:} Multimodal search that can find documents based on visual content descriptions, not just text. \textbf{Priority 2:} Conversational interface where follow-up questions refine results without starting over. \textbf{Priority 3:} Source attribution with exact citations so answers can be verified and trusted. Additional need: Sub-second query response time for daily usage adoption.
+
+\textbf{Example Q:} ``How do you currently evaluate whether search results are relevant?''
+
+\textbf{Outcome:} Manual inspection of top 10 results for precision. User feedback on whether they found what they needed. Time to complete search task as efficiency metric. This informed our evaluation methodology using NDCG@10, MRR, and latency measurements. \\
+\hline
+\end{tabularx}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Technical Team Lead Interview Summary}
+\label{tab:tech_interview}
+\begin{tabularx}{\textwidth}{|l|c|X|}
+\hline
+\textbf{Role} & \textbf{Sessions} & \textbf{Key Information Gathered} \\ 
+\hline
+Technical Lead & 2 & Infrastructure requirements, data source integration, performance constraints.
+
+\textbf{Example Q:} ``What data sources need to be indexed, and what are the access patterns?''
+
+\textbf{Outcome:} Primary sources include Confluence (REST API access), Google Drive (Drive API), Git repositories (Git protocol), and local network shares (SMB/NFS). Documents range from technical specifications to incident reports, with many containing critical charts and diagrams.
+
+\textbf{Example Q:} ``What are the performance expectations for a production search system?''
+
+\textbf{Outcome:} P90 latency under 4 seconds from query to complete response. System must scale to 10 million document index. Must integrate with internal identity providers for access control. \\
+\hline
+\end{tabularx}
+\end{table}
+
+Interview protocols were developed to systematically explore:
+
+\begin{itemize}
+    \item Current search processes and challenges, specifically the fragmentation across multiple data sources (Confluence, Google Drive, Git, file shares).
+    \item Information retrieval patterns and the types of queries teams need answered.
+    \item Key metrics for search quality: \textbf{precision, recall, latency, and user satisfaction}.
+    \item Visual content requirements, particularly the need to search charts, diagrams, and architecture drawings.
+    \item Integration requirements with existing authentication and access control systems.
+\end{itemize}
+
+\subsection{Workflow Analysis}
+To gain deeper insights into Infinity Datatech's existing search processes, we conducted detailed observations and documentation of their current workflows:
+
+\begin{itemize}
+    \item \textbf{Process mapping}: Documented the end-to-end workflow from query formulation to answer discovery, revealing an average of 7 context switches per search session across different data sources. This highlighted the critical need for a unified search interface.
+    \item \textbf{Time-motion studies}: Measured time spent on search tasks to identify bottlenecks. Average search session: 12 minutes, with 60\% spent navigating between systems rather than evaluating content.
+    \item \textbf{Artifact analysis}: Examined search logs and user feedback to understand information needs. Found 40\% of queries require visual evidence and 65\% benefit from conversational refinement.
+    \item \textbf{Tool evaluation}: Assessed the current toolset (Confluence search, Google Drive search, file system grep) to find gaps. No system provided multimodal retrieval or intelligent ranking beyond keyword matching.
+\end{itemize}
+
+\subsection{Existing Product Analysis}
+Throughout the requirements gathering process, stakeholders at Infinity Datatech were presented with existing product demonstrations to establish benchmarks and identify desired features.
+\begin{itemize}
+    \item \textbf{Competitive solutions}: Showcased similar products in the market like \textbf{Google Enterprise Search}, \textbf{Elasticsearch}, and \textbf{Perplexity} to introduce key concepts and functionalities. This helped identify gaps in multimodal search and iterative refinement capabilities.
+    \item \textbf{Feature demonstrations}: Presented specific capabilities from established platforms to illustrate potential implementations for \textbf{hybrid retrieval combining BM25 and vector search}, and \textbf{RAG-based question answering with citations}.
+    \item \textbf{Use case scenarios}: Walked through real-world applications of similar systems to contextualize benefits (e.g., rapid document discovery, accurate answers with sources) and limitations (e.g., lack of visual content search, one-shot retrieval without refinement).
+\end{itemize}
+
+Each analysis session included guided demonstrations and semi-structured discussions to determine which features aligned with Infinity Datatech's needs. Key outcomes included the decision to implement multimodal reranking for visual content, iterative RAG for conversational refinement, and distributed crawling for comprehensive data source coverage.
+
+% ============================================================
+% CHAPTER 4: STAKEHOLDER COLLABORATION
+% ============================================================
+\chapter{Stakeholder Collaboration}
+
+To thoroughly understand Infinity Datatech's specific requirements and ensure the development of an effective enterprise search engine, close collaboration with company stakeholders was essential. This chapter details the collaborative relationship between the developer and Infinity Datatech, which formed the foundation for eliciting accurate requirements and maintaining alignment with the company's knowledge management goals throughout the project lifecycle.
+
+\section{Collaborative Background}
+
+The developer's relationship with Infinity Datatech began during the mid-semester break of Year 1 Semester 2 and has continued since then. Initially joining the backend development team, the developer has gained comprehensive knowledge of the company's systems by occasionally contributing to various projects as needed. This cross-functional experience provided valuable insights into various aspects of the company's operations, particularly regarding the challenges faced by technical teams in accessing internal documentation and knowledge resources.
+
+The established relationship facilitated open communication channels with key stakeholders, including technical leads and product managers, ensuring that requirements gathering was both thorough and accurate. Infinity Datatech has been exceptionally supportive throughout the project, providing access to data sources, documentation, and regular feedback sessions to guide the development process.
+
+\section{Stakeholder Introduction}
+
+\subsection{Company Background}
+\textbf{Infinity Data Tech Sdn. Bhd.} is a Malaysian company specializing in VPN and AI customer service products. The company focuses on:
+\begin{itemize}
+    \item Own application products and in-house development
+    \item Software development and network protocol research
+    \item VPN technical knowledge and censorship circumvention expertise
+\end{itemize}
+
+\subsection{Project Context}
+The search engine addresses critical needs within Infinity Datatech:
+\begin{itemize}
+    \item Internal knowledge base search for technical teams
+    \item Customer support documentation retrieval
+    \item Technical documentation spanning multiple data sources
+    \item Visual content (architecture diagrams, charts) that needs to be searchable
+\end{itemize}
+
+\section{Key Stakeholders}
+
+\begin{table}[H]
+\centering
+\caption{Key Project Stakeholders at Infinity Datatech}
+\label{tab:stakeholders}
+\begin{tabularx}{\textwidth}{|l|X|X|}
+\hline
+\textbf{Stakeholder} & \textbf{Role} & \textbf{Project Contribution} \\ 
+\hline
+Technical Lead & Senior Engineer & Specified data source requirements, performance constraints, defined integration patterns for Confluence, Google Drive, and Git repositories \\
+\hline
+Product Manager & Product Owner & Detailed current search workflows, identified pain points (fragmented systems, missing visual search), defined success metrics (NDCG, latency), and validated requirements \\
+\hline
+Backend Team & Development Team & Outlined infrastructure requirements, data processing needs, and integration capabilities with existing authentication systems \\
+\hline
+End Users & Engineering Teams & Provided feedback on search quality, usability, and feature priorities through user testing sessions \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Collaboration Documentation}
+
+Throughout the project, several formal and informal collaboration sessions were conducted to ensure that development remained aligned with stakeholder expectations. These sessions were documented through various means, including meeting minutes, email correspondences, and collaborative documents.
+
+\subsection{Collaboration Agreement}
+
+Infinity Datatech provided a formal collaboration agreement supporting the development of the enterprise search engine as part of this academic project. This agreement outlined the scope of collaboration, data access provisions, and confidentiality requirements for handling internal documentation. The collaboration letter formalized the partnership between the academic institution and the industry partner, establishing clear guidelines for intellectual property, data usage, and project deliverables.
+
+\begin{figure}[H]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[width=0.30\textwidth]{collab1.png} &
+\includegraphics[width=0.30\textwidth]{collab2.png} &
+\includegraphics[width=0.30\textwidth]{collab3.png} \\
+Page 1 & Page 2 & Page 3
+\end{tabular}
+\caption{Stakeholder Collaboration Agreement Letter from Infinity Datatech}
+\label{fig:collaboration_letter}
+\end{figure}
+
+\subsection{Initial Requirements Gathering Sessions}
+
+The initial requirements gathering process included structured meetings with various stakeholders to understand the current search pain points and identify opportunities for improvement. Key activities included:
+
+\begin{itemize}
+    \item Mapping the current information retrieval workflow across fragmented systems
+    \item Identifying the 7 average context switches per search session
+    \item Documenting the diverse types of information retrieval queries encountered by engineering teams, including technical how-to questions (e.g., "How to configure OAuth2 authentication in our API gateway?"), troubleshooting queries (e.g., "Why is the Redis cluster experiencing high memory usage?"), and policy-related questions (e.g., "What is the data retention policy for user analytics logs?")
+    \item Understanding the 40\% of queries requiring visual evidence
+\end{itemize}
+
+
+\subsection{System Architecture Review Meetings}
+
+The team conducted architecture review sessions to validate the proposed system design. Key discussion points included:
+
+\begin{itemize}
+    \item \textbf{Backend Pipeline}: The backend architecture comprises distributed web crawling with dedicated text and image extraction modules, dual indexing strategy utilizing inverted indices for BM25 keyword-based retrieval alongside Hierarchical Navigable Small World (HNSW) graphs for CLIP embedding-based semantic search, compressed document storage with incremental update capabilities, and a two-stage ranking pipeline that performs fast initial retrieval followed by multimodal learning-to-rank (LTR) reranking to optimize result relevance.
+    \item \textbf{Frontend Interface}: The user interface features a dual-panel design that simultaneously displays a ranked document list alongside an AI-powered conversational chat interface, enabling conversational query refinement through natural language interactions, providing real-time result updates as users explore search results, and implementing a closed-loop feedback system where user follow-up questions automatically trigger query rewriting and initiate new retrieval cycles to progressively refine search outcomes.
+\end{itemize}
+
+\subsection{Product Review Meeting}
+
+In-person product review meetings were conducted at Infinity Datatech's office to demonstrate the search engine prototype and gather direct feedback from stakeholders. These face-to-face sessions were crucial for validating the implemented features against the initial requirements and identifying areas for improvement.
+
+During these review sessions, the development team presented live demonstrations of the multimodal search capabilities, including:
+
+\begin{itemize}
+    \item \textbf{Search Interface Walkthrough}: Demonstrating the dual-panel UI with real-time search results and AI-powered chat interface
+    \item \textbf{Multimodal Retrieval Testing}: Showcasing the system's ability to retrieve documents based on both textual queries (e.g., searching for "microservices deployment architecture") and visual content such as architectural diagrams, performance charts, data flow graphs, and technical screenshots embedded within documentation
+    \item \textbf{Performance Metrics Review}: Presenting comprehensive performance analytics including sub-second query latency measurements (p50, p95, p99 percentiles), document indexing throughput rates, and retrieval quality metrics such as Normalized Discounted Cumulative Gain (NDCG) and Mean Reciprocal Rank (MRR) evaluated against ground-truth relevance judgments
+    \item \textbf{User Experience Feedback}: Gathering stakeholder input on interface usability, result relevance, and feature priorities for subsequent iterations
+\end{itemize}
+
+As shown in Figure~\ref{fig:product_review_meeting}, these collaborative sessions fostered direct communication between the developer and industry stakeholders, enabling immediate clarification of requirements and rapid iteration on the product design. The hands-on review approach proved invaluable for ensuring that the technical implementation aligned with the practical needs of end users within the organization.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{physicalpic.png}
+\caption{In-person Product Review Meeting with Infinity Datatech stakeholders discussing search engine features and user experience}
+\label{fig:product_review_meeting}
+\end{figure}
+
+\subsection{Meeting Appointments}
+
+Regular sync-up meetings were held with the industry collaborators throughout the development cycle. These meetings ensured continuous alignment between the search engine development and Infinity Datatech's evolving requirements. The project utilized Lark (Feishu) calendar for scheduling and coordinating meetings with stakeholders, including weekly progress reviews, technical discussions, and requirement clarification sessions.
+
+As shown in Figure~\ref{fig:meeting_appointments}, the team maintained a structured meeting schedule throughout December 2025, with dedicated time slots for FYP discussions and milestone reviews. This systematic approach to stakeholder communication ensured that development priorities remained aligned with business needs and that technical challenges were addressed promptly through collaborative problem-solving.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{FYPschedulescreenshot.png}
+\caption{Meeting Appointments Schedule in Lark Calendar showing regular FYP sync-up sessions}
+\label{fig:meeting_appointments}
+\end{figure}
+
+% ============================================================
+% CHAPTER 5: SYSTEM ANALYSIS AND DESIGN
+% ============================================================
+\input{chapter5}
+\input{chapter5_usecases_simple}
+\input{chapter5_continuation}
+
+% ============================================================
+% CHAPTER 6: IMPLEMENTATION
+% ============================================================
+\input{chapter6}
+
+% ============================================================
+% CHAPTER 7: CONCLUSION
+% ============================================================
+\input{chapter7_conclusion}
+
+% ============================================================
+% REFERENCES
+% ============================================================
+\clearpage
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% ============================================================
+% APPENDIX
+% ============================================================
+\appendix
+
+\chapter{Logbook}
+
+This appendix contains the project logbooks documenting the development timeline, activities, and progress throughout the project duration.
+
+\section*{WIA3002 Logbook (Semester 1)}
+\includepdf[pages=-]{logbook_sem1.pdf}
+
+\section*{WIB3002 Logbook (Semester 2)}
+\includepdf[pages=-]{logbook_sem2.pdf}
+
+\end{document}

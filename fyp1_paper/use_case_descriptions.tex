@@ -1,0 +1,1711 @@
+
+
+% Optional: Global smaller font and tighter line spacing for the entire document or section
+% \small
+% \linespread{0.95}\selectfont
+
+
+\subsection*{Module 1: Access Control System}
+\label{module:minipage:access_control}
+
+% --- UC-1: User Login/Registration ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: User Login/Registration (UC-1)}
+\end{center}
+\vspace{0.5ex} % Small space after title
+\small % Reduce font size for the content of this use case
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & User Login/Registration \\
+    \hline
+    Use Case ID & UC-1 \\
+    \hline
+    Description & This use case allows new users to create an account and existing users to authenticate, manage their session, and recover their password. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & User (prospective or registered), System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item For Registration: User does not have an existing account.
+            \item For Login: User has a registered account. System is operational.
+            \item For Password Recovery: User has a registered account and has forgotten their password.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Registration: A new user account is created and stored. The user might be automatically logged in.
+            \item Login: User is authenticated, and a session is established.
+            \item Password Recovery: User's password has been reset, or a recovery link has been sent.
+            \item Logout: User session is terminated.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item A new user navigates to the registration page and submits their details.
+            \item A registered user navigates to the login page and submits their credentials.
+            \item A registered user initiates a password recovery process.
+            \item An authenticated user initiates a logout.
+        \end{itemize}%
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item \textbf{Registration:} User provides necessary registration details (e.g., email, password) (FR-01-01). System validates the details and creates a new user account.
+            \item \textbf{Login:} User provides their credentials (e.g., email and password) (FR-01-02). System authenticates the user. Upon successful authentication, the system maintains a user session (FR-01-04).
+            \item \textbf{Password Recovery:} User indicates they have forgotten their password. System provides a mechanism for password recovery or reset (e.g., sends a reset link to the registered email) (FR-01-03). User follows the mechanism to reset their password.
+            \item \textbf{Logout:} User initiates the logout process. System terminates the user's session (FR-01-05).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item N/A based on provided FRs.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item \textbf{Registration:}
+                \setlist[itemize,2]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+                \begin{itemize}
+                    \item If email already exists: System informs the user and prevents duplicate registration.
+                    \item If validation fails (e.g., invalid email format, weak password): System displays an error message.
+                \end{itemize}
+            \item \textbf{Login:} If authentication fails (incorrect credentials): System displays an error message and denies access. (Relevant to FR-03-01 for logging).
+            \item \textbf{Password Recovery:} If the provided identifier (e.g., email) is not found: System informs the user.
+            \item \textbf{System Error:} If any system error occurs (e.g., database unavailable), the system displays a generic error message.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip % Vertical space between use cases
+
+% --- UC-2: Assign Role-Based Permissions ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Assign Role-Based Permissions (UC-2)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Assign Role-Based Permissions \\
+    \hline
+    Use Case ID & UC-2 \\
+    \hline
+    Description & This use case allows an Administrator to manage user roles, assign roles to users, specify application access for users/roles, and enforce these permissions. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & Administrator, System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Administrator is logged in and has permissions to manage roles and users.
+            \item Users and applications are registered in the system.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User roles are defined, modified, or deleted.
+            \item Users are assigned to or removed from roles.
+            \item Application access for users/roles is defined or modified.
+            \item Access control rules are updated and enforced.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        Administrator initiates an action to manage roles, user assignments, or application permissions.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item Administrator defines different user roles (e.g., Admin, Developer, Viewer) (FR-02-01).
+            \item Administrator selects a user and assigns one or more defined roles to that user (FR-02-02).
+            \item Administrator specifies which registered applications a user (or a role) has access to (FR-02-03).
+            \item System enforces access control based on the newly assigned roles and application permissions when users attempt to access resources (FR-02-04).
+            \item Administrator modifies or revokes existing user roles or application access for a user/role (FR-02-05).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Administrator modifies an existing role definition instead of creating a new one.
+            \item Administrator views current role assignments before making changes.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the Administrator attempts to assign a non-existent role or user: System displays an error.
+            \item If the Administrator attempts to assign permissions for a non-existent application: System displays an error.
+            \item If a conflict arises in permission assignment: System may prompt for clarification or follow a predefined resolution rule.
+            \item If the Administrator lacks sufficient privileges for an action: System denies the action and displays an error.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-3: Audit Access Events ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Audit Access Events (UC-3)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Audit Access Events \\
+    \hline
+    Use Case ID & UC-3 \\
+    \hline
+    Description & This use case ensures that significant access-related events are logged and provides authorized personnel with the ability to review these logs. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & System, Authorized Personnel (e.g., Administrator) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item The system is operational and configured for logging.
+            \item For viewing logs: Authorized personnel is logged in and has appropriate permissions.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Relevant access events are recorded in the audit log.
+            \item Authorized personnel can view and search audit logs.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item A user attempts to log in.
+            \item An administrator changes user roles or permissions.
+            \item A significant access event (e.g., API key generation) occurs.
+            \item Authorized personnel requests to view audit logs.
+        \end{itemize}%
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item System logs all user login attempts (successful and unsuccessful) with timestamps and user identifiers (FR-03-01).
+            \item System logs all changes to user roles and permissions, including the administrator performing the change, the user affected, and the timestamp (FR-03-02).
+            \item System logs significant access events, such as API key generation or application registration, with user identifiers and timestamps (FR-03-03).
+            \item Authorized personnel access the audit log interface.
+            \item System provides the ability to view and search audit logs based on specified criteria (e.g., date range, user, event type) (FR-03-04).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Authorized personnel exports a subset of the audit log.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If logging fails (e.g., disk full, database error): System may attempt to buffer logs or notify an administrator of the logging failure.
+            \item If unauthorized personnel attempts to access audit logs: System denies access.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\subsection*{Module 2: App Registration System}
+\label{module:minipage:app_registration}
+
+% --- UC-4: Register New Application ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Register New Application (UC-4)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Register New Application \\
+    \hline
+    Use Case ID & UC-4 \\
+    \hline
+    Description & Allows authorized users to register new applications on the platform by providing necessary metadata. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & Authorized User (e.g., Developer, Administrator) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and has authorization to register applications.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item A new application is registered in the system with its metadata and description stored.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        An authorized user initiates the new application registration process.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item Authorized user accesses the application registration interface (FR-04-01).
+            \item User provides essential metadata for the new application (e.g., application name, platform type) (FR-04-02).
+            \item User optionally provides a description for the registered application (FR-04-03).
+            \item User submits the registration details.
+            \item System validates the provided information.
+            \item System stores and manages the metadata and description for the newly registered application (FR-04-04).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User edits the metadata of an already registered application.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If required metadata is missing or invalid (e.g., application name already exists): System displays an error message and prevents registration.
+            \item If the user is not authorized to register applications: System denies access.
+            \item If a system error occurs during storage: System displays an error message.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-5: Generate API Keys ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Generate API Keys (UC-5)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Generate API Keys \\
+    \hline
+    Use Case ID & UC-5 \\
+    \hline
+    Description & Allows authorized users to generate, view, copy, revoke, and regenerate API keys for registered applications. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & Authorized User (e.g., Developer, Administrator), System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and has authorization to manage API keys for the specific application.
+            \item The application is already registered in the system.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item A new unique API key is generated and securely stored for an application.
+            \item An existing API key is revoked or regenerated.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        An authorized user initiates an API key management action for a registered application.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item \textbf{Generation:}
+                \setlist[enumerate,2]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+                \begin{enumerate}
+                    \item Authorized user selects a registered application.
+                    \item User requests to generate a new API key.
+                    \item System generates a unique API key for the application (FR-05-01).
+                    \item System securely stores the generated API key (FR-05-02).
+                \end{enumerate}
+            \item \textbf{View/Copy:}
+                 \setlist[enumerate,2]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+                \begin{enumerate}
+                    \item Authorized user requests to view API keys for a specific application.
+                    \item System displays the API key(s).
+                    \item User copies the API key for use (FR-05-03).
+                \end{enumerate}
+            \item \textbf{Revoke/Regenerate:}
+                 \setlist[enumerate,2]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+                \begin{enumerate}
+                    \item Authorized user selects an existing API key for an application.
+                    \item User requests to revoke the API key or regenerate it.
+                    \item System revokes the old key (making it invalid) and/or generates a new unique API key (FR-05-04). The new key is securely stored.
+                \end{enumerate}
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User views the list of existing API keys for an application before deciding to generate a new one or revoke an old one.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the user is not authorized to manage API keys for the selected application: System denies access.
+            \item If an error occurs during secure generation or storage of the API key: System displays an error message.
+            \item If an attempt is made to use a revoked API key: The system (or client SDK) should reject the request.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-6: Track Application Versions ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Track Application Versions (UC-6)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Track Application Versions \\
+    \hline
+    Use Case ID & UC-6 \\
+    \hline
+    Description & Allows users to define, manage, and view multiple versions for each registered application, and enables targeting of feature flags/experiments to specific versions. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Developer, Product Manager) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and has appropriate permissions for the application.
+            \item The application is registered in the system.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item New application versions are defined and stored.
+            \item Existing application versions are managed (e.g., details updated, archived).
+            \item Feature flags and experiments can be associated with specific versions.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User initiates an action to manage application versions.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User selects a registered application.
+            \item User defines a new version for the application, providing necessary details (e.g., version number/name) (FR-06-01).
+            \item System stores the new version information.
+            \item User (or another process, see UC-7, UC-12) targets feature flags or experiments to a specific application version (FR-06-02).
+            \item User accesses an interface to view and manage the different versions of the application (e.g., list versions, view details, edit, archive) (FR-06-03).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User edits the details of an existing application version.
+            \item User archives an old application version.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the user attempts to create a version that already exists or uses an invalid format: System displays an error.
+            \item If the user lacks permission to manage versions for the application: System denies the action.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\subsection*{Module 3: Feature Flag Management System}
+\label{module:minipage:feature_flag_management}
+
+% --- UC-7: Create Feature Flag ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Create Feature Flag (UC-7)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Create Feature Flag \\
+    \hline
+    Use Case ID & UC-7 \\
+    \hline
+    Description & Allows authorized users to define new feature flags for specific applications (and optionally versions), including type, default value, description, and variations. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & Authorized User (e.g., Developer, Product Manager) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and has authorization to manage feature flags for the selected application.
+            \item The application (and optionally version) exists in the system.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item A new feature flag is created and stored with its configuration.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        An authorized user initiates the creation of a new feature flag.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item Authorized user selects an application (and optionally a specific application version) to create a feature flag for (FR-07-01).
+            \item User specifies a unique key or name for the feature flag within that application (FR-07-02).
+            \item User defines the type of the feature flag (e.g., boolean, string, number, JSON) (FR-07-03).
+            \item User sets a default value for the feature flag (FR-07-04).
+            \item User provides a description for the feature flag (FR-07-05).
+            \item User defines variations for the feature flag (e.g., "on"/"off", "blue"/"green"/"red") (FR-07-06).
+            \item User submits the feature flag definition.
+            \item System validates and stores the new feature flag.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User creates a feature flag without specifying variations if only a simple on/off (boolean) with a default is needed.
+            \item User edits an existing feature flag's definition.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the feature flag key/name is not unique within the application: System displays an error.
+            \item If required fields are missing or invalid: System displays an error.
+            \item If the user is not authorized: System denies access.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-8: Toggle Feature Flag State ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Toggle Feature Flag State (UC-8)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Toggle Feature Flag State \\
+    \hline
+    Use Case ID & UC-8 \\
+    \hline
+    Description & Allows authorized users to enable or disable a feature flag for a specific application and version, with changes reflected in client SDKs. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & Authorized User (e.g., Developer, Product Manager, Release Manager) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized to manage the specific feature flag.
+            \item The feature flag is already created for the specified application and version.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item The state of the feature flag (enabled/disabled or specific variation) is updated.
+            \item Client SDKs receive the updated flag state.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        An authorized user initiates an action to change the state of a feature flag.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item Authorized user selects a feature flag for a specific application and version.
+            \item User chooses to enable (turn ON) the feature flag (FR-08-01) or disable (turn OFF) the feature flag, which might revert to its default state or a specified "off" variation (FR-08-02).
+            \item User confirms the change.
+            \item System updates the state of the feature flag.
+            \item System ensures the change in flag state is reflected to the client SDKs in near real-time or upon next evaluation (FR-08-03).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User toggles the flag to a specific variation instead of a simple ON/OFF.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the user is not authorized: System denies the action.
+            \item If the feature flag, application, or version does not exist: System displays an error.
+            \item If the system fails to propagate the change to client SDKs: An error might be logged, or a retry mechanism initiated.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-9: Configure Percentage Rollout ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Configure Percentage Rollout (UC-9)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Configure Percentage Rollout \\
+    \hline
+    Use Case ID & UC-9 \\
+    \hline
+    Description & Allows users to roll out a feature flag to a specific percentage of users for a given application version and manage this percentage. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Developer, Product Manager, Release Manager) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized.
+            \item The feature flag is created for the specified application and version.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item The feature flag is configured for percentage-based rollout.
+            \item Rollout percentage is updated.
+            \item Users are consistently assigned to rollout groups.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User initiates configuration or modification of a percentage rollout for a feature flag.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User selects a feature flag and a specific application version.
+            \item User configures the feature flag to be rolled out to a specific percentage of users (e.g., 10\%) (FR-09-01).
+            \item User gradually increases or decreases the rollout percentage over time as needed (FR-09-02).
+            \item System ensures consistent assignment of users to the rollout group (a user consistently sees the feature or not based on the percentage, unless the percentage changes) (FR-09-03).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User removes the percentage rollout configuration, reverting to a different targeting method or a simple ON/OFF state.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the user enters an invalid percentage (e.g., <0 or >100, or non-numeric): System displays an error.
+            \item If the user is not authorized: System denies the action.
+            \item If the underlying mechanism for consistent user assignment fails: System might log an error or behave unpredictably for some users.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-10: Set User Targeting Rules ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Set User Targeting Rules (UC-10)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Set User Targeting Rules \\
+    \hline
+    Use Case ID & UC-10 \\
+    \hline
+    Description & Allows users to define targeting rules based on user attributes, create user segments, assign flag variations to segments, and manage rule precedence. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Product Manager, Marketer) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized.
+            \item The feature flag is created.
+            \item User attributes are available or can be defined.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Targeting rules and user segments are created or updated for a feature flag.
+            \item Specific flag variations are assigned to segments.
+            \item Rule precedence is defined.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User initiates the configuration or modification of user targeting rules for a feature flag.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User selects a feature flag.
+            \item User defines targeting rules based on user attributes (e.g., user ID, location, device type, custom attributes) (FR-10-01).
+            \item User creates user segments by combining one or more targeting rules (FR-10-02).
+            \item User assigns specific feature flag variations or configurations (ON/OFF, specific value) to the defined user segments (FR-10-03).
+            \item User defines the order of precedence if multiple targeting rules are applied to a single flag (FR-10-04).
+            \item System saves the targeting rules and their configuration.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User modifies an existing targeting rule or segment.
+            \item User deletes a targeting rule or segment.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If attribute definitions are invalid or missing: System displays an error.
+            \item If rule logic is contradictory or impossible to satisfy: System may warn the user or prevent saving.
+            \item If the user is not authorized: System denies the action.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-11: Schedule Flag Activation ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Schedule Flag Activation (UC-11)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Schedule Flag Activation \\
+    \hline
+    Use Case ID & UC-11 \\
+    \hline
+    Description & Allows users to schedule changes to a feature flag (enable/disable, rollout percentage, targeting rule application) for a future date and time. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Release Manager, Product Manager), System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized.
+            \item The feature flag is created.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item A feature flag change is scheduled.
+            \item The scheduled change is automatically applied at the specified time.
+            \item Scheduled activations can be viewed, modified, or canceled.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User initiates scheduling of a feature flag change.
+            \item The scheduled date and time for a flag activation arrives.
+        \end{itemize}%
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User selects a feature flag.
+            \item User chooses an action to schedule (e.g., enable, disable, change rollout percentage, apply targeting rule) and specifies a future date and time for this action (FR-11-01).
+            \item System stores the scheduled activation.
+            \item At the specified date and time, the System automatically applies the scheduled changes to the feature flag (FR-11-02).
+            \item User views a list of currently scheduled flag activations.
+            \item User modifies the date/time or action of a pending scheduled activation, or cancels it (FR-11-03).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User schedules a sequence of changes for a flag (e.g., increase rollout by 10\% every day for 5 days).
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the user provides an invalid date/time (e.g., in the past): System displays an error.
+            \item If the system fails to apply a scheduled change (e.g., due to a system outage at the scheduled time): The change may be missed or retried. An alert might be generated.
+            \item If conflicting schedules are created: The system might warn the user or follow a specific precedence rule.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\subsection*{Module 4: Experiment Management System}
+\label{module:minipage:experiment_management}
+
+% --- UC-12: Create A/B Test Experiment ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Create A/B Test Experiment (UC-12)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Create A/B Test Experiment \\
+    \hline
+    Use Case ID & UC-12 \\
+    \hline
+    Description & Allows users to define A/B test experiments using feature flags, specifying target application/versions, metrics, and hypotheses. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Product Manager, Data Analyst, Developer) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized.
+            \item Relevant feature flags and their variations are created.
+            \item The target application (and versions) exists.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item An A/B test experiment definition is created and stored.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User initiates the creation of a new A/B test experiment.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User accesses the experiment creation interface.
+            \item User defines the A/B test experiment, selecting one or more feature flags and their variations to be part of the experiment (FR-12-01).
+            \item User specifies the target application and version(s) for the experiment (FR-12-02).
+            \item User defines primary and secondary metrics to be tracked for the experiment (e.g., conversion rate, click-through rate) (FR-12-03). These metrics might be pre-defined or custom.
+            \item User defines the hypothesis for the experiment (FR-12-04).
+            \item User saves the experiment definition.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User creates a multivariate test instead of a simple A/B test, involving multiple feature flags and their combinations.
+            \item User bases the experiment on existing metrics rather than defining new ones.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If selected feature flags or variations do not exist: System displays an error.
+            \item If specified metrics are not defined or trackable: System displays an error.
+            \item If the user lacks authorization: System denies access.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-13: Manage Experiment Lifecycle ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Manage Experiment Lifecycle (UC-13)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Manage Experiment Lifecycle \\
+    \hline
+    Use Case ID & UC-13 \\
+    \hline
+    Description & Allows users to control the lifecycle of an A/B test experiment (start, pause, stop, schedule, archive, delete) and view its status. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Product Manager, Data Analyst) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized.
+            \item An A/B test experiment definition exists.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item The state of an experiment is updated (e.g., started, paused, stopped, archived).
+            \item The experiment's start/end times are scheduled or modified.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User initiates an action to change an experiment's state or schedule.
+            \item A scheduled start/end time for an experiment arrives.
+        \end{itemize}%
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User selects a defined experiment.
+            \item System displays the current status of the experiment (e.g., draft, running, paused, completed) (FR-13-05).
+            \item User starts a defined experiment (FR-13-01). The experiment becomes active.
+            \item User pauses an ongoing experiment (FR-13-02). Data collection for the experiment might temporarily halt.
+            \item User stops an ongoing experiment (FR-13-02). The experiment concludes.
+            \item User schedules the start and end times for an experiment (FR-13-03). System will automatically start/stop the experiment at these times.
+            \item User archives a completed experiment for record-keeping or deletes it if no longer needed (FR-13-04).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User resumes a paused experiment.
+            \item User modifies the scheduled start/end times of an experiment.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If an attempt is made to start an improperly configured experiment: System displays an error.
+            \item If an action is invalid for the current experiment state (e.g., pausing a completed experiment): System displays an error.
+            \item If the system fails to automatically start/stop a scheduled experiment: An alert might be generated.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-14: Configure Traffic Allocation ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Configure Traffic Allocation (UC-14)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Configure Traffic Allocation \\
+    \hline
+    Use Case ID & UC-14 \\
+    \hline
+    Description & Allows users to define the percentage of eligible users for an experiment and distribute them among experiment variations consistently. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Product Manager, Data Analyst) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized.
+            \item An A/B test experiment is defined.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Traffic allocation percentages for the experiment and its variations are set or updated.
+            \item Users are consistently assigned to experiment variations.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User initiates configuration or modification of traffic allocation for an experiment.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User selects an experiment.
+            \item User defines the percentage of total eligible users to be included in the experiment (e.g., 50\%) (FR-14-01).
+            \item User distributes the included users among the different variations of the experiment (e.g., for a two-variation experiment, 50\% of the included traffic to variation A, 50\% to variation B) (FR-14-02).
+            \item System ensures consistent assignment of a user to a specific experiment variation for the duration of their participation (FR-14-03).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User adjusts traffic allocation for an ongoing experiment.
+            \item User allocates 100\% of traffic to a winning variation after an experiment concludes but before full rollout.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If allocation percentages do not sum up correctly (e.g., variation percentages do not sum to 100\% of the included traffic): System displays an error.
+            \item If the user enters invalid percentage values (e.g., <0 or >100): System displays an error.
+            \item If consistent assignment mechanism fails: Experiment results may be skewed; system might log an error.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\subsection*{Module 5: Client SDK Framework}
+\label{module:minipage:client_sdk_framework}
+
+% --- UC-15: Evaluate Feature Flag State ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Evaluate Feature Flag State (UC-15)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Evaluate Feature Flag State \\
+    \hline
+    Use Case ID & UC-15 \\
+    \hline
+    Description & Details how the client SDK fetches flag configurations, evaluates them for the current user, provides an API for the application to check flag states, and handles defaults. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & Client SDK, Application Code \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Client SDK is initialized within the client application.
+            \item Application has network connectivity (for fetching updates).
+            \item API key for the application is configured in the SDK.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item The application receives the correct state (or variation) of a feature flag for the current user context.
+            \item Default values are used if the platform is unreachable or a flag is undefined.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Application startup or SDK initialization.
+            \item Application code requests the state of a specific feature flag.
+            \item SDK periodically fetches updates or receives real-time updates.
+        \end{itemize}%
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item Client SDK provides a mechanism to fetch current configurations of all relevant feature flags for the application and user at runtime (e.g., on initialization, periodically, or via real-time updates) (FR-15-01).
+            \item Client SDK evaluates targeting rules locally (using fetched rules and user attributes) or fetches already evaluated flags from the backend to determine the correct variation for the current user (FR-15-02).
+            \item Application code uses a simple API provided by the client SDK to check the state (e.g., ON/OFF, specific value) of a feature flag (FR-15-03).
+            \item The SDK returns the determined state/variation to the application.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item SDK uses a cached version of flag configurations if the backend is temporarily unreachable, then updates when connectivity is restored.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the platform is unreachable and no cache exists, or a specific flag is not defined and no default is set in the configuration: Client SDK handles this by providing a pre-defined default value (e.g., 'false' for boolean, or a developer-specified default in code) (FR-15-04).
+            \item If API key is invalid: SDK fails to fetch configurations and may return defaults for all flags.
+            \item If local evaluation of targeting rules encounters an error: SDK may fall back to a default value.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-16: Track User Interaction Events ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Track User Interaction Events (UC-16)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Track User Interaction Events \\
+    \hline
+    Use Case ID & UC-16 \\
+    \hline
+    Description & Describes how the client SDK captures and sends user interaction events, associates them with flags/experiments, and batches them efficiently. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & Client SDK, Application Code \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Client SDK is initialized.
+            \item Feature flags have been evaluated, and the user is potentially exposed to certain variations/experiments.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User interaction events are captured and sent to the backend.
+            \item Events are associated with relevant flags and experiment variations.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User interacts with the application (e.g., clicks, views a page).
+            \item Application code explicitly calls the SDK's event tracking API.
+        \end{itemize}%
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item Application code uses an API provided by the client SDK to capture user interaction events (e.g., clicks, page views, form submissions) (FR-16-01).
+            \item Application code sends custom event data relevant to feature usage and experiment metrics via the SDK's API (FR-16-02).
+            \item Client SDK automatically or with developer assistance associates these tracked events with the relevant feature flags and experiment variations the user was exposed to at the time of the event (FR-16-03).
+            \item Client SDK efficiently batches event data (e.g., groups multiple events, compresses data) and transmits it to the backend system to minimize performance impact on the client application (FR-16-04).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item SDK stores events locally if the device is offline and sends them when connectivity is restored.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the backend is unreachable for event submission: SDK may queue events or discard them after a certain threshold/time to prevent excessive local storage usage.
+            \item If event data is malformed: Backend might reject the events, and SDK might log an error.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\subsection*{Module 6: Analytics Engine}
+\label{module:minipage:analytics_engine}
+
+% --- UC-17: Process Real-Time Metrics ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Process Real-Time Metrics (UC-17)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Process Real-Time Metrics \\
+    \hline
+    Use Case ID & UC-17 \\
+    \hline
+    Description & The system ingests event data from client SDKs, processes it to calculate metrics for flags/experiments, calculates statistical significance, and provides a way to view these insights. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & System, User (e.g., Data Analyst, Product Manager) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Event data is being sent by client SDKs.
+            \item Metrics and experiments are defined in the system.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Metrics for feature flags and experiments are updated in near real-time.
+            \item Statistical significance for A/B tests is calculated.
+            \item Users can view processed metrics and insights.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Event data arrives from client SDKs.
+            \item User requests to view analytics dashboard or API.
+        \end{itemize}%
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item System ingests and processes event data sent by client SDKs in near real-time (FR-17-01).
+            \item System calculates and updates metrics (e.g., conversion rates, event counts) associated with feature flags and experiments based on the processed event data (FR-17-02).
+            \item For A/B test experiments, the system calculates statistical significance for the results (e.g., p-values, confidence intervals) (FR-17-04).
+            \item System provides a dashboard or an API endpoint where authorized users can view the processed metrics, insights related to feature flag performance, and experiment results, including statistical significance (FR-17-03).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item System performs batch processing for certain complex metrics or historical data analysis in addition to real-time processing.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If event data is malformed or cannot be processed: System may discard the data and log an error, or place it in a dead-letter queue for investigation.
+            \item If there's a high volume of data causing processing delays: Metrics may not be "near real-time" temporarily. System might scale resources or queue data.
+            \item If calculation of statistical significance encounters issues (e.g., insufficient data): System indicates this in the results.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\subsection*{Module 7: Anomaly Detection and Alert System}
+\label{module:minipage:anomaly_detection_alert}
+
+% --- UC-18: Configure Anomaly Detection Rules ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Configure Anomaly Detection Rules (UC-18)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Configure Anomaly Detection Rules \\
+    \hline
+    Use Case ID & UC-18 \\
+    \hline
+    Description & Allows users to select metrics for anomaly monitoring, define custom thresholds, associate rules with feature flags for auto-disable, and set notification preferences. \\
+    \hline
+    Priority & Medium \\
+    \hline
+    Actor & User (e.g., Administrator, SRE, Developer) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized.
+            \item Metrics (system-defined or custom) are available in the system.
+            \item Feature flags are defined.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Anomaly detection rules are configured and stored.
+            \item Feature flags are designated for auto-disable upon rule breach.
+            \item Notification preferences are set.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User initiates the configuration or modification of anomaly detection rules.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User selects specific metrics (system-defined or custom) to monitor for anomalies (FR-18-01).
+            \item User defines custom thresholds for these selected metrics that would indicate anomalous behavior (e.g., static values, percentage changes from baseline, standard deviations) (FR-18-02).
+            \item User associates specific feature flags with these anomaly detection rules, designating them for automatic disabling if the rule's threshold is breached (FR-18-03).
+            \item User configures notification preferences (e.g., email, Slack) for when anomalies are detected or when designated flags are auto-disabled (FR-18-04).
+            \item System saves the anomaly detection rule configuration.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User modifies an existing anomaly detection rule.
+            \item User tests an anomaly detection rule with historical data (if supported).
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If selected metrics are not suitable for anomaly detection or thresholds are illogical: System may provide a warning or prevent saving the rule.
+            \item If the user lacks authorization: System denies access.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-19: Monitor and Auto-Disable Feature Flags ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Monitor and Auto-Disable Feature Flags (UC-19)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Monitor and Auto-Disable Feature Flags \\
+    \hline
+    Use Case ID & UC-19 \\
+    \hline
+    Description & The system continuously monitors metrics against defined thresholds, auto-disables designated flags if breached, logs these events, and sends alerts. \\
+    \hline
+    Priority & High (for system stability if critical flags are monitored) \\
+    \hline
+    Actor & System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Anomaly detection rules are configured and active (UC-18).
+            \item Metrics are being processed by the analytics engine (UC-17).
+            \item Feature flags are active and associated with anomaly rules.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Metrics are continuously monitored.
+            \item Designated feature flags are automatically disabled if associated metric thresholds are breached.
+            \item Auto-disable events are logged.
+            \item Alerts are sent to configured recipients.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        A monitored metric breaches its defined anomaly detection threshold.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item System continuously monitors the configured metrics against their defined anomaly detection thresholds (FR-19-01).
+            \item If a monitored metric associated with a designated feature flag breaches its acceptable range (as per configured rules), the System automatically disables the feature flag (or reverts it to a predefined safe state) (FR-19-02).
+            \item System logs all auto-disable events, including details like the metric involved, the threshold that was breached, and the specific feature flag that was disabled (FR-19-03).
+            \item System sends alerts to the configured recipients (as set in FR-18-04) notifying them that a feature flag has been auto-disabled due to an anomaly (FR-19-04).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item System might have a "cool-down" period before a flag can be auto-disabled again.
+            \item System might attempt a partial rollback or a less severe safe state before full disablement, depending on configuration.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the system fails to disable a flag when an anomaly is detected: This is a critical failure; an escalated alert should be generated.
+            \item If alerting fails: The auto-disable still occurs, but stakeholders might not be immediately aware. Logging is critical.
+            \item If multiple anomalies occur simultaneously: System processes them based on priority or order of detection.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\subsection*{Module 8: AI-Driven Insights Platform}
+\label{module:minipage:ai_driven_insights}
+
+% --- UC-20: Generate Natural Language Insights ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Generate Natural Language Insights (UC-20)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Generate Natural Language Insights \\
+    \hline
+    Use Case ID & UC-20 \\
+    \hline
+    Description & Allows users to query their data (analytics, experiment results) using plain English, with the system translating this to a data query, executing it, and presenting results with visualizations. \\
+    \hline
+    Priority & Medium (can be High depending on strategic importance) \\
+    \hline
+    Actor & User (e.g., Product Manager, Marketer, Business Analyst) \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is logged in and authorized to access the data.
+            \item Analytics data and experiment results are available in a queryable data store.
+            \item The AI model for NLQ to SQL (or other query language) is trained and operational.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User receives an answer to their natural language query, potentially with data visualizations.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User inputs a natural language query into the system.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User accesses the AI-driven insights interface.
+            \item User inputs a query about their data in plain English (e.g., "Show me conversion rates for feature X in the last week for users in USA") (FR-20-01).
+            \item System parses the natural language query and translates it into an appropriate SQL query (or other data query language) (FR-20-02).
+            \item System executes the generated SQL query against the relevant data store (e.g., analytics data warehouse, experiment results database) (FR-20-03).
+            \item System retrieves the query results.
+            \item System presents the results of the query to the user, including appropriate data visualizations (e.g., charts, graphs, tables) where applicable (FR-20-04).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the natural language query is ambiguous, the system may provide suggestions or ask for clarification from the user (FR-20-05). User refines the query.
+            \item User iteratively refines their query based on initial results.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If the system cannot parse the natural language query or translate it into a valid data query: System informs the user and may suggest rephrasing.
+            \item If the generated data query results in an error during execution (e.g., timeout, syntax error not caught by translation): System displays an error message.
+            \item If the user's query attempts to access data they are not authorized to view: System denies the request or returns no results.
+            \item If no data matches the query: System presents an empty result set or a "no data found" message.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip

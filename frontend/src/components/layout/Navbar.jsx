@@ -273,6 +273,7 @@ const Navbar = ({ initialQuery = '' }) => {
                                 onClose={handleClose}
                             >
                                 <MenuItem onClick={() => { navigate('/history'); handleClose(); }}>Search History</MenuItem>
+                                <MenuItem onClick={() => { navigate('/settings'); handleClose(); }}>Settings</MenuItem>
                                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
                         </>

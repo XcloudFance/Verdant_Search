@@ -1,0 +1,261 @@
+\chapter{Literature Review}
+
+\section{Search Engine Fundamentals and Architecture}
+
+Modern information retrieval systems build upon decades of innovation. PageRank \cite{page1999pagerank} revolutionized web search by treating hyperlinks as quality indicators, establishing that relevance extends beyond textual matching. Brin and Page \cite{brin1998anatomy} formalized the tripartite architecture—crawlers, indexers, and query processors—that remains fundamental today.
+
+The evolution from keyword matching to semantic understanding marks a critical transition. Early systems relied on lexical overlap \cite{baeza1999modern}, but neural approaches demonstrated that semantic comprehension yields superior retrieval \cite{mitra2017neural}. Dense Passage Retrieval \cite{karpukhin2020dense} showed BERT-based encoders capture semantic similarity in vector space, enabling relevant retrieval despite zero lexical overlap. This necessitated multi-stage pipelines where fast retrievers cast a wide net and slower rerankers refine results \cite{nogueira2019passage}.
+
+Table \ref{tab:search_evolution} summarizes the key paradigm shifts in search engine development.
+
+\begin{table}[h]
+\centering
+\caption{Evolution of Search Engine Paradigms}
+\label{tab:search_evolution}
+\begin{tabular}{llll}
+\toprule
+\textbf{Era} & \textbf{Method} & \textbf{Key Innovation} & \textbf{Limitation} \\
+\midrule
+1990s & Keyword Match & TF-IDF, BM25 & Lexical gap \\
+2000s & Link Analysis & PageRank & Structure-only \\
+2010s & Neural IR & BERT, Dense Retrieval & Computational cost \\
+2020s & LLM-based & Zero-shot ranking & Efficiency challenges \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Keyword-Based Search Methods}
+
+Inverted indexes enable efficient keyword search at web scale \cite{zobel2006inverted}. By maintaining posting lists mapping terms to documents, they reduce search space from entire corpus to relevant candidates. This sparsity is critical for billion-scale collections with subsecond latency.
+
+Term weighting determines keyword influence on relevance. TF-IDF \cite{sparck1972statistical, salton1975vector} balances term frequency against inverse document frequency, identifying discriminative terms. Salton and Buckley \cite{salton1988term} established that length normalization and frequency transformations significantly impact effectiveness.
+
+BM25 \cite{robertson1994okapi, robertson2009probabilistic} emerged as the dominant probabilistic framework, introducing saturation functions and document length normalization:
+
+\begin{equation}
+\text{BM25}(q, d) = \sum_{t \in q} \text{IDF}(t) \cdot \frac{f(t, d) \cdot (k_1 + 1)}{f(t, d) + k_1 \cdot (1 - b + b \cdot \frac{|d|}{\text{avgdl}})}
+\end{equation}
+
+Despite neural advances, BM25 remains competitive on many benchmarks \cite{lin2021pretrained}. Contriever \cite{izacard2022unsupervised} demonstrates unsupervised contrastive learning can approach supervised neural retrieval, suggesting the classical-neural dichotomy is less stark than perceived.
+
+\section{Vector Search and Neural Retrieval}
+
+Dense vector representations enable semantic search transcending keyword matching. Early embeddings (Word2Vec \cite{mikolov2013efficient}, GloVe \cite{pennington2014glove}) captured word-level semantics. Transformers \cite{vaswani2017attention} elevated representation learning through self-attention, culminating in BERT \cite{devlin2019bert} with superior contextualized embeddings.
+
+Sentence-BERT \cite{reimers2019sentence} adapted BERT for semantic similarity via siamese networks, enabling efficient similarity computation. ColBERT \cite{khattab2020colbert} refined this with late interaction—independent encoding but fine-grained token-level comparisons.
+
+\begin{table}[h]
+\centering
+\caption{Approximate Nearest Neighbor Algorithms Comparison}
+\label{tab:ann_comparison}
+\begin{tabular}{llll}
+\toprule
+\textbf{Algorithm} & \textbf{Index Structure} & \textbf{Query Complexity} & \textbf{Trade-off} \\
+\midrule
+PQ \cite{jegou2011product} & Codebooks & O(N) & Memory vs. accuracy \\
+HNSW \cite{malkov2018efficient} & Proximity graphs & O(log N) & Build time vs. query \\
+IVF & Inverted file & O(N/k) & Partitions vs. recall \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+ANN algorithms make dense retrieval tractable at scale (Table \ref{tab:ann_comparison}). Product Quantization \cite{jegou2011product} compresses vectors via learned codebooks. HNSW \cite{malkov2018efficient} constructs multi-layer proximity graphs enabling logarithmic search. ANCE \cite{xiong2021approximate} demonstrated iterative hard negative mining substantially improves retrieval quality. BEIR \cite{thakur2021beir} revealed MS MARCO-optimized models often struggle out-of-domain, highlighting generalization challenges.
+
+\section{Learning-to-Rank Approaches}
+
+Learning-to-Rank formulates ranking as supervised learning on query-document relevance judgments \cite{liu2009learning}. Three paradigms emerged based on learning signal granularity: pointwise (independent relevance prediction), pairwise (relative preferences), and listwise (direct metric optimization).
+
+\begin{table}[h]
+\centering
+\caption{Learning-to-Rank Paradigms Comparison}
+\label{tab:ltr_paradigms}
+\small
+\begin{tabular}{lllll}
+\toprule
+\textbf{Paradigm} & \textbf{Method} & \textbf{Loss} & \textbf{Strength} & \textbf{Weakness} \\
+\midrule
+Pointwise & Regression & MSE & Simple & Ignores order \\
+Pairwise & RankNet \cite{burges2005learning} & Pairwise CE & Relative & Quadratic pairs \\
+ & LambdaRank \cite{burges2006learning} & NDCG gradient & Direct metric & Complex \\
+ & LambdaMART \cite{burges2010ranknet} & Boosted trees & Robust & Feature eng. \\
+Listwise & ListNet \cite{cao2007learning} & Top-one prob. & Full list & Permutation cost \\
+ & ListMLE \cite{xia2008listwise} & MLE & Principled & Computational \\
+\midrule
+\multicolumn{5}{l}{\textit{LLM-based Zero-shot (no training data required)}} \\
+Listwise & RankGPT \cite{sun2023chatgpt} & Generation & Zero-shot & Cost, latency \\
+ & RankZephyr \cite{pradeep2023rankzephyr} & Setwise & Efficient & Needs logits \\
+Pairwise & Pairwise LLM \cite{qin2023pairwise} & Comparison & Effective & Quadratic cost \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Pointwise methods treat ranking as regression but ignore relative ordering. Pairwise methods learn preferences: RankNet \cite{burges2005learning} pioneered neural pairwise ranking; LambdaRank \cite{burges2006learning} directly optimized NDCG via gradient manipulation; LambdaMART \cite{burges2010ranknet} combined LambdaRank gradients with gradient-boosted trees, dominating for over a decade.
+
+Listwise methods optimize ranking metrics over entire lists. ListNet \cite{cao2007learning} introduced top-one probability models; ListMLE \cite{xia2008listwise} formulated ranking as maximum likelihood over permutations.
+
+NDCG \cite{jarvelin2000ir, jarvelin2002cumulated} became the standard metric through position-dependent discounting:
+\begin{equation}
+\text{NDCG}@k = \frac{\text{DCG}@k}{\text{IDCG}@k}, \quad \text{DCG}@k = \sum_{i=1}^{k} \frac{2^{\text{rel}_i} - 1}{\log_2(i + 1)}
+\end{equation}
+
+Large language models revolutionized learning-to-rank through zero-shot reranking via prompting. RankGPT \cite{sun2023chatgpt} demonstrated GPT-4 can rerank documents by generating permutations, achieving competitive effectiveness without task-specific training. RankZephyr \cite{pradeep2023rankzephyr} distilled GPT-4 behavior into smaller models via instruction tuning, introducing setwise prompting that compares multiple documents simultaneously, substantially reducing inference cost. However, these listwise LLM rerankers operate exclusively on text, unexplored for multimodal content.
+
+\section{Multimodal Search and Retrieval}
+
+Vision-language pretraining enables joint image-text representations. CLIP \cite{radford2021learning} trained contrastively on 400M image-caption pairs, aligning visual and linguistic semantics for zero-shot classification and retrieval. ALIGN \cite{jia2021scaling} demonstrated scaling to noisier but larger datasets improves alignment. ALBEF \cite{li2021align} introduced momentum distillation; BLIP \cite{li2022blip} unified understanding and generation; BLIP-2 \cite{li2023blip2} connected frozen image encoders to LLMs via lightweight transformers.
+
+\begin{table}[h]
+\centering
+\caption{Vision-Language Models for Multimodal Retrieval}
+\label{tab:vlm_comparison}
+\small
+\begin{tabular}{llllll}
+\toprule
+\textbf{Model} & \textbf{Year} & \textbf{Training Data} & \textbf{Modality} & \textbf{Task} & \textbf{Zero-shot} \\
+\midrule
+CLIP \cite{radford2021learning} & 2021 & 400M pairs & Image + Text & Retrieval & \checkmark \\
+ALIGN \cite{jia2021scaling} & 2021 & 1.8B noisy & Image + Text & Retrieval & \checkmark \\
+ALBEF \cite{li2021align} & 2021 & 14M pairs & Image + Text & Both & \checkmark \\
+BLIP \cite{li2022blip} & 2022 & 129M pairs & Image + Text & Both & \checkmark \\
+BLIP-2 \cite{li2023blip2} & 2023 & 129M pairs & Image + Text + LLM & Both & \checkmark \\
+\midrule
+MMDocIR \cite{dong2025mmdocir} & 2025 & 313 docs & Page + Layout & Retrieval & \ding{55} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Despite advances in multimodal representation, document retrieval applications remain limited. Existing models focus on image-caption scenarios with short text, whereas documents involve lengthy passages where images illustrate rather than dominate. MMDocIR \cite{dong2025mmdocir} benchmarked multimodal retrieval for long documents, introducing page-level and layout-level tasks across 313 documents spanning 10 domains. Vision-driven retrievers significantly outperform text-only methods, especially capturing visual semantics OCR fails to preserve. However, \textbf{MMDocIR focused exclusively on first-stage retrieval, leaving the more impactful reranking stage unexplored for multimodal content.}
+
+Cross-modal retrieval employs early fusion (joint encoding) or late fusion (separate encoding, late combination). Early fusion enables fine-grained interaction but sacrifices scalability. Late fusion permits efficient ANN search but loses interaction. Multi-modal tensor fusion \cite{wang2019matching} explores intermediate architectures balancing interaction and efficiency, though not widely adopted for web-scale retrieval.
+
+\section{Retrieval-Augmented Generation}
+
+RAG bridges information retrieval and generation by grounding LLM outputs in retrieved evidence \cite{lewis2020retrieval}, addressing knowledge limitations and hallucination. REALM \cite{guu2020retrieval} pioneered joint retriever-generator training through end-to-end backpropagation with differentiable document indexes.
+
+Standard RAG treats retrieval as one-shot preprocessing—query, retrieve documents, generate answer conditioned on concatenated passages. This fails to leverage LLM reasoning for improving retrieval. Self-RAG \cite{asai2024self} introduced self-reflection where models generate critique tokens assessing passage support and triggering adaptive retrieval. CRAG \cite{yan2024corrective} extended this with corrective strategies—evaluators assess document relevance and trigger web search when initial retrieval is inadequate. However, both treat retrievers as black boxes unable to benefit from LLM-generated insights.
+
+\begin{table}[h]
+\centering
+\caption{RAG System Design Dimensions}
+\label{tab:rag_design}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Dimension} & \textbf{Options} & \textbf{Trade-off} \\
+\midrule
+Retrieval Frequency & One-shot, Iterative & Latency vs. quality \\
+Chunk Granularity & Sentence, Paragraph, Document & Context vs. precision \\
+Integration Strategy & Concatenation, Attention & Simplicity vs. interaction \\
+Modality & Text-only, Multimodal & Coverage vs. complexity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Recent surveys \cite{gao2023retrieval} systematically analyzed RAG architectures, identifying key design dimensions (Table \ref{tab:rag_design}). However, practical guidance for specific applications remains limited. \textbf{RAG application to multimodal retrieval has received minimal attention, with existing work focusing almost exclusively on text-only scenarios} despite many real-world needs spanning text and images.
+
+Conversational search \cite{mo2024survey} considers information seeking as interactive dialogue. This demands systems maintain conversation history and understand follow-up query relationships. Conversational RAG must ground responses in retrieved evidence while supporting natural dialogue. Current approaches use query rewriting to incorporate history into standalone retrieval queries, \textbf{but do not close the loop by using generated insights to improve subsequent retrieval.}
+
+\section{Benchmark Datasets and Evaluation}
+
+MS MARCO \cite{nguyen2016ms} established large-scale retrieval benchmarks with 1M queries from real Bing logs. TREC Deep Learning Tracks \cite{craswell2020overview, craswell2021overview, craswell2022overview} extended MS MARCO with densely judged test sets, enabling reliable measurement and reducing pool bias.
+
+\begin{table}[h]
+\centering
+\caption{Major IR Benchmark Datasets Comparison}
+\label{tab:benchmark_comparison}
+\small
+\begin{tabular}{lllll}
+\toprule
+\textbf{Dataset} & \textbf{Queries} & \textbf{Documents} & \textbf{Domain} & \textbf{Modality} \\
+\midrule
+MS MARCO v1 & 1M train, 6.9K test & 8.8M & Web & Text \\
+MS MARCO v2 & Similar & 138M & Web & Text \\
+TREC DL 19-22 & 200-600/yr & From MS MARCO & Web & Text \\
+BEIR (18 sets) & Varies & Varies & Multi-domain & Text \\
+NovelEval & Continuous & Continuous & Web & Text \\
+\midrule
+MMDocIR & 1.7K expert & 313 docs (65 pages avg) & 10 domains & Text + Image \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+BEIR \cite{thakur2021beir} addressed generalization limitations by assembling 18 diverse datasets (Table \ref{tab:benchmark_comparison}). Zero-shot evaluation revealed many neural retrievers suffer dramatic out-of-domain drops, highlighting brittleness. This has particular implications for multimodal retrieval where visual content varies more dramatically than text.
+
+Evaluation methodology requires careful consideration of measurement reliability and statistical testing. NDCG has become standard due to handling graded relevance with position-dependent discounting. However, metrics assume complete, accurate judgments—rarely true due to pooling limitations and annotator disagreement. MS MARCO leaderboard design requires careful engineering to prevent gaming while enabling broad participation \cite{craswell2021msmarco}.
+
+NovelEval specifically addresses data contamination by continuously updating test queries to include only those arising after model training cutoffs, ensuring measurements reflect generalization rather than memorization. \textbf{For multimodal ranking, establishing similar contamination-free benchmarks is critical} given vision-language models train on massive web-scraped datasets potentially overlapping evaluation sets.
+
+\section{Research Gaps and Opportunities}
+
+Despite significant progress in multimodal representation learning and LLM-based ranking, critical gaps remain:
+
+\textbf{Gap 1: Multimodal Reranking.} All existing learning-to-rank methods operate exclusively on text. While MMDocIR demonstrated visual information value for first-stage retrieval, \textbf{the reranking stage where cross-encoders prove most impactful remains unexplored for multimodal content.} This represents significant opportunity given rerankers can afford expensive cross-modal reasoning first-stage retrievers cannot.
+
+\textbf{Gap 2: Multimodal RAG.} The interaction between multimodal retrieval and generation has received minimal attention. RAG systems assume text-only retrieval and generation, failing to leverage visual evidence that could improve answer quality for visually grounded questions. The converse opportunity exists where generated natural language explanations of multimodal content could improve retrieval by providing richer training signal than sparse labels typically available.
+
+\textbf{Gap 3: Multimodal Evaluation Infrastructure.} Robust evaluation of multimodal ranking systems requires datasets with ground truth relevance judgments spanning text and images, which do not currently exist at scale. Extending existing benchmarks like MS MARCO with visual content and collecting relevance judgments accounting for cross-modal interactions would enable rigorous assessment. This evaluation infrastructure is prerequisite for driving multimodal ranking research progress.
+
+\textbf{Gap 4: Efficiency-Effectiveness Balance.} The efficiency of multimodal ranking deserves careful consideration given computational cost of vision-language models. While RankZephyr demonstrated setwise prompting can substantially reduce inference cost for text-only ranking, extending this to multimodal content where each candidate includes both text and images will amplify computational demands. Developing efficient multimodal reranking architectures balancing effectiveness with practical deployment constraints represents an important open problem.
+
+\textbf{Gap 5: Iterative Multimodal Search.} Current search systems, even those with RAG, do not support iterative refinement where LLM-generated insights feedback into subsequent multimodal retrieval. This closed-loop approach where search results drive LLM generation, which in turn refines search queries, remains unexplored for multimodal content.
+
+\section{Proposed Approach: Multimodal LTR-Enhanced Search Engine}
+
+\begin{table}[h]
+\centering
+\caption{System Capabilities Comparison: Proposed vs. Existing Approaches}
+\label{tab:system_comparison}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{l@{\hspace{4pt}}c@{\hspace{3pt}}c@{\hspace{3pt}}c@{\hspace{3pt}}c@{\hspace{3pt}}c@{\hspace{3pt}}c}
+\toprule
+\textbf{Capability} & \rotatebox{60}{\textbf{Ours}} & \rotatebox{60}{\textbf{Google}} & \rotatebox{60}{\textbf{Perplexity}} & \rotatebox{60}{\textbf{MMDocIR}} & \rotatebox{60}{\textbf{RankZephyr}} & \rotatebox{60}{\textbf{Traditional IR}} \\
+\midrule
+\multicolumn{7}{l}{\textit{\textbf{Retrieval Capabilities}}} \\
+Keyword Search (Inverted Index) & \checkmark & \checkmark & \checkmark & \checkmark & \ding{55} & \checkmark \\
+Semantic Search (Dense Vectors) & \checkmark & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} \\
+Hybrid Retrieval & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} \\
+Image+Text Multimodal Retrieval & \checkmark & \checkmark & \ding{55} & \checkmark & \ding{55} & \ding{55} \\
+Efficient ANN (HNSW) & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} \\
+\midrule
+\multicolumn{7}{l}{\textit{\textbf{Ranking Capabilities}}} \\
+First-Stage Ranking & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+Second-Stage Reranking & \checkmark & \checkmark & \checkmark & \ding{55} & \checkmark & \ding{55} \\
+Multimodal LTR Reranker & \checkmark & ? & \ding{55} & \ding{55} & \ding{55} & \ding{55} \\
+Listwise Ranking & \checkmark & ? & \ding{55} & \ding{55} & \checkmark & \ding{55} \\
+\midrule
+\multicolumn{7}{l}{\textit{\textbf{Generation \& Interaction}}} \\
+LLM Integration & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} \\
+RAG-based Summarization & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} \\
+Conversational Refinement & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} \\
+Iterative Search Feedback Loop & \checkmark & \ding{55} & \ding{55} & \ding{55} & \ding{55} & \ding{55} \\
+Query Rewriting from Context & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} \\
+\midrule
+\multicolumn{7}{l}{\textit{\textbf{System Architecture}}} \\
+Distributed Crawling & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} & \checkmark \\
+Compressed Storage & \checkmark & \checkmark & ? & \ding{55} & \ding{55} & \ding{55} \\
+Dual-Panel UI (Search + AI) & \checkmark & \checkmark & \checkmark & \ding{55} & \ding{55} & \ding{55} \\
+Real-time Index Updates & \checkmark & \checkmark & ? & \ding{55} & \ding{55} & \ding{55} \\
+\midrule
+\multicolumn{7}{l}{\textit{\textbf{Evaluation \& Research}}} \\
+Benchmark Contribution & \checkmark & \ding{55} & \ding{55} & \checkmark & \checkmark & \ding{55} \\
+Open Source & \checkmark & \ding{55} & \ding{55} & \checkmark & \checkmark & Varies \\
+Research Focus & All stages & Production & Production & First-stage & Reranking & Traditional \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Innovations}
+
+Our system makes four key contributions addressing identified gaps:
+
+\textbf{1. Multimodal Listwise Reranker:} First work to apply listwise LTR to multimodal content, extending RankZephyr's setwise prompting to handle image+text candidates. This addresses Gap 1 by bringing the most effective reranking paradigm to multimodal scenarios.
+
+\textbf{2. Iterative Multimodal RAG:} LLM-generated insights feed back into subsequent multimodal retrieval, creating a closed loop where search results drive generation, which refines search. This addresses Gap 5 by enabling conversational refinement that updates both document rankings and AI responses.
+
+\textbf{3. End-to-End Multimodal Pipeline:} Complete system from distributed crawling through compressed storage, hybrid retrieval (keyword+semantic), two-stage ranking (ANN first-stage, LTR reranking), to RAG generation. This integrates state-of-the-art components across the full pipeline.
+
+\textbf{4. Efficiency-Effectiveness Balance:} Strategic use of HNSW for efficient ANN, compressed storage for scalability, and optimized multimodal reranking for practical deployment. This addresses Gap 4 by making multimodal reranking computationally feasible.
+
+As Table \ref{tab:system_comparison} demonstrates, our system is the only approach combining multimodal retrieval, multimodal reranking, and iterative LLM-driven refinement in a complete end-to-end architecture. This positions our work to make significant contributions to both multimodal information retrieval research and practical search system development.

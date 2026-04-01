@@ -14,15 +14,31 @@ type AddToHistoryRequest struct {
 	Query string `json:"query" binding:"required"`
 }
 
-// GetHistory returns all search history for authenticated user
+// GetHistory returns search history for authenticated user with optional filters
 func GetHistory(c *gin.Context) {
 	userID, _ := c.Get("userID")
 
+	q := c.Query("q")
+	from := c.Query("from")
+	to := c.Query("to")
+
+	db := database.GetDB().Where("user_id = ?", userID)
+	if q != "" {
+		db = db.Where("query ILIKE ?", "%"+q+"%")
+	}
+	if from != "" {
+		if t, err := time.Parse("2006-01-02", from); err == nil {
+			db = db.Where("timestamp >= ?", t)
+		}
+	}
+	if to != "" {
+		if t, err := time.Parse("2006-01-02", to); err == nil {
+			db = db.Where("timestamp <= ?", t.Add(24*time.Hour-time.Second))
+		}
+	}
+
 	var history []models.SearchHistory
-	if err := database.GetDB().Where("user_id = ?", userID).
-		Order("timestamp DESC").
-		Limit(50).
-		Find(&history).Error; err != nil {
+	if err := db.Order("timestamp DESC").Limit(100).Find(&history).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to fetch history",
 		})

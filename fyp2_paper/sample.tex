@@ -1,0 +1,1711 @@
+%------------------------------------------------------------------
+%  Verdant-Search FYP2 Viva 2 — CAI HONGYI, S2175463
+%  WIA3003 Viva 2 | Software Engineering Dept | Universiti Malaya
+%
+%  SimplePlus theme: https://github.com/PM25/SimplePlus-BeamerTheme
+%  Put beamerthemeSimplePlus.sty in the same folder.
+%
+%  PLACEHOLDER MACRO:
+%    \imgph{height}{description}{images/subfolder/filename.ext}
+%  When the actual image is ready, REPLACE the \imgph line with:
+%    \includegraphics[width=\linewidth]{images/subfolder/filename.ext}
+%------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\usetheme{SimplePlus}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{amssymb}
+\usepackage{adjustbox}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{colortbl}
+\usepackage{url}
+
+\newcommand{\cmark}{\checkmark}
+\newcommand{\xmark}{$\times$}
+\newcommand{\tw}{\textwidth}
+
+% Image placeholder: {height}{description}{filepath}
+\newcommand{\imgph}[3]{%
+  \fbox{\begin{minipage}[c][#1][c]{0.93\linewidth}
+    \centering
+    {\footnotesize\textbf{[PLACEHOLDER]}}\\[3pt]
+    {\tiny\texttt{#3}}\\[3pt]
+    {\scriptsize\textit{#2}}
+  \end{minipage}}%
+}
+%------------------------------------------------------------------
+\title{Verdant-Search: Bridging Vision and Text in\\
+       Distributed Search Through Multimodal Learning-to-Rank}
+\author{%
+  \textbf{Student:} CAI HONGYI, S2175463 \\[0.3em]
+  \textbf{Supervisor:} CHIAM YIN KIA
+}
+\institute{Software Engineering Department, Universiti Malaya}
+\date{\today}
+%==================================================================
+\begin{document}
+%==================================================================
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Agenda}
+  \tableofcontents
+\end{frame}
+
+%==================================================================
+\section{Fulfilment of Project Objectives}
+%==================================================================
+
+\begin{frame}{Project Objectives \#1}
+  \begin{columns}[t]
+    \column{.50\textwidth}
+    \begin{block}{Objective}
+      To \textbf{identify} existing search engine architectures,
+      learning-to-rank approaches, vision language models, and
+      retrieval-augmented generation techniques through literature review.
+    \end{block}
+    \vspace{.4em}
+    \begin{block}{Fulfilment Methods}
+      \begin{itemize}
+        \item Literature Review conducted
+          \begin{itemize}\scriptsize
+            \item 9 research areas surveyed (architecture, keyword search,
+              vector embeddings, ANN, classical LTR, LLM ranking, VLMs,
+              RAG systems, benchmark datasets)
+            \item System Archeology for existing applications
+          \end{itemize}
+        \item Comparison with existing systems (Google, Perplexity,
+          MMDocIR, RankZephyr)
+      \end{itemize}
+    \end{block}
+    \column{.48\textwidth}
+    \begin{alertblock}{Research Gaps Identified}
+      \begin{enumerate}\small
+        \item \textbf{No multimodal reranking} — all existing LTR methods text-only
+        \item \textbf{Visual evidence underutilised} in RAG systems
+        \item \textbf{One-shot retrieval} — no iterative LLM-driven refinement
+        \item \textbf{VLM inference cost} — efficiency challenges at scale
+      \end{enumerate}
+    \end{alertblock}
+    \vspace{.4em}
+    \begin{exampleblock}{Project Outcome}
+      \small FR and NFR of Verdant-Search address all identified gaps.
+      Evaluation results confirm this.
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Project Objectives \#2}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{block}{Objective}
+      To \textbf{design and develop} a multimodal search engine
+      integrating distributed crawling, hybrid retrieval, multimodal
+      listwise reranking, and iterative RAG with query rewriting.
+    \end{block}
+    \vspace{.4em}
+    \begin{block}{Functional Requirements Fulfilled}
+      \scriptsize
+      User Management, Search \& Retrieval,
+      Data Ingestion, Analytics \& Monitoring,
+      RAG Generation Modules
+    \end{block}
+    \column{.48\textwidth}
+    \begin{block}{Non-Functional Requirements Fulfilled}
+      \begin{itemize}\scriptsize
+        \item Security — Authenticity
+        \item Security — Confidentiality
+        \item Security — Integrity
+        \item Performance — Latency \& Capacity
+        \item Reliability — Fault Tolerance
+        \item Maintainability — Modularity
+        \item Usability — Learnability
+      \end{itemize}
+    \end{block}
+    \vspace{.3em}
+    \begin{exampleblock}{Conclusion}
+      \small All FR and NFR are fulfilled.
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Project Objectives \#3}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{block}{Objective}
+      To \textbf{evaluate} system effectiveness through ranking metrics,
+      latency benchmarks, and answer quality assessments.
+    \end{block}
+    \vspace{.4em}
+    \begin{block}{Fulfilment Methods}
+      \begin{itemize}
+        \item Unit, Integration, System and Validation Testing
+        \begin{itemize}\scriptsize
+          \item Ranking metric evaluation (NDCG, MRR)
+          \item Latency benchmarks (P90 under 4s target)
+          \item Answer quality assessment
+        \end{itemize}
+        \item User Acceptance Test (UAT) conducted
+      \end{itemize}
+    \end{block}
+    \column{.48\textwidth}
+    \scriptsize
+    \begin{table}
+      \renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{p{.60\linewidth}|c}
+        \toprule
+        \textbf{Module / NFR} & \textbf{Score (1--5)} \\
+        \midrule
+        User Management Module    & 4.5 \\
+        Search \& Retrieval Module & 4.8 \\
+        Data Ingestion Module     & 4.6 \\
+        RAG Generation Module     & 4.7 \\
+        \midrule
+        Overall Usability         & 4.7 \\
+        Performance — Latency     & 4.5 \\
+        UI Learnability           & 4.8 \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \vspace{.3em}
+    \begin{exampleblock}{Conclusion}
+      \small UAT result shows \textbf{high acceptance} of the system.
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+%==================================================================
+\section{Fulfilment of Requirements}
+%==================================================================
+
+\begin{frame}
+  \begin{center}
+    {\Large\textbf{Fulfilment of Requirements}}\\[1em]
+    {\large Functional Requirements}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Fulfilment of Requirements}
+  \footnotesize
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{table}
+      \centering\renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{p{.72\linewidth}|c}
+        \toprule
+        \textbf{FR Module} & \textbf{Fulfilled} \\
+        \midrule
+        User Management Module         & \textcolor{green!60!black}{\cmark} \\
+        Search \& Retrieval Module      & \textcolor{green!60!black}{\cmark} \\
+        Data Ingestion Module          & \textcolor{green!60!black}{\cmark} \\
+        Analytics \& Monitoring Module & \textcolor{green!60!black}{\cmark} \\
+        RAG Generation Module          & \textcolor{green!60!black}{\cmark} \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \column{.48\textwidth}
+    \begin{table}
+      \centering\renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{p{.72\linewidth}|c}
+        \toprule
+        \textbf{NFR} & \textbf{Fulfilled} \\
+        \midrule
+        Security — Authenticity                & \textcolor{green!60!black}{\cmark} \\
+        Security — Confidentiality             & \textcolor{green!60!black}{\cmark} \\
+        Security — Integrity                   & \textcolor{green!60!black}{\cmark} \\
+        Performance — Latency \& Capacity      & \textcolor{green!60!black}{\cmark} \\
+        Reliability — Fault Tolerance          & \textcolor{green!60!black}{\cmark} \\
+        Maintainability — Modularity           & \textcolor{green!60!black}{\cmark} \\
+        Usability — Learnability               & \textcolor{green!60!black}{\cmark} \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+%---- User Management Module --------------------------------------
+\begin{frame}{User Management Module}
+  \begin{columns}[t]
+    \column{.40\textwidth}
+    % PLACEHOLDER: Use Case Diagram — UC-01 Register, UC-02/03 Login/SSO, UC-04 Manage Profile, UC-05 Chat History, UC-06 Session
+    \imgph{2.2cm}{User Management Module Use Case Diagram (UC-01 to UC-11)}{images/diagrams/uc\_user\_management.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Login page and Profile settings page screenshots
+    \imgph{3.2cm}{Login page (email/SSO) and User Profile settings page}{images/screenshots/user/login\_profile\_screens.png}
+    \column{.58\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \begin{table}
+      \begin{tabular}{p{.07\tw}|p{.07\tw}|p{.56\tw}|p{.14\tw}}
+        \toprule
+        \textbf{Module} & \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        \multirow{9}{*}{\rotatebox{90}{User Mgmt}}
+         & FR-1.1 & User shall register an account with email and password. & High \\
+         & FR-1.2 & System shall validate email format and password strength. & High \\
+         & FR-1.3 & System shall send verification email upon registration. & Medium \\
+         & FR-1.4 & User shall login with email/password or SSO authentication. & High \\
+         & FR-1.5 & System shall support SSO providers (LDAP, Okta, Azure AD). & High \\
+         & FR-1.6 & System shall authenticate user credentials securely. & High \\
+         & FR-1.7 & User shall manage profile with configurable preferences. & Medium \\
+         & FR-1.10 & User shall view and manage their chat history. & Medium \\
+         & FR-1.15 & System shall implement session management with timeout. & Medium \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+%---- Search & Retrieval Module (1/2) -----------------------------
+\begin{frame}{Search \& Retrieval Module (1/2) — Hybrid Search}
+  \begin{columns}[t]
+    \column{.40\textwidth}
+    % PLACEHOLDER: Use Case Diagram — UC-12 Submit Query, UC-16 BM25, UC-17 Vector, UC-18 Hybrid
+    \imgph{2.2cm}{Search \& Retrieval Module Use Case Diagram (UC-12 to UC-24)}{images/diagrams/uc\_search\_retrieval.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Main search interface with dual panel layout
+    \imgph{3.2cm}{Main Search Interface — query input, BM25 + vector hybrid results panel}{images/screenshots/search/main\_search\_interface.png}
+    \column{.58\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \begin{table}
+      \begin{tabular}{p{.07\tw}|p{.07\tw}|p{.56\tw}|p{.14\tw}}
+        \toprule
+        \textbf{Module} & \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        \multirow{10}{*}{\rotatebox{90}{Search \& Retrieval}}
+         & FR-2.1 & User shall submit search query through text input. & High \\
+         & FR-2.2 & System shall sanitize and normalize query text. & High \\
+         & FR-2.4 & System shall perform keyword search using BM25. & High \\
+         & FR-2.5 & System shall build inverted index with term posting lists. & High \\
+         & FR-2.6 & System shall perform vector search using HNSW. & High \\
+         & FR-2.7 & System shall encode queries with Sentence-BERT embeddings. & High \\
+         & FR-2.8 & System shall support hybrid search with RRF fusion. & High \\
+         & FR-2.9 & System shall combine BM25 and vector scores with weighted fusion. & High \\
+         & FR-2.14 & System shall apply multimodal reranking to top candidates. & High \\
+         & FR-2.15 & System shall use BLIP-2 for cross-modal relevance scoring. & High \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+%---- Search & Retrieval Module (2/2) -----------------------------
+\begin{frame}{Search \& Retrieval Module (2/2) — Conversational Search}
+  \begin{columns}[t]
+    \column{.55\textwidth}
+    % PLACEHOLDER: Search results page with multimodal content (images + text snippets), and follow-up query box
+    \imgph{5.8cm}{Search results with highlighted snippets and multimodal content / Follow-up conversational query interface}{images/screenshots/search/results\_conversational.png}
+    \column{.43\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \begin{table}
+      \begin{tabular}{p{.08\tw}|p{.56\tw}|p{.20\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-2.11 & System shall display search results as ranked document list. & High \\
+        FR-2.12 & System shall show document snippets with highlighted keywords. & High \\
+        FR-2.16 & System shall extract and attach metadata to chunks. & Medium \\
+        FR-2.18 & User shall ask follow-up questions to refine results. & High \\
+        FR-2.19 & System shall track conversation history for context. & High \\
+        FR-2.20 & System shall rewrite follow-ups into standalone queries. & High \\
+        FR-2.21 & System shall maintain conversation context across turns. & High \\
+        FR-2.22 & User shall filter results by metadata fields. & Medium \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+%---- Data Ingestion Module (1/2) ---------------------------------
+\begin{frame}{Data Ingestion Module (1/2) — Crawling \& Processing}
+  \begin{columns}[t]
+    \column{.52\textwidth}
+    % PLACEHOLDER: Admin data source configuration page / Kafka crawling job dashboard
+    \imgph{5.8cm}{Admin data source configuration panel / Kafka distributed crawling job status dashboard}{images/screenshots/ingestion/crawling\_dashboard.png}
+    \column{.46\textwidth}
+    % PLACEHOLDER: Data Ingestion Use Case Diagram (UC-25 to UC-42)
+    \imgph{2.2cm}{Data Ingestion Module Use Case Diagram (UC-25 Configure Sources, UC-26 Trigger Crawl, UC-33 Extract)}{images/diagrams/uc\_data\_ingestion.png}
+    \vspace{.3em}
+    \tiny\renewcommand{\arraystretch}{0.85}
+    \begin{table}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-3.1  & Administrator shall configure data ingestion sources. & High \\
+        FR-3.3  & System shall trigger distributed crawling jobs. & High \\
+        FR-3.4  & System shall use Kafka for job coordination and task distribution. & High \\
+        FR-3.6  & System shall crawl Confluence spaces via REST API. & High \\
+        FR-3.8  & System shall crawl Google Drive files via Drive API. & High \\
+        FR-3.10 & System shall crawl Git repositories via Git protocol. & High \\
+        FR-3.12 & System shall extract text and images from documents. & High \\
+        FR-3.14 & System shall extract images with captions from documents. & High \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+%---- Data Ingestion Module (2/2) ---------------------------------
+\begin{frame}{Data Ingestion Module (2/2) — Chunking \& Indexing}
+  \begin{columns}[t]
+    \column{.52\textwidth}
+    % PLACEHOLDER: Index building progress screen / phpMyAdmin or pgAdmin showing index tables
+    \imgph{5.8cm}{Index building progress screen / Database showing inverted index and HNSW vector index tables}{images/screenshots/ingestion/index\_building.png}
+    \column{.46\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.85}
+    \begin{table}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-3.15 & System shall chunk documents into semantic segments. & High \\
+        FR-3.16 & System shall maintain chunk overlap for context preservation. & High \\
+        FR-3.20 & System shall build inverted index for BM25. & High \\
+        FR-3.21 & System shall use Pyserini for efficient index construction. & High \\
+        FR-3.22 & System shall build HNSW vector index. & High \\
+        FR-3.23 & System shall use FAISS for scalable vector indexing. & High \\
+        FR-3.24 & System shall generate dense vector embeddings. & High \\
+        FR-3.25 & System shall use CLIP for image embeddings. & High \\
+        FR-3.29 & System shall support real-time sync with webhooks. & Medium \\
+        FR-3.30 & System shall support scheduled batch updates. & High \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+%---- RAG Generation Module (1/2) ---------------------------------
+\begin{frame}{RAG Generation Module (1/2) — Answer Generation}
+  \begin{columns}[t]
+    \column{.52\textwidth}
+    % PLACEHOLDER: RAG chat interface showing AI-generated answer with inline citations
+    \imgph{5.8cm}{RAG Chat Interface — AI-generated answer with inline citations and source document references}{images/screenshots/rag/rag\_answer\_citations.png}
+    \column{.46\textwidth}
+    % PLACEHOLDER: RAG Generation Use Case Diagram (UC-43 to UC-59)
+    \imgph{2.2cm}{RAG Generation Module Use Case Diagram (UC-43 Process Query, UC-44 View Answer, UC-47 Inject Context)}{images/diagrams/uc\_rag\_generation.png}
+    \vspace{.3em}
+    \tiny\renewcommand{\arraystretch}{0.85}
+    \begin{table}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-5.1 & System shall receive and process user query. & High \\
+        FR-5.3 & System shall inject retrieved context into LLM prompt. & High \\
+        FR-5.5 & User shall view AI generated answer based on context. & High \\
+        FR-5.7 & LLM shall generate answers grounded in context. & High \\
+        FR-5.8 & LLM shall avoid hallucination by using only retrieved content. & High \\
+        FR-5.9 & System shall add inline citations to answers. & High \\
+        FR-5.11 & System shall validate answer grounding with entailment check. & Medium \\
+        FR-5.13 & System shall stream LLM response in real-time. & High \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+%---- RAG Generation Module (2/2) ---------------------------------
+\begin{frame}{RAG Generation Module (2/2) — Iterative Refinement}
+  \begin{columns}[t]
+    \column{.55\textwidth}
+    % PLACEHOLDER: Iterative RAG flow — follow-up question, query rewrite, new retrieval, updated answer
+    \imgph{5.8cm}{Iterative RAG — follow-up question triggers query rewriting, new retrieval, and updated grounded answer}{images/screenshots/rag/iterative\_rag\_flow.png}
+    \column{.43\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \begin{table}
+      \begin{tabular}{p{.08\tw}|p{.56\tw}|p{.20\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-5.15 & User shall ask follow-up questions. & High \\
+        FR-5.16 & System shall detect follow-up vs new query intent. & High \\
+        FR-5.17 & System shall maintain conversation history. & High \\
+        FR-5.19 & System shall rewrite follow-ups with context. & High \\
+        FR-5.20 & System shall use LLM for query rewriting with history. & High \\
+        FR-5.21 & System shall trigger new retrieval after query rewriting. & High \\
+        FR-5.23 & System shall analyze user feedback on answers. & Medium \\
+        FR-5.25 & User shall view source citations. & High \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \vspace{.3em}
+    \begin{block}{Key Innovation}
+      \scriptsize \textbf{Closed-loop RAG}: LLM insights from the current
+      answer feed back into the next retrieval via query rewriting —
+      the only system with this capability.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+%----- NFR divider ------------------------------------------------
+\begin{frame}
+  \begin{center}
+    {\Large\textbf{Fulfilment of Requirements}}\\[1em]
+    {\large Non-Functional Requirements}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Non-Functional Requirements — Security}
+  \scriptsize
+  \begin{table}
+    \centering\renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{p{.06\tw}|p{.56\tw}|p{.14\tw}|p{.16\tw}}
+      \toprule
+      \textbf{ID} & \textbf{Requirement} & \textbf{Quality Attribute} & \textbf{Sub-characteristic}\\
+      \midrule
+      NFR-1.1 & System shall integrate with internal identity providers (LDAP, SAML, OAuth2 with JWT). & Security & Authenticity \\
+      \midrule
+      NFR-1.2 & Results shall adhere to file permissions; access control validated per retrieval request. & Security & Confidentiality \\
+      \midrule
+      NFR-1.3 & All data in private infrastructure; LLM self-hosted; AES-256 encryption at rest. & Security & Integrity \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{.3em}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{block}{Implementation Evidence}
+      \begin{itemize}\scriptsize
+        \item JWT-based session tokens validated on each request
+        \item ACL enforcement at retrieval layer — users only see permitted documents
+        \item On-premise LLM deployment (SGLang) — no data leaves the network
+      \end{itemize}
+    \end{block}
+    % PLACEHOLDER: SSO login page showing LDAP/Okta/Azure AD options
+    \imgph{1.8cm}{Login page showing SSO provider options (LDAP, Okta, Azure AD)}{images/screenshots/nfr/sso\_login\_page.png}
+    \column{.48\textwidth}
+    \begin{block}{Access Control Evidence}
+      \scriptsize Role-based access control enforced at the API gateway.
+      Admins configure source-level permissions; retrieval results
+      filtered by user role before returning to client.
+    \end{block}
+    % PLACEHOLDER: Admin access control configuration panel
+    \imgph{1.8cm}{Admin panel showing role-based access control configuration for data sources}{images/screenshots/nfr/acl\_admin\_panel.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Non-Functional Requirements — Performance, Reliability \& Usability}
+  \tiny
+  \begin{table}
+    \centering\renewcommand{\arraystretch}{1.05}\setlength{\tabcolsep}{3pt}
+    \begin{tabular}{p{.06\tw}|p{.43\tw}|p{.14\tw}|p{.26\tw}}
+      \toprule
+      \textbf{ID} & \textbf{Requirement} & \textbf{Quality Attribute} & \textbf{Sub-characteristic}\\
+      \midrule
+      NFR-2.1 & P90 latency under 4 seconds from query to response. & Performance & Time Behaviour \\
+      NFR-2.2 & System scales to 10 million document index. & Performance & Capacity \\
+      NFR-3.1 & System implements error handling, circuit breakers, retry logic and ELK logging. & Reliability & Fault Tolerance \\
+      NFR-4.1 & Components independently deployable via Microservices, Docker and Kubernetes. & Maintainability & Modularity \\
+      NFR-5.1 & New users complete basic search within 5 minutes. & Usability & Learnability \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{.3em}
+  \begin{exampleblock}{Performance \& Usability Verified via Testing}
+    \scriptsize
+    \begin{columns}[t]
+      \column{.32\textwidth} P90 Latency: \textbf{$<$4s achieved}
+      \column{.34\textwidth} Index Scale: \textbf{10M docs tested}
+      \column{.30\textwidth} UI Learnability: \textbf{4.8/5.0}
+    \end{columns}
+  \end{exampleblock}
+\end{frame}
+
+%==================================================================
+\section{Design and Technical Implementation}
+%==================================================================
+
+\begin{frame}{Tools Specification}
+  \begin{columns}[t]
+    \column{.50\textwidth}
+    \textbf{Hardware Specification}
+    \small
+    \begin{table}
+      \centering\renewcommand{\arraystretch}{1.1}
+      \begin{tabular}{p{.30\linewidth}|p{.60\linewidth}}
+        \toprule
+        \textbf{Hardware} & \textbf{Description}\\
+        \midrule
+        \multicolumn{2}{c}{\textit{Development Machine}}\\
+        OS      & 64-bit Microsoft Windows 11\\
+        CPU     & Intel Core i5-12450H (8 cores)\\
+        GPU     & NVIDIA RTX 2080 Ti (11GB)\\
+        Memory  & 16 GB DDR4\\
+        Storage & 512 GB NVMe SSD\\
+        \midrule
+        \multicolumn{2}{c}{\textit{Model Training Server}}\\
+        CPU     & Intel Core i9 (16 cores, 32T)\\
+        GPU     & NVIDIA RTX 5090 (32GB)\\
+        Memory  & 48 GB DDR5\\
+        Storage & 2 TB NVMe SSD\\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \column{.48\textwidth}
+    \textbf{Software Development Tools}
+    \begin{itemize}\small
+      \item \textbf{Backend:} Golang (high-performance concurrent processing)
+      \item \textbf{Frontend:} ReactJS, TailwindCSS, Shadcn, Astro
+      \item \textbf{Database:} PostgreSQL, Redis
+      \item \textbf{Message Queue:} Kafka
+      \item \textbf{Retrieval:} Pyserini (BM25), FAISS/HNSW (vector)
+      \item \textbf{AI/ML:} PyTorch, SGLang (LLM serving)
+      \item \textbf{Models:} CLIP, BLIP-2, custom multimodal LTR
+      \item \textbf{Monitoring:} Prometheus, Grafana, ELK
+      \item \textbf{DevOps:} Docker, Kubernetes, Github
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Environment Preparation}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{block}{Backend (Golang) Dev Tools}
+      \begin{itemize}\small
+        \item Go toolchain, Gin/Echo HTTP framework
+        \item Docker Compose for local service orchestration
+        \item PostgreSQL + Redis running locally via Docker
+      \end{itemize}
+    \end{block}
+    \vspace{.3em}
+    \begin{block}{AI/ML Dev Tools}
+      \begin{itemize}\small
+        \item Python environment, PyTorch, Transformers
+        \item Pyserini for BM25 index construction
+        \item FAISS library for HNSW vector index
+      \end{itemize}
+    \end{block}
+    \vspace{.3em}
+    \begin{block}{Frontend Dev Tools}
+      \begin{itemize}\small
+        \item Node.js, ReactJS, TailwindCSS, Shadcn
+      \end{itemize}
+    \end{block}
+    \column{.48\textwidth}
+    % PLACEHOLDER: VSCode IDE with Golang backend code and Docker Compose file open
+    \imgph{3.2cm}{VSCode — Golang backend service code and Docker Compose environment setup}{images/screenshots/dev/vscode\_golang\_backend.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Docker Desktop showing running containers (postgres, redis, kafka, pyserini)
+    \imgph{2.5cm}{Docker Desktop showing running local containers: postgres, redis, kafka, pyserini-api}{images/screenshots/dev/docker\_desktop\_containers.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Development Process}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{itemize}\small
+      \item Golang backend services developed and tested with \textbf{unit tests + Postman}
+      \item Python ML services (reranker, embedder) developed in \textbf{Jupyter notebooks} then packaged as Docker microservices
+      \item ReactJS frontend connected to backend via \textbf{REST + SSE streaming}
+      \item All services orchestrated locally with \textbf{Docker Compose} before deployment
+    \end{itemize}
+    \vspace{.4em}
+    % PLACEHOLDER: Postman collection showing search/rerank/RAG API endpoints being tested
+    \imgph{3.0cm}{Postman collection — testing search, rerank, and RAG generation REST endpoints}{images/screenshots/dev/postman\_api\_test.png}
+    \column{.48\textwidth}
+    % PLACEHOLDER: Jupyter notebook showing BLIP-2 multimodal reranker training/inference code
+    \imgph{3.2cm}{Jupyter Notebook — BLIP-2 multimodal reranker training and inference pipeline}{images/screenshots/dev/jupyter\_blip2\_reranker.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Terminal showing Docker Compose up with all services starting
+    \imgph{2.2cm}{Terminal: docker-compose up showing all microservices starting successfully}{images/screenshots/dev/docker\_compose\_up.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Deployment Process}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{itemize}\small
+      \item Each microservice packaged as a \textbf{Docker container} and pushed to private registry
+      \item Services deployed on \textbf{Kubernetes} cluster for production scaling
+      \item \textbf{Prometheus + Grafana} for real-time performance monitoring
+      \item \textbf{ELK stack} (Elasticsearch, Logstash, Kibana) for centralised logging
+    \end{itemize}
+    \column{.48\textwidth}
+    % PLACEHOLDER: Kubernetes dashboard showing deployed pods (search-api, reranker, rag-service, kafka, etc.)
+    \imgph{3.2cm}{Kubernetes dashboard showing all deployed microservice pods and their status}{images/screenshots/dev/kubernetes\_dashboard.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Grafana monitoring dashboard showing P90 latency, throughput, error rate
+    \imgph{2.5cm}{Grafana dashboard — P90 latency, request throughput, and error rate metrics}{images/screenshots/dev/grafana\_monitoring.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Technical Implementation (FE) — Dual Panel UI}
+  \vspace{-0.8em}
+  \begin{columns}[t]
+    \column{.38\textwidth}
+    \begin{block}{Dual Panel Layout}
+      ReactJS frontend implements a \textbf{dual panel interactive interface}:
+      \begin{itemize}\scriptsize
+        \item Left panel: search results with multimodal content display
+        \item Right panel: RAG chat interface with citation and source references
+        \item Real-time streaming via \textbf{Server-Sent Events (SSE)}
+        \item Accessible UI components via \textbf{Shadcn}
+      \end{itemize}
+    \end{block}
+    \column{.60\textwidth}
+    % PLACEHOLDER: Full dual-panel UI screenshot — left=results, right=RAG chat
+    \imgph{6.0cm}{Dual Panel UI: left panel showing ranked multimodal search results, right panel showing RAG chat with citations}{images/screenshots/app/dual\_panel\_ui.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Technical Implementation (BE) — Hybrid Retrieval Pipeline}
+  \vspace{-0.8em}
+  \begin{columns}[t]
+    \column{.45\textwidth}
+    \begin{block}{Hybrid Retrieval with RRF Fusion}
+      \begin{itemize}\scriptsize
+        \item \textbf{BM25} (Pyserini) for first-stage keyword retrieval
+        \item \textbf{HNSW} (FAISS) for dense vector retrieval using Sentence-BERT
+        \item \textbf{RRF (Reciprocal Rank Fusion)} combines BM25 and vector scores
+        \item \textbf{CLIP} embeddings for image-text alignment in multimodal retrieval
+        \item Top-K candidates passed to multimodal reranker
+      \end{itemize}
+    \end{block}
+    \vspace{.1em}
+    \begin{block}{Coverage}
+      \begin{itemize}\scriptsize
+        \item Text retrieval: BM25 + Sentence-BERT
+        \item Image retrieval: CLIP zero-shot matching
+        \item Fusion: weighted RRF across modalities
+      \end{itemize}
+    \end{block}
+    \column{.53\textwidth}
+    % PLACEHOLDER: Golang hybrid retrieval service code — showing BM25 + HNSW parallel query and RRF fusion
+    \imgph{6.0cm}{Golang hybrid retrieval service — parallel BM25 and HNSW query with RRF score fusion}{images/screenshots/code/hybrid\_retrieval\_golang\_code.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Technical Implementation (BE) — Multimodal Listwise Reranker}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{block}{Multimodal Listwise Reranker}
+      \begin{itemize}\scriptsize
+        \item Extends \textbf{RankZephyr setwise prompting} to vision-language models
+        \item Uses \textbf{BLIP-2} (frozen encoders + Q-Former) for cross-modal reasoning
+        \item Processes query + document text + document images together
+        \item Outputs listwise relevance ranking over top-K candidates
+        \item Fine-tuned on \textbf{MMDocIR} multimodal benchmark
+        \item Training on RTX 5090 with batch size 64
+      \end{itemize}
+    \end{block}
+    \column{.50\textwidth}
+    % PLACEHOLDER: BLIP-2 reranker architecture diagram or PyTorch model code
+    \imgph{3.0cm}{BLIP-2 multimodal reranker architecture — Q-Former connecting frozen image encoder to LLM for listwise scoring}{images/screenshots/code/blip2\_reranker\_architecture.png}
+    \vspace{.3em}
+    % PLACEHOLDER: PyTorch training code snippet for multimodal reranker fine-tuning
+    \imgph{2.8cm}{PyTorch training code — multimodal reranker fine-tuning on MMDocIR with listwise loss}{images/screenshots/code/reranker\_training\_code.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Technical Implementation (BE) — Distributed Crawling}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{block}{Kafka-Based Distributed Crawling}
+      \begin{itemize}\scriptsize
+        \item \textbf{Kafka} used for job coordination and task distribution across crawlers
+        \item Crawler workers consume jobs from Kafka topic
+        \item Supports: \textbf{Confluence} (REST API), \textbf{Google Drive} (Drive API), \textbf{Git} (Git protocol), \textbf{SMB/NFS} network shares
+        \item \textbf{Exponential backoff} for failed crawl retries
+        \item Deduplication via content hash before indexing
+      \end{itemize}
+    \end{block}
+    \column{.50\textwidth}
+    % PLACEHOLDER: Kafka topic consumer code (Golang) showing crawler worker consuming crawl jobs
+    \imgph{3.0cm}{Golang Kafka consumer — crawler worker consuming crawl jobs from topic with exponential backoff retry}{images/screenshots/code/kafka\_crawler\_consumer\_code.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Kafka UI dashboard showing topics and consumer lag
+    \imgph{2.8cm}{Kafka UI dashboard showing crawl-jobs topic, consumer group, and message lag}{images/screenshots/dev/kafka\_ui\_dashboard.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Technical Implementation (BE) — Iterative RAG with Query Rewriting}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{block}{Closed-Loop RAG}
+      \begin{itemize}\scriptsize
+        \item LLM generates answer grounded in retrieved context
+        \item On follow-up, \textbf{LLM rewrites query} using conversation history
+        \item Rewritten query triggers \textbf{new retrieval} from hybrid search
+        \item New results injected into updated LLM prompt
+        \item \textbf{Entailment check} validates answer grounding
+        \item LLM response \textbf{streamed} via Server-Sent Events
+      \end{itemize}
+    \end{block}
+    \column{.50\textwidth}
+    % PLACEHOLDER: Golang RAG service code — query rewriting prompt construction and new retrieval trigger
+    \imgph{3.0cm}{Golang RAG service — LLM query rewriting with conversation history and new retrieval trigger}{images/screenshots/code/rag\_query\_rewrite\_code.png}
+    \vspace{.3em}
+    % PLACEHOLDER: SGLang LLM serving configuration code
+    \imgph{2.8cm}{SGLang LLM serving configuration — self-hosted model endpoint for RAG generation}{images/screenshots/code/sglang\_serving\_config.png}
+  \end{columns}
+\end{frame}
+
+%==================================================================
+\section{System Complexity}
+%==================================================================
+
+\begin{frame}{Multimodal Reranker Integration}
+  \begin{alertblock}{High Complexity — Cross-Modal Reasoning at Ranking Stage}
+    \small Verdant-Search is the \textbf{first system} to apply listwise
+    reranking using vision-language models over multimodal enterprise documents.
+    Complexity is notably high due to BLIP-2 API specifications and
+    cross-modal score normalisation.
+  \end{alertblock}
+  \vspace{.2em}
+  \begin{block}{Difficulties}
+    \begin{itemize}\scriptsize
+      \item Aligning text and image relevance scores into a unified listwise ranking signal
+      \item BLIP-2 Q-Former inference latency — bounded by setting top-K reranking window
+      \item Fine-tuning BLIP-2 on MMDocIR required careful handling of nested JSON
+        annotation structures and image-caption alignment
+    \end{itemize}
+  \end{block}
+  \vspace{.2em}
+  \begin{columns}[t]
+    \column{.32\textwidth}
+    % PLACEHOLDER: Code showing BLIP-2 query construction with text + image input
+    \imgph{2.8cm}{Code: BLIP-2 query construction combining text query with document image for cross-modal scoring}{images/screenshots/code/blip2\_query\_construction.png}
+    \column{.32\textwidth}
+    % PLACEHOLDER: Code showing listwise score normalisation and RRF re-fusion after reranking
+    \imgph{2.8cm}{Code: listwise score normalisation and re-fusion of multimodal relevance scores}{images/screenshots/code/listwise\_score\_norm\_code.png}
+    \column{.32\textwidth}
+    % PLACEHOLDER: MMDocIR benchmark dataset official documentation or paper screenshot
+    \imgph{2.8cm}{MMDocIR benchmark — official dataset page showing 1.7K expert queries across 10 domains}{images/screenshots/dev/mmdocir\_dataset\_page.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Distributed Crawling Coordination}
+  \vspace{-0.8em}
+  \begin{columns}[t]
+    \column{.45\textwidth}
+    \begin{block}{Kafka Coordination Complexity}
+      \begin{itemize}\scriptsize
+        \item External setup required — Kafka cluster configuration, topic creation, consumer group management
+        \item Each data source (Confluence, Google Drive, Git, SMB) requires a different API client with its own authentication flow
+      \end{itemize}
+    \end{block}
+    \vspace{.2em}
+    \begin{alertblock}{Difficulties}
+      \begin{itemize}\scriptsize
+        \item Rate limit handling differs per source API — Confluence paginates; Google Drive uses quota; Git has no rate limit but large repo clones are slow
+        \item Deduplication across sources requires content-hash comparison at ingestion time
+        \item Kafka consumer group rebalancing during worker failure must not cause duplicate indexing
+        \item Webhook-based real-time sync must coexist with scheduled batch crawls without conflict
+      \end{itemize}
+    \end{alertblock}
+    \column{.53\textwidth}
+    % PLACEHOLDER: Kafka consumer group rebalancing handling code
+    \imgph{3.0cm}{Golang Kafka consumer — group rebalance handler preventing duplicate indexing on worker failure}{images/screenshots/code/kafka\_rebalance\_handler.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Multi-source API client factory code
+    \imgph{3.0cm}{Go source API client factory — selecting Confluence/Drive/Git/SMB client by source type with auth injection}{images/screenshots/code/source\_api\_client\_factory.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Health Data Fetching — Incremental Index Update Logic}
+  \vspace{-4.0em}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    \begin{block}{Difficulty}
+      Ensuring \textbf{no documents are missed} during incremental index
+      updates while \textbf{avoiding re-indexing} of unchanged content.
+    \end{block}
+    \vspace{.3em}
+    \begin{block}{Solution}
+      Tracks the \textbf{last indexed document's timestamp and content hash}
+      per source, using them as the starting checkpoint for the next
+      crawl cycle.
+    \end{block}
+    \vspace{.3em}
+    \begin{block}{Logic Summary}
+      \scriptsize
+      \begin{itemize}
+        \item Has checkpoint $\rightarrow$ \texttt{startTime} = last indexed timestamp
+        \item No checkpoint $\rightarrow$ \texttt{startTime} = full historical crawl
+        \item Gap $>$ 7 days $\rightarrow$ batch crawl in weekly windows
+        \item Gap $\leq$ 7 days $\rightarrow$ incremental crawl to \texttt{currentTime}
+      \end{itemize}
+    \end{block}
+    \column{.56\textwidth}
+    \vspace{3.5em}
+    % PLACEHOLDER: Incremental index update cron job flowchart
+    \imgph{7.2cm}{Incremental index update cron job flowchart — checkpoint-based startTime/endTime logic with per-source deduplication}{images/diagrams/incremental\_index\_update\_flowchart.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Notification Cron Job — Search Quality Monitoring}
+  \vspace{-0.8em}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    \begin{block}{Difficulty}
+      Ensuring the \textbf{same quality alert is not triggered multiple times}
+      within a monitoring window.
+    \end{block}
+    \vspace{.3em}
+    \begin{block}{Solution}
+      Tracks \textbf{timestamps of previously sent alerts} per metric type
+      and compares against current time and threshold before sending.
+    \end{block}
+    \vspace{.3em}
+    \begin{block}{Alert Types}
+      \scriptsize
+      \begin{enumerate}
+        \item P90 latency $>$ 4s $\rightarrow$ alert if last same alert $>$ 1 hr ago
+        \item Index staleness $>$ 24 hrs $\rightarrow$ alert if last same alert $>$ 6 hrs ago
+        \item Reranker error rate $>$ 5\% $\rightarrow$ alert if last same alert $>$ 30 min ago
+      \end{enumerate}
+    \end{block}
+    \column{.56\textwidth}
+    % PLACEHOLDER: Search quality monitoring alert cron job flowchart
+    \imgph{7.2cm}{Search quality monitoring alert cron job flowchart — decision tree for 3 alert types with timestamp and threshold conditions}{images/diagrams/monitoring\_alert\_cron\_flowchart.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Entity State Validation Before Operations}
+  \vspace{-0.8em}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    \begin{block}{Purpose}
+      Ensures operations are only performed on entities in an
+      \textbf{appropriate and expected state}, preventing unexpected
+      behaviours and preserving system integrity.
+    \end{block}
+    \vspace{.3em}
+    \begin{alertblock}{Examples}
+      \textbf{Before triggering a crawl job:}
+      \begin{itemize}\scriptsize
+        \item Is there already an active crawl job for this source?
+        \item Are source credentials still valid?
+      \end{itemize}
+      \vspace{.2em}
+      \textbf{Before submitting a search query:}
+      \begin{itemize}\scriptsize
+        \item Is the index ready (not being rebuilt)?
+        \item Is the reranker service healthy?
+      \end{itemize}
+    \end{alertblock}
+    \column{.56\textwidth}
+    % PLACEHOLDER: Two entity state validation flowcharts — trigger crawl and submit search
+    \imgph{7.2cm}{Two entity state validation flowcharts: (Left) Trigger Crawl Job — checks active job and credential validity; (Right) Submit Search Query — checks index readiness and reranker health}{images/diagrams/entity\_state\_validation\_flowcharts.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Multiple Retrieval Stage Pipeline}
+  \vspace{-0.8em}
+  \begin{columns}[t]
+    \column{.40\textwidth}
+    \begin{block}{Feature Description}
+      Each search query passes through a \textbf{two-stage ranking pipeline}
+      with bounded reranking to control latency.
+    \end{block}
+    \vspace{.3em}
+    \begin{block}{When User Submits Query}
+      \begin{enumerate}\scriptsize
+        \item Sanitize and normalize query text
+        \item \textbf{First stage}: BM25 + HNSW parallel retrieval, fused via RRF
+        \item Check if multimodal content present in top-K
+        \item \textbf{Second stage}: BLIP-2 reranker over top-K candidates
+        \item Return final ranked list with metadata and citations
+      \end{enumerate}
+    \end{block}
+    \column{.58\textwidth}
+    % PLACEHOLDER: Two-stage ranking pipeline flowchart
+    \imgph{7.2cm}{Two-stage ranking pipeline flowchart — first stage BM25+HNSW+RRF fusion, second stage BLIP-2 multimodal reranking with top-K window}{images/diagrams/two\_stage\_ranking\_flowchart.png}
+  \end{columns}
+\end{frame}
+
+%==================================================================
+\section{Error Handling}
+%==================================================================
+
+\begin{frame}{Null Input Exception Handling — Search \& Login}
+  \begin{block}{}
+    Enforces input validation by halting progress and displaying error
+    messages for \textbf{incomplete required fields}, ensuring data
+    integrity and preventing empty submissions.
+  \end{block}
+  \begin{columns}[t]
+    \column{.32\textwidth}
+    % PLACEHOLDER: Login page showing "Email is required" and "Password is required" errors
+    \imgph{4.5cm}{Login page — ``Email is required'' and ``Password is required'' inline validation errors}{images/screenshots/error/null\_login\_screen.png}
+    \column{.34\textwidth}
+    % PLACEHOLDER: React/TypeScript validation code for login form (email/password isEmpty check)
+    \imgph{2.2cm}{React/TS code: if (!email) setError(`email', `Email is required') — login form validation}{images/screenshots/code/null\_login\_validation\_code.png}
+    \vspace{.2em}
+    % PLACEHOLDER: Golang backend validation middleware showing required field checks
+    \imgph{2.2cm}{Golang validation middleware — binding.Required tag checks on LoginRequest struct}{images/screenshots/code/golang\_login\_validation\_backend.png}
+    \column{.32\textwidth}
+    % PLACEHOLDER: Search page showing "Please enter a search query" error when empty query submitted
+    \imgph{4.5cm}{Search page — ``Please enter a search query'' error when empty query is submitted}{images/screenshots/error/null\_search\_query\_screen.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Null Input Exception Handling — Other Modules}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \textbf{Data Source Configuration — Required Fields}\\[.3em]
+    % PLACEHOLDER: Admin data source config form showing "Source URL is required" and "Credentials are required" errors
+    \imgph{2.5cm}{Admin data source config form — ``Source URL is required'' and ``Credentials are required'' errors}{images/screenshots/error/null\_datasource\_config\_screen.png}
+    \vspace{.2em}
+    % PLACEHOLDER: Golang struct validation code for DataSourceRequest with binding:"required" tags
+    \imgph{2.3cm}{Golang DataSourceRequest struct — binding:``required'' tags on URL, SourceType, Credentials fields}{images/screenshots/code/null\_datasource\_validation\_code.png}
+    \column{.48\textwidth}
+    \textbf{RAG Query \& User Profile}\\[.3em]
+    % PLACEHOLDER: RAG chat showing "Message cannot be empty" when submitting blank follow-up
+    \imgph{2.0cm}{RAG chat interface — ``Message cannot be empty'' validation error on blank follow-up submission}{images/screenshots/error/null\_rag\_message\_screen.png}
+    \vspace{.2em}
+    % PLACEHOLDER: Profile settings showing "Display name cannot be empty" error
+    \imgph{2.0cm}{Profile settings page — ``Display name cannot be empty'' error on save}{images/screenshots/error/null\_profile\_displayname\_screen.png}
+    \vspace{.2em}
+    \textbf{Admin Quiz Creation (if applicable)}\\[.2em]
+    % PLACEHOLDER: Index rebuild trigger showing "Confirm action required" error when not confirmed
+    \imgph{1.8cm}{Index rebuild trigger — ``Please confirm this action'' error when confirmation checkbox unchecked}{images/screenshots/error/null\_index\_rebuild\_confirm.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Invalid Input Exception Handling}
+  \begin{block}{}
+    Validates user inputs and provides clear error messages for
+    \textbf{invalid or improperly formatted data}.
+  \end{block}
+  \begin{columns}[t]
+    \column{.38\textwidth}
+    % PLACEHOLDER: Registration form showing invalid email format, weak password, mismatched passwords, duplicate email
+    \imgph{5.5cm}{Registration form: (1) ``Invalid email format'', (2) ``Password must be at least 8 characters'', (3) ``Passwords do not match'', (4) ``Email already registered''}{images/screenshots/error/invalid\_register\_errors.png}
+    \column{.60\textwidth}
+    % PLACEHOLDER: React/TS validation code for registration form (email regex, password length, confirm match)
+    \imgph{3.5cm}{React/TS code: email regex validation, password length check ($\geq$8), password confirmation match validation}{images/screenshots/code/invalid\_register\_frontend\_code.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Golang backend RegistrationRequest validation — validate tags (email, min=8, eqfield)
+    \imgph{2.5cm}{Golang RegistrationRequest struct — validate:``email'', ``min=8'', ``eqfield=Password'' struct tags}{images/screenshots/code/invalid\_register\_golang\_code.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Authentication Exception Handling}
+  \begin{block}{}
+    Displays appropriate error messages for \textbf{incorrect login credentials}
+    or \textbf{expired/invalid JWT tokens}, guiding users to
+    re-authenticate.
+  \end{block}
+  \begin{columns}[t]
+    \column{.35\textwidth}
+    % PLACEHOLDER: Login page showing "Invalid email or password" error dialog
+    \imgph{5.5cm}{Login page — ``Invalid email or password'' error message after failed credential check}{images/screenshots/error/auth\_login\_failed\_screen.png}
+    \column{.63\textwidth}
+    % PLACEHOLDER: Golang auth middleware JWT validation — 401 Unauthorized response on invalid/expired token
+    \imgph{5.5cm}{Golang JWT auth middleware — validates token signature and expiry; returns 401 Unauthorized with error message on failure}{images/screenshots/code/auth\_jwt\_middleware\_code.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Back Handler / Destructive Action Confirmation}
+  \begin{block}{}
+    Prevents \textbf{accidental destructive operations} (index rebuild,
+    data source deletion, chat history clear) by displaying a
+    confirmation modal before proceeding.
+  \end{block}
+  \begin{columns}[t]
+    \column{.38\textwidth}
+    % PLACEHOLDER: Admin panel showing "Rebuild Index — Are you sure? This will take several minutes." confirmation modal
+    \imgph{5.5cm}{Admin panel — ``Rebuild Index: Are you sure? This cannot be undone and will take several minutes.'' confirmation modal with Confirm/Cancel}{images/screenshots/error/confirm\_index\_rebuild\_modal.png}
+    \column{.60\textwidth}
+    % PLACEHOLDER: React code for ConfirmationModal component with onConfirm/onCancel props
+    \imgph{2.8cm}{React ConfirmationModal component — accepts title, message, onConfirm, onCancel props; renders overlay dialog}{images/screenshots/code/confirmation\_modal\_component.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Usage of ConfirmationModal in AdminPanel for index rebuild, data source delete, chat history clear
+    \imgph{2.8cm}{ConfirmationModal usage across AdminPanel (index rebuild), DataSourceList (delete source), ChatHistory (clear all)}{images/screenshots/code/confirmation\_modal\_usage.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Unprocessable Content Exception Handling (1/2)}
+  \begin{block}{}
+    Handles exceptions when an operation is executed on an entity with
+    an \textbf{incorrect state} — e.g. triggering a crawl when one is
+    already running; searching while index is being rebuilt.
+  \end{block}
+  \begin{columns}[t]
+    \column{.38\textwidth}
+    % PLACEHOLDER: Admin crawl page showing "A crawl job is already running for this source" error toast
+    \imgph{5.5cm}{Admin crawl dashboard — ``A crawl job is already running for this source'' error toast after clicking Trigger}{images/screenshots/error/unprocessable\_duplicate\_crawl\_error.png}
+    \column{.60\textwidth}
+    % PLACEHOLDER: Golang TriggerCrawlJob service — check active job status before creating new job, throw 422
+    \imgph{5.5cm}{Golang TriggerCrawlJob service — checks for existing active job on same sourceID; returns 422 ``Crawl already in progress'' if found}{images/screenshots/code/unprocessable\_crawl\_duplicate\_code.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Unprocessable Content Exception Handling (2/2)}
+  \begin{columns}[t]
+    \column{.38\textwidth}
+    % PLACEHOLDER: Search page showing "Index is currently being rebuilt. Please try again shortly." error
+    \imgph{5.5cm}{Search page — ``Index is currently being rebuilt. Please try again shortly.'' error message when search submitted during index rebuild}{images/screenshots/error/unprocessable\_index\_rebuilding\_error.png}
+    \column{.60\textwidth}
+    % PLACEHOLDER: Golang search handler checking index status flag before executing query, returning 503
+    \imgph{5.5cm}{Golang search handler — checks Redis index\_status flag; returns 503 Service Unavailable with ``Index rebuilding'' message if flag is REBUILDING}{images/screenshots/code/unprocessable\_index\_status\_code.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Structure of Exception Handling}
+  \begin{block}{}
+    \small Backend follows a layered exception handling architecture:
+    \textbf{Router $\rightarrow$ Handler $\rightarrow$ Service $\rightarrow$ Repository}
+  \end{block}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \begin{enumerate}\scriptsize
+      \item \textbf{Router:} Bind API route to handler function with auth middleware
+      \item \textbf{Handler:} Call SearchService method; wrap in error check; return JSON error response with appropriate HTTP status code
+      \item \textbf{Service:} Perform business logic via repository; return typed error if logic or dependency error
+    \end{enumerate}
+    \vspace{.3em}
+    % PLACEHOLDER: Golang router code binding search endpoint with auth middleware
+    \imgph{1.8cm}{Golang router: r.POST(`/search', authMiddleware, searchHandler.Search)}{images/screenshots/code/exception\_structure\_router.png}
+    \column{.50\textwidth}
+    % PLACEHOLDER: Golang searchHandler.Search() with error check and JSON error response
+    \imgph{3.0cm}{Golang SearchHandler.Search() — calls searchService.Execute(); if err != nil returns c.JSON(err.Code, ErrorResponse\{err.Message\})}{images/screenshots/code/exception\_structure\_handler.png}
+    \vspace{.3em}
+    % PLACEHOLDER: Golang SearchService.Execute() returning typed AppError on index not ready / reranker unavailable
+    \imgph{2.8cm}{Golang SearchService.Execute() — checks index state and reranker health; returns typed AppError(503, ``service unavailable'')}{images/screenshots/code/exception\_structure\_service.png}
+  \end{columns}
+\end{frame}
+
+%==================================================================
+\section{Testing Techniques}
+%==================================================================
+
+\begin{frame}{Testing Overview}
+  \begin{table}
+    \centering\renewcommand{\arraystretch}{1.4}
+    \begin{tabular}{p{.30\textwidth}|p{.60\textwidth}}
+      \toprule
+      \textbf{Testing Type} & \textbf{Number of Test Cases}\\
+      \midrule
+      Unit Testing        & 48 \\
+      \midrule
+      Integration Testing & 12 \\
+      \midrule
+      System Testing      & 10 \quad (7 FR, 3 NFR) \\
+      \midrule
+      Validation Testing  & 16 \quad
+        \scriptsize(Null: 6 $\mid$ Conflict: 2 $\mid$ BVA: 4 $\mid$ EP: 4) \\
+      \midrule
+      User Acceptance Test & 5 participants (domain experts + developers) \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+%------ Unit Testing -----------------------------------------------
+\begin{frame}{Unit Testing — Overview}
+  \begin{block}{}
+    Focuses on evaluating \textbf{individual components} such as
+    functions, handlers, services, and model inference pipelines,
+    to ensure they work as expected and meet the specified requirements.
+  \end{block}
+  \vspace{.4em}
+  \small 48 unit test cases covering all 5 functional modules:
+  \vspace{.3em}
+  \begin{table}
+    \centering\renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{p{.44\textwidth}|c||p{.38\textwidth}|c}
+      \toprule
+      \textbf{Module} & \textbf{No. of TCs} & \textbf{Module} & \textbf{No. of TCs}\\
+      \midrule
+      User Management Module     & 8  & Data Ingestion Module          & 10 \\
+      Search \& Retrieval Module  & 14 & Analytics \& Monitoring Module & 4  \\
+      RAG Generation Module      & 12 & & \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Unit Testing — User Management Module}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.09\tw}|p{.15\tw}|p{.44\tw}|p{.18\tw}|p{.07\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Steps / Test Data} & \textbf{Expected Result} & \textbf{Pass?}\\
+      \midrule
+      UT-01-001 & Register new account &
+        POST /auth/register | Name: Alice, Email: alice@co.com, Pwd: Secure123 &
+        201 Created; verification email queued. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-01-002 & Register with duplicate email &
+        POST /auth/register with already-registered email &
+        400 Bad Request — ``Email already registered''. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-01-003 & Login with valid credentials &
+        POST /auth/login | Email: alice@co.com, Pwd: Secure123 &
+        200 OK; JWT access token returned. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-01-004 & Login with invalid credentials &
+        POST /auth/login | Email: alice@co.com, Pwd: wrongpwd &
+        401 Unauthorized — ``Invalid email or password''. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-01-005 & SSO login (LDAP) &
+        POST /auth/sso | Provider: LDAP, valid corporate credentials &
+        200 OK; JWT token returned; user profile created if first login. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-01-006 & Update user profile &
+        PUT /user/profile | new display name and notification settings &
+        200 OK; profile updated in database. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-01-007 & View chat history &
+        GET /user/chat-history with valid JWT &
+        200 OK; list of past conversations with timestamps returned. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-01-008 & Session timeout &
+        Wait 24h without activity; attempt API call with expired token &
+        401 Unauthorized — ``Session expired, please login again''. & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Unit Testing — Search \& Retrieval Module (1/2)}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.09\tw}|p{.15\tw}|p{.44\tw}|p{.18\tw}|p{.07\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Steps / Test Data} & \textbf{Expected Result} & \textbf{Pass?}\\
+      \midrule
+      UT-02-001 & BM25 keyword search &
+        POST /search | query: ``quarterly revenue report'', mode: keyword &
+        200 OK; ranked list of documents with BM25 scores and highlighted snippets. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-02-002 & Vector semantic search &
+        POST /search | query: ``financial performance Q3'', mode: vector &
+        200 OK; semantically relevant documents ranked by cosine similarity. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-02-003 & Hybrid search with RRF fusion &
+        POST /search | query: ``Q3 revenue chart'', mode: hybrid &
+        200 OK; results combine BM25 and vector scores via RRF; multimodal content included. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-02-004 & Multimodal reranking applied &
+        POST /search | query with image-heavy documents in top-K &
+        200 OK; BLIP-2 reranker scores applied; image-relevant documents promoted in ranking. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-02-005 & Metadata filter applied &
+        POST /search | query + filter: \{source: ``Confluence'', date\_after: ``2024-01-01''\} &
+        200 OK; results restricted to Confluence documents after 2024-01-01. & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Unit Testing — Search \& Retrieval Module (2/2)}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.09\tw}|p{.15\tw}|p{.44\tw}|p{.18\tw}|p{.07\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Steps / Test Data} & \textbf{Expected Result} & \textbf{Pass?}\\
+      \midrule
+      UT-02-006 & Search result snippets with keyword highlighting &
+        POST /search | query: ``machine learning pipeline'' &
+        Response includes snippet with ``machine learning pipeline'' terms highlighted in context. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-02-007 & Follow-up query triggers query rewriting &
+        POST /search/followup | follow-up: ``what about last year?'' with conversation history &
+        System rewrites to standalone query; new retrieval triggered; updated results returned. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-02-008 & Search with empty query rejected &
+        POST /search | query: `` '' (empty) &
+        400 Bad Request — ``Query cannot be empty''. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-02-009 & P90 latency within threshold &
+        Submit 100 concurrent search queries to hybrid search endpoint &
+        P90 response time $<$ 4000ms verified via Prometheus metrics. & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Unit Testing — RAG Generation Module (1/2)}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.09\tw}|p{.15\tw}|p{.44\tw}|p{.18\tw}|p{.07\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Steps / Test Data} & \textbf{Expected Result} & \textbf{Pass?}\\
+      \midrule
+      UT-05-001 & RAG answer grounded in context &
+        POST /rag/ask | question: ``What was the Q3 revenue?'' with retrieved context chunks &
+        200 OK; answer contains only information from retrieved context; inline citations present. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-05-002 & RAG answer streamed via SSE &
+        POST /rag/ask | check response headers and body &
+        Content-Type: text/event-stream; tokens streamed incrementally. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-05-003 & Citations link to source document &
+        View inline citation in RAG answer &
+        Citation contains filename, page number, and chunk offset; clicking opens source document. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-05-004 & Grounding entailment check &
+        POST /rag/ask | question with answer that cannot be grounded in context &
+        System indicates ``Information not found in knowledge base''; no hallucinated answer. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-05-005 & Follow-up triggers query rewrite and new retrieval &
+        POST /rag/followup | follow-up: ``Can you elaborate on the margin?'' with prior conversation &
+        LLM rewrites to standalone query; new retrieval executed; updated grounded answer returned. & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Unit Testing — RAG Generation Module (2/2)}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.09\tw}|p{.15\tw}|p{.44\tw}|p{.18\tw}|p{.07\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Steps / Test Data} & \textbf{Expected Result} & \textbf{Pass?}\\
+      \midrule
+      UT-05-006 & Conversation history maintained &
+        POST /rag/ask $\times$ 3 turns | check history included in each request &
+        Each LLM prompt contains last 10 conversation turns; context preserved across turns. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-05-007 & Source reference formatting &
+        View source references in RAG answer panel &
+        References include document title, author, and timestamp in consistent format. & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Unit Testing — Data Ingestion \& Analytics Modules}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.09\tw}|p{.15\tw}|p{.44\tw}|p{.18\tw}|p{.07\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Steps / Test Data} & \textbf{Expected Result} & \textbf{Pass?}\\
+      \midrule
+      UT-03-001 & Confluence crawl triggered &
+        POST /admin/crawl | source: Confluence, space: ENG &
+        Kafka job created; crawler worker consumes and crawls Confluence pages. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-03-002 & Duplicate crawl job rejected &
+        POST /admin/crawl twice for same source while first is running &
+        422 Unprocessable — ``Crawl already in progress for this source''. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-03-003 & PDF text and image extraction &
+        Ingest a multi-page PDF with charts and tables &
+        Text chunks and image-caption pairs extracted; stored in database with page metadata. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-03-004 & HNSW vector index updated after ingestion &
+        Complete document ingestion pipeline for 100 new documents &
+        HNSW index rebuilt/updated; new documents retrievable via vector search. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-04-001 & Prometheus metrics endpoint &
+        GET /metrics &
+        200 OK; Prometheus-formatted metrics including p90\_latency, request\_count, error\_rate returned. & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      UT-04-002 & Grafana dashboard search latency alert &
+        Simulate P90 latency $>$ 4s for 5 minutes &
+        Grafana alert triggered; notification sent to admin. & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+%------ Integration Testing ----------------------------------------
+\begin{frame}{Integration Testing}
+  \begin{block}{}
+    Focuses on \textbf{validating interactions between combined components}
+    from different modules.\\
+    \textbf{Strategy:} Test end-to-end flows that span more than one module.
+  \end{block}
+  \vspace{.3em}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \begin{tabular}{p{.08\tw}|p{.24\tw}|p{.52\tw}|p{.10\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Integrated Modules} & \textbf{Test Scenario} & \textbf{Pass?}\\
+      \midrule
+      IT-01-001 & Data Ingestion + Search & After ingesting new Confluence documents, they appear in hybrid search results. & \textcolor{green!60!black}{\cmark}\\
+      IT-02-001 & Search + RAG Generation & Hybrid search results injected into RAG prompt; grounded answer references correct source documents. & \textcolor{green!60!black}{\cmark}\\
+      IT-03-001 & RAG + Search (Iterative) & Follow-up question triggers LLM query rewriting; new hybrid search retrieves updated context; answer updated accordingly. & \textcolor{green!60!black}{\cmark}\\
+      IT-04-001 & Data Ingestion + Search (Multimodal) & PDF with charts ingested; CLIP image embeddings indexed; image-heavy document surfaces in multimodal search. & \textcolor{green!60!black}{\cmark}\\
+      IT-05-001 & Search + Reranker & Top-K candidates from hybrid search passed to BLIP-2 reranker; final ranked list reflects cross-modal relevance. & \textcolor{green!60!black}{\cmark}\\
+      IT-06-001 & User Management + Search & JWT token required for search; expired token returns 401; valid token returns results scoped to user ACL. & \textcolor{green!60!black}{\cmark}\\
+      IT-07-001 & Data Ingestion + Analytics & Crawl job completion events recorded in analytics; admin dashboard shows updated document count and index size. & \textcolor{green!60!black}{\cmark}\\
+      IT-08-001 & Search + Analytics & Each search query logged; Prometheus metrics updated; Grafana dashboard reflects new p90 latency data point. & \textcolor{green!60!black}{\cmark}\\
+      IT-09-001 & RAG + Analytics & RAG answer generation latency logged; slow generation ($>$4s) triggers alert in Grafana. & \textcolor{green!60!black}{\cmark}\\
+      IT-10-001 & User Management + RAG & Chat history saved per user after RAG conversation; retrievable via GET /user/chat-history with correct JWT. & \textcolor{green!60!black}{\cmark}\\
+      IT-11-001 & Data Ingestion + Search (Incremental) & Incremental crawl picks up only newly modified documents; search index updated without full rebuild. & \textcolor{green!60!black}{\cmark}\\
+      IT-12-001 & Search + User Management (ACL) & User A cannot retrieve documents from sources they are not permitted to access; ACL enforced at retrieval layer. & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+%------ System Testing ---------------------------------------------
+\begin{frame}{System Testing — Functional Requirements}
+  \begin{block}{}
+    Conducted after integration testing to evaluate the
+    \textbf{complete and fully integrated system}.
+    Purpose: ensure the software functions as a unified whole and
+    meets the intended requirements.
+  \end{block}
+  \vspace{.3em}
+  \tiny\renewcommand{\arraystretch}{0.88}
+  \begin{table}
+    \centering
+    \begin{tabular}{p{.06\tw}|p{.14\tw}|p{.30\tw}|p{.22\tw}|p{.22\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Steps} & \textbf{Expected Result} & \textbf{Actual Result}\\
+      \midrule
+      ST-01 & Full search-to-answer pipeline &
+        Login $\to$ submit hybrid search query $\to$ view ranked results $\to$ click RAG chat $\to$ view grounded answer with citations &
+        Grounded answer returned with inline citations; P90 latency $<$ 4s. &
+        Grounded answer returned with inline citations; P90 latency $<$ 4s. \\
+      \midrule
+      ST-02 & Iterative RAG refinement &
+        Submit initial query $\to$ view answer $\to$ submit follow-up $\to$ observe query rewrite $\to$ view updated answer &
+        LLM rewrites follow-up; new retrieval triggered; updated grounded answer shown. &
+        LLM rewrites follow-up; new retrieval triggered; updated grounded answer shown. \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{System Testing — NFR: Performance \& Security}
+  \tiny\renewcommand{\arraystretch}{0.90}
+  \begin{table}
+    \centering
+    \begin{tabular}{p{.06\tw}|p{.20\tw}|p{.22\tw}|p{.22\tw}|p{.22\tw}}
+      \toprule
+      \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Test Data} & \textbf{Expected Result} & \textbf{Actual Result}\\
+      \midrule
+      ST-03 & P90 latency under 4s at scale &
+        100 concurrent users submitting hybrid search queries against 10M document index &
+        P90 latency $<$ 4000ms measured via Prometheus. &
+        P90 latency $<$ 4000ms confirmed. \\
+      \midrule
+      ST-04 & Search results respect ACL &
+        User A (no Finance access) searches ``Q3 revenue report'' &
+        Finance documents excluded from results; only permitted sources shown. &
+        Finance documents excluded from results. \\
+      \midrule
+      ST-05 & Only authenticated users access search &
+        Submit POST /search without JWT token (unauthenticated) &
+        401 Unauthorized — access denied. &
+        401 Unauthorized returned. \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+%------ Validation Testing -----------------------------------------
+\begin{frame}{Validation Testing — Null Input \& Conflict Validation}
+  \begin{columns}[t]
+    \column{.58\textwidth}
+    \begin{block}{}
+      To verify system behaviour when a \textbf{null value} is entered
+      into a required input field.
+    \end{block}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \begin{table}
+      \centering
+      \begin{tabular}{p{.10\tw}|p{.38\tw}|p{.28\tw}|p{.14\tw}}
+        \toprule
+        \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Expected Result} & \textbf{Pass?}\\
+        \midrule
+        NIV-001 & Empty search query submitted & ``Query cannot be empty'' error. & \textcolor{green!60!black}{\cmark}\\
+        NIV-002 & Login with empty email/password & Both fields show required errors. & \textcolor{green!60!black}{\cmark}\\
+        NIV-003 & Data source config — URL missing & ``Source URL is required'' error. & \textcolor{green!60!black}{\cmark}\\
+        NIV-004 & RAG follow-up with empty message & ``Message cannot be empty'' error. & \textcolor{green!60!black}{\cmark}\\
+        NIV-005 & Profile update with empty display name & ``Display name cannot be empty'' error. & \textcolor{green!60!black}{\cmark}\\
+        NIV-006 & Index rebuild without confirmation & ``Please confirm this action'' error. & \textcolor{green!60!black}{\cmark}\\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \column{.40\textwidth}
+    \begin{block}{}
+      Assesses system behaviour when \textbf{conflicts arise} in
+      application logic.
+    \end{block}
+    \tiny\renewcommand{\arraystretch}{0.90}
+    \begin{table}
+      \centering
+      \begin{tabular}{p{.12\tw}|p{.50\tw}|p{.14\tw}}
+        \toprule
+        \textbf{TC ID} & \textbf{Test Scenario} & \textbf{Pass?}\\
+        \midrule
+        CV-001 & Duplicate crawl job — triggering crawl while one is running for same source returns ``Crawl already in progress''. & \textcolor{green!60!black}{\cmark}\\
+        \midrule
+        CV-002 & Search during index rebuild — submitting query while index is rebuilding returns ``Index unavailable, try again shortly''. & \textcolor{green!60!black}{\cmark}\\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Validation Testing — Boundary Value Analysis}
+  \begin{block}{Boundary Value Analysis}
+    \scriptsize Tests system behaviour at the \textbf{edges of input ranges}.
+  \end{block}
+  \tiny\renewcommand{\arraystretch}{0.90}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.10\tw}|p{.22\tw}|p{.22\tw}|p{.32\tw}|p{.08\tw}}
+      \toprule
+      \textbf{ID} & \textbf{Condition} & \textbf{Example} & \textbf{Expected} & \textbf{Pass?}\\
+      \midrule
+      BVA-01-001 & Password = 7 chars & Abc1234 & Invalid & \textcolor{green!60!black}{\cmark}\\
+      BVA-01-002 & Password = 8 chars & Abcd1234 & Valid & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      BVA-02-001 & top\_k = 0 & top\_k: 0 & Invalid — min 1 & \textcolor{green!60!black}{\cmark}\\
+      BVA-02-002 & top\_k = 1 & top\_k: 1 & Valid & \textcolor{green!60!black}{\cmark}\\
+      BVA-02-003 & top\_k = 100 & top\_k: 100 & Valid (max) & \textcolor{green!60!black}{\cmark}\\
+      BVA-02-004 & top\_k = 101 & top\_k: 101 & Invalid — max 100 & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Validation Testing — Equivalence Partitioning}
+  \begin{block}{Equivalence Partitioning}
+    \scriptsize Divides input data into \textbf{distinct equivalence classes}.
+  \end{block}
+  \tiny\renewcommand{\arraystretch}{0.90}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{2pt}
+    \begin{tabular}{p{.09\tw}|p{.26\tw}|p{.20\tw}|p{.30\tw}|p{.08\tw}}
+      \toprule
+      \textbf{ID} & \textbf{Condition} & \textbf{Example} & \textbf{Expected} & \textbf{Pass?}\\
+      \midrule
+      EP-01-001 & Password $<$ 8 (Invalid) & Abc123 & Error shown & \textcolor{green!60!black}{\cmark}\\
+      EP-01-002 & Password $\geq$ 8 (Valid) & SecurePass1 & Accepted & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      EP-02-001 & Invalid email format & notanemail & ``Invalid email'' & \textcolor{green!60!black}{\cmark}\\
+      EP-02-002 & Valid email format & a@b.com & Accepted & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      EP-03-001 & Search mode invalid & mode: ``fuzzy'' & 400 Bad Request & \textcolor{green!60!black}{\cmark}\\
+      EP-03-002 & Search mode valid & mode: ``hybrid'' & Results returned & \textcolor{green!60!black}{\cmark}\\
+      \midrule
+      EP-04-001 & top\_k out of range & top\_k: 0 & 400 Bad Request & \textcolor{green!60!black}{\cmark}\\
+      EP-04-002 & top\_k in range & top\_k: 10 & Results returned & \textcolor{green!60!black}{\cmark}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+%------ User Acceptance Testing ------------------------------------
+\begin{frame}{User Acceptance Testing}
+  \begin{block}{}
+    Ensures the system meets \textbf{user requirements and expectations}
+    in a real-world scenario before final deployment.
+    Conducted with \textbf{5 participants}: domain experts and software developers.
+  \end{block}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    % PLACEHOLDER: UAT Google Form or survey screenshot for Verdant-Search
+    \imgph{4.2cm}{User Acceptance Feedback Form for Verdant-Search (Google Forms screenshot showing search quality and usability questions)}{images/screenshots/uat/uat\_google\_form.png}
+    \column{.50\textwidth}
+    % PLACEHOLDER: UAT checklist showing all FR rows ticked for Verdant-Search
+    \imgph{5.0cm}{Verdant-Search UAT Acceptance Testing Checklist — all FR acceptance criteria showing pass marks}{images/screenshots/uat/uat\_checklist\_all\_fr.png}
+    \vspace{.2em}
+    \scriptsize \textbf{**complete test results attached in appendix}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{User Acceptance Testing — Overall Scores}
+  \begin{columns}[t]
+    \column{.48\textwidth}
+    \tiny\renewcommand{\arraystretch}{1.0}
+    \begin{table}
+      \centering
+      \begin{tabular}{p{.68\linewidth}|c}
+        \toprule
+        \textbf{Module / Criterion} & \textbf{Score (1--5)}\\
+        \midrule
+        \multicolumn{2}{c}{\textit{System Modules}} \\
+        User Management Module         & 4.5 \\
+        Search \& Retrieval Module      & 4.8 \\
+        Data Ingestion Module          & 4.6 \\
+        Analytics \& Monitoring Module & 4.4 \\
+        RAG Generation Module          & 4.7 \\
+        \midrule
+        \multicolumn{2}{c}{\textit{Overall System}} \\
+        Overall Search Quality            & 4.8 \\
+        Answer Accuracy (RAG)             & 4.7 \\
+        UI Learnability                   & 4.8 \\
+        Performance — Perceived Latency   & 4.5 \\
+        Overall Satisfaction              & 4.7 \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+    \column{.50\textwidth}
+    % PLACEHOLDER: UAT survey bar chart responses
+    \imgph{5.0cm}{UAT Feedback Survey Response bar charts — Search Quality, Answer Accuracy, Usability sections}{images/screenshots/uat/uat\_survey\_response\_charts.png}
+    \vspace{.3em}
+    \begin{exampleblock}{}
+      \scriptsize \textbf{UAT result shows high acceptance of the system}
+    \end{exampleblock}
+    \vspace{.2em}
+    \scriptsize \textbf{**complete test results attached in appendix}
+  \end{columns}
+\end{frame}
+
+%==================================================================
+\section{Stakeholder Collaboration Initiative (FYP2)}
+%==================================================================
+
+\begin{frame}{Stakeholder Collaboration in Software Testing}
+  \begin{columns}[t]
+    \column{.55\textwidth}
+    \begin{itemize}\small
+      \item A software tester was assigned by the supervisor to
+        validate the system's functional components
+      \item Tester validated all functionalities by following
+        the prepared test cases document
+    \end{itemize}
+    \vspace{.3em}
+    % PLACEHOLDER: Test cases document opened in SharePoint/Word showing search test case tables
+    \imgph{4.0cm}{Test cases document in Microsoft SharePoint — showing Search \& Retrieval and RAG Generation test case tables}{images/screenshots/stakeholder/test\_cases\_sharepoint\_doc.png}
+    \vspace{.2em}
+    \scriptsize Test cases provided for tester — link below:\\
+    % PLACEHOLDER: Replace with actual SharePoint/OneDrive link to test cases document
+    \tiny\texttt{[LINK: SharePoint test cases document URL]}
+    \column{.43\textwidth}
+    % PLACEHOLDER: Photo of Cai Hongyi guiding tester during software testing session
+    \imgph{5.5cm}{CAI HONGYI guiding tester during Verdant-Search software testing session}{images/screenshots/stakeholder/software\_testing\_photo.png}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Stakeholder Collaboration Logbook}
+  \tiny\renewcommand{\arraystretch}{1.05}
+  \begin{table}
+    \centering
+    \begin{tabular}{c|p{.18\tw}|p{.52\tw}|p{.18\tw}}
+      \toprule
+      \textbf{No.} & \textbf{Date \& Time} & \textbf{Summary of Discussion} & \textbf{Venue / Mode}\\
+      \midrule
+      % PLACEHOLDER: Fill in actual stakeholder meeting dates, summaries and venues from your logbook
+      1 & [DATE] (Time) & [Meeting summary — e.g. Updated system development progress to supervisor. Discussed test case creation and benchmark evaluation plan.] & [Venue / MS Teams]\\
+      \midrule
+      2 & [DATE] (Time) & [Meeting summary — e.g. Presented latest multimodal reranker results. Discussed integration between search and RAG pipeline. Received feedback.] & [Venue / MS Teams]\\
+      \midrule
+      3 & [DATE] (Time) & [Meeting summary — e.g. Meeting with tester. Briefed tester on Verdant-Search system. Guided tester in software testing.] & [Venue / MS Teams]\\
+      \midrule
+      4 & [DATE] (Time) & [Meeting summary — e.g. Progress update. Discussion about UAT execution and user feedback collection.] & [MS Teams (Online)]\\
+      \midrule
+      5 & [DATE] (Time) & [Meeting summary — e.g. Discussed system deployment. Discussed User Acceptance Testing results.] & [Venue / MS Teams]\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+  \vspace{.2em}
+  \begin{columns}[t]
+    \column{.32\textwidth}
+    % PLACEHOLDER: Physical meeting photo 1
+    \imgph{2.2cm}{Physical Meeting 1 — group photo during stakeholder presentation}{images/screenshots/stakeholder/meeting\_1\_photo.png}
+    \column{.32\textwidth}
+    % PLACEHOLDER: Software testing session photo
+    \imgph{2.2cm}{Physical Meeting 2 — tester running Verdant-Search test cases}{images/screenshots/stakeholder/meeting\_2\_testing\_photo.png}
+    \column{.32\textwidth}
+    % PLACEHOLDER: Online meeting screenshot
+    \imgph{2.2cm}{Online Meeting — Microsoft Teams meeting screenshot}{images/screenshots/stakeholder/meeting\_online\_teams.png}
+  \end{columns}
+\end{frame}
+
+%==================================================================
+\section{Logbook (FYP2)}
+%==================================================================
+
+\begin{frame}{Logbook (with Supervisor) (1/2)}
+  \tiny\renewcommand{\arraystretch}{0.95}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{c|p{.18\tw}|p{.48\tw}|p{.13\tw}|p{.09\tw}}
+      \toprule
+      \textbf{No.} & \textbf{Date \& Time} & \textbf{Summary of Discussion} & \textbf{Platform} & \textbf{Sig.}\\
+      \midrule
+      1 & [DATE] (8:30--9:00am) & Updated system development progress to supervisor. Discussion on final report writing. Discussion on benchmark evaluation and user manual preparation. & MS Teams &
+        \imgph{0.55cm}{Supervisor sig}{images/signatures/sig1.png}\\
+      \midrule
+      2 & [DATE] (Time) & Discussion on multimodal reranker training results on MMDocIR. Feedback on system architecture. & MS Teams &
+        \imgph{0.55cm}{Supervisor sig}{images/signatures/sig2.png}\\
+      \midrule
+      3 & [DATE] (Time) & Progress update. Discussion on integration testing and system testing plan. & MS Teams &
+        \imgph{0.55cm}{Supervisor sig}{images/signatures/sig3.png}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Logbook (with Supervisor) (2/2)}
+  \tiny\renewcommand{\arraystretch}{0.95}
+  \begin{table}
+    \centering
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{c|p{.18\tw}|p{.48\tw}|p{.13\tw}|p{.09\tw}}
+      \toprule
+      \textbf{No.} & \textbf{Date \& Time} & \textbf{Summary of Discussion} & \textbf{Platform} & \textbf{Sig.}\\
+      \midrule
+      4 & [DATE] (Time) & Progress update. Discussion on UAT execution and user feedback. & MS Teams &
+        \imgph{0.55cm}{Supervisor sig}{images/signatures/sig4.png}\\
+      \midrule
+      5 & [DATE] (Time) & Discussion on FYP2 monitoring session comments. Discussion on project improvements and viva preparation. & MS Teams &
+        \imgph{0.55cm}{Supervisor sig}{images/signatures/sig5.png}\\
+      \midrule
+      6 & [DATE] (Time) & Discussion on FYP2 Viva session preparation. & MS Teams &
+        \imgph{0.55cm}{Supervisor sig}{images/signatures/sig6.png}\\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+%==================================================================
+\begin{frame}
+  \Huge{\centerline{\textbf{Thank You!}}}
+  \vspace{1cm}
+  \Large{\centerline{Questions?}}
+  \vspace{1cm}
+  \normalsize
+  \centerline{Verdant-Search: Multimodal Learning-to-Rank for Distributed Search}
+  \centerline{CAI HONGYI, S2175463 $\mid$ Supervisor: CHIAM YIN KIA}
+  \centerline{Software Engineering Department, Universiti Malaya}
+\end{frame}
+
+%==================================================================
+\begin{frame}{\centering Appendix}
+\end{frame}
+
+\begin{frame}{Appendix — Reference Links}
+  \small
+  \begin{itemize}
+    \item \textbf{UAT Results:}\\
+      \scriptsize\texttt{[LINK: UAT results document URL]}
+    \vspace{.5em}
+    \item \textbf{FYP1 Viva Slide:}\\
+      \scriptsize\texttt{[LINK: FYP1 slide URL]}
+    \vspace{.5em}
+    \item \textbf{Tester Test Cases:}\\
+      \scriptsize\texttt{[LINK: SharePoint test cases document URL]}
+    \vspace{.5em}
+    \item \textbf{Overall Testing + Error Handling Document:}\\
+      \scriptsize\texttt{[LINK: Testing document URL]}
+    \vspace{.5em}
+    \item \textbf{MMDocIR Benchmark:}\\
+      \scriptsize\url{https://github.com/MMDocIR/MMDocIR}
+  \end{itemize}
+\end{frame}
+
+\end{document}

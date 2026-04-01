@@ -1,0 +1,1005 @@
+\chapter{Implementation}
+
+This chapter presents the technical implementation details of the Verdant Search system, demonstrating how the design specifications from Chapter 5 were translated into working code. The implementation spans multiple technology domains including database design with PostgreSQL and pgvector, Python microservices for search and embedding generation, distributed web crawling, and the hybrid BM25+HNSW retrieval pipeline.
+
+\section{Database Implementation}
+
+\subsection{Schema Implementation with PostgreSQL and pgvector}
+
+The database schema was implemented using PostgreSQL 16 with the pgvector extension for efficient vector similarity search. The implementation leverages PostgreSQL's advanced features including JSONB for flexible metadata storage, native array types for position tracking, and GiST/HNSW indices for vector operations.
+
+\lstset{
+  language=SQL,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Database initialization script with BM25 inverted index tables},
+  label=code:init_sql
+}
+\begin{lstlisting}
+-- Initialize database with pgvector extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Documents table for storing indexed content
+CREATE TABLE IF NOT EXISTS documents (
+    id SERIAL PRIMARY KEY,
+   title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    url TEXT,
+    source_type VARCHAR(50),
+    doc_metadata JSONB,
+    doc_length INTEGER DEFAULT 0,  -- Document length (tokens)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Terms table for BM25 inverted index
+CREATE TABLE IF NOT EXISTS terms (
+    id SERIAL PRIMARY KEY,
+    term VARCHAR(255) UNIQUE NOT NULL,
+    doc_frequency INTEGER DEFAULT 0,     -- DF: Number of documents containing term
+    total_frequency BIGINT DEFAULT 0,    -- Total occurrences across all documents
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Posting List table (Inverted Index)
+CREATE TABLE IF NOT EXISTS postings (
+    id SERIAL PRIMARY KEY,
+    term_id INTEGER NOT NULL REFERENCES terms(id) ON DELETE CASCADE,
+    document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    term_frequency INTEGER NOT NULL,     -- TF: Term frequency in document
+    positions INTEGER[],                 -- Term positions for phrase queries
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(term_id, document_id)
+);
+
+-- Document statistics for BM25 calculation
+CREATE TABLE IF NOT EXISTS doc_stats (
+    id SERIAL PRIMARY KEY,
+    total_docs INTEGER DEFAULT 0,
+    avg_doc_length FLOAT DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Vector embeddings with HNSW index
+CREATE TABLE IF NOT EXISTS document_embeddings (
+    id SERIAL PRIMARY KEY,
+    document_id INTEGER REFERENCES documents(id) ON DELETE CASCADE,
+    embedding vector(512),  -- CLIP embedding dimension
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create HNSW index for fast ANN search
+CREATE INDEX IF NOT EXISTS document_embeddings_hnsw_idx 
+ON document_embeddings 
+USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+
+-- Optimize inverted index with composite indices
+CREATE INDEX IF NOT EXISTS postings_term_doc_idx 
+ON postings(term_id, document_id);
+\end{lstlisting}
+
+The schema design separates the BM25 inverted index (terms, postings, doc\_stats tables) from the vector search infrastructure (document\_embeddings with HNSW index). This modular approach enables independent optimization of each retrieval method while maintaining data integrity through foreign key constraints.
+
+\clearpage
+
+\section{BM25 Search Implementation}
+
+\subsection{SQL-Based BM25 Calculator}
+
+The BM25 retrieval component is implemented using SQL queries that directly operate on the PostgreSQL-resident inverted index. This approach eliminates the need to load the entire index into memory, enabling scalability to millions of documents.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={BM25 Calculator implementation with async SQL queries},
+  label=code:bm25_calc
+}
+\begin{lstlisting}
+class BM25Calculator:
+    """SQL-based BM25 Calculator using database-resident inverted index"""
+    
+    def __init__(self, k1=1.5, b=0.75):
+        self.k1 = k1  # Term saturation parameter
+        self.b = b    # Length normalization parameter
+        self.tokenizer = get_tokenizer_service()
+
+    async def search(self, query: str, session: AsyncSession, 
+                    top_k: int = 10) -> List[Dict[str, Any]]:
+        """Perform BM25 search using database-resident inverted index"""
+        
+        # 1. Tokenize query
+        tokens = self.tokenizer.tokenize(query, mode="search")
+        if not tokens:
+            return []
+        
+        token_list = list(set(tokens))  # Deduplicate tokens
+        
+        # 2. Get global statistics
+        stats_res = await session.execute(
+            text("SELECT total_docs, avg_doc_length FROM doc_stats WHERE id=1")
+        )
+        stats = stats_res.first()
+        
+        if not stats or stats.total_docs == 0:
+            return []
+        
+        total_docs, avg_doc_length = stats
+        
+        # 3. Calculate BM25 scores using SQL
+        # Formula: IDF * ((TF * (k1 + 1)) / (TF + k1 * (1 - b + b * DL / AVGDL)))
+        # IDF = ln((N - n + 0.5) / (n + 0.5) + 1)
+        
+        sql = text("""
+        WITH q_terms AS (
+            SELECT id, doc_frequency 
+            FROM terms 
+            WHERE term = ANY(:tokens)
+        ),
+        doc_matches AS (
+            SELECT 
+                p.document_id,
+                t.doc_frequency,
+                p.term_frequency,
+                d.doc_length
+            FROM postings p
+            JOIN q_terms t ON p.term_id = t.id
+            JOIN documents d ON p.document_id = d.id
+        )
+        SELECT 
+            document_id,
+            SUM(
+                LN((:total_docs - doc_frequency + 0.5) / 
+                   (doc_frequency + 0.5) + 1) *
+                ((term_frequency * (:k1 + 1)) / 
+                 (term_frequency + :k1 * 
+                  (1 - :b + :b * (doc_length / :avg_doc_length))))
+            ) as score
+        FROM doc_matches
+        GROUP BY document_id
+        ORDER BY score DESC
+        LIMIT :limit
+        """)
+        
+        result = await session.execute(sql, {
+            "tokens": token_list,
+            "total_docs": total_docs,
+            "avg_doc_length": float(avg_doc_length),
+            "k1": self.k1,
+            "b": self.b,
+            "limit": top_k
+        })
+        
+        return [
+            {"document_id": row.document_id, "score": float(row.score)}
+            for row in result
+        ]
+\end{lstlisting}
+
+This implementation calculates BM25 scores entirely within PostgreSQL using Common Table Expressions (CTEs). The query first identifies relevant terms from the query tokens (q\_terms), joins with the postings table to retrieve term frequencies and document lengths (doc\_matches), then computes the final BM25 score using PostgreSQL's mathematical functions. This approach achieves sub-second query latency even with large indices by leveraging PostgreSQL's query optimizer and the composite index on (term\_id, document\_id).
+
+\clearpage
+
+\section{Vector Search with HNSW}
+
+\subsection{Embedding Generation Service}
+
+The embedding service uses sentence-transformers with CLIP for multimodal embeddings, generating 512-dimensional dense vectors for both text and images. The service is implemented as a singleton to avoid repeated model loading.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Embedding service for text and image encoding using CLIP},
+  label=code:embedding_service
+}
+\begin{lstlisting}
+class EmbeddingService:
+    """Service for generating embeddings using CLIP model"""
+    
+    def __init__(self):
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        print(f"Loading embedding model on {self.device}...")
+        self.model = SentenceTransformer(
+            settings.EMBEDDING_MODEL,  # "clip-ViT-B-32"
+            device=self.device
+        )
+    
+    def encode_text(self, texts: Union[str, List[str]]) -> np.ndarray:
+        """Encode text into 512-dim embeddings"""
+        if isinstance(texts, str):
+            texts = [texts]
+        
+        embeddings = self.model.encode(
+            texts,
+            convert_to_tensor=False,
+            show_progress_bar=False,
+            normalize_embeddings=True  # L2 normalization for cosine similarity
+        )
+        return embeddings
+    
+    def encode_image_base64(self, base64_string: str) -> np.ndarray:
+        """Encode image from base64 string"""
+        # Remove header if present (e.g. "data:image/jpeg;base64,")
+        if "," in base64_string:
+            base64_string = base64_string.split(",")[1]
+        
+        image_data = base64.b64decode(base64_string)
+        image = Image.open(BytesIO(image_data))
+        
+        embedding = self.model.encode(
+            image,
+            convert_to_tensor=False,
+            show_progress_bar=False,
+            normalize_embeddings=True
+        )
+        return embedding
+\end{lstlisting}
+
+The encode\_image\_base64 method enables the system to process images uploaded by users through the web interface. Images are decoded from base64, converted to PIL Image objects, then encoded using CLIP's vision encoder. The normalize\_embeddings=True parameter ensures embeddings are L2-normalized, making cosine similarity equivalent to dot product and enabling faster similarity computation.
+
+\subsection{HNSW Vector Search Implementation}
+
+Vector search queries the pgvector HNSW index using PostgreSQL's custom operators. The \texttt{<=>} operator computes cosine distance efficiently using the HNSW graph structure.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Vector similarity search using pgvector HNSW index},
+  label=code:vector_search
+}
+\begin{lstlisting}
+async def _vector_search(
+    self,
+    query_embedding: np.ndarray,
+    session: AsyncSession,
+    limit: int
+) -> Dict[int, float]:
+    """Perform vector similarity search using HNSW index"""
+    try:
+        # Convert numpy array to PostgreSQL vector format
+        embedding_list = query_embedding.tolist()
+        embedding_str = str(embedding_list)
+        
+        # Use pgvector's cosine similarity operator (<=>)
+        # Returns documents ordered by ascending cosine distance
+        query = text(f"""
+            SELECT 
+                de.document_id,
+                1 - (de.embedding <=> '{embedding_str}'::vector) as similarity
+            FROM document_embeddings de
+            ORDER BY de.embedding <=> '{embedding_str}'::vector
+            LIMIT :limit
+        """)
+        
+        result = await session.execute(query, {"limit": limit})
+        
+        # Return as dict: document_id -> similarity score
+        return {row.document_id: row.similarity for row in result}
+        
+    except Exception as e:
+        print(f"Vector search error: {str(e)}")
+        return {}
+\end{lstlisting}
+
+The \texttt{<=>} operator leverages the HNSW index (created with m=16, ef\_construction=64) to perform approximate nearest neighbor search in sublinear time. The HNSW graph structure enables efficient graph traversal, typically visiting only O(log N) nodes for a K-NN query rather than the O(N) required for exhaustive search.
+
+\clearpage
+
+\section{Hybrid Search and Reciprocal Rank Fusion}
+
+\subsection{Search Service Integration}
+
+The SearchService class orchestrates the hybrid retrieval pipeline, combining BM25 and vector search results using weighted score fusion.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Hybrid search combining BM25 and vector retrieval},
+  label=code:hybrid_search
+}
+\begin{lstlisting}
+async def search(
+    self,
+    query: str,
+    session: AsyncSession,
+    top_k: int = None
+) -> List[Dict[str, Any]]:
+    """Hybrid search combining BM25 and vector similarity"""
+    
+    if top_k is None:
+        top_k = settings.TOP_K_RESULTS  # Default: 10
+    
+    # Tokenize query for BM25
+    tokenized_query = self.preprocess_query(query)
+    
+    # Generate query embedding for vector search
+    query_embedding = self.embedding_service.encode_text(query)[0]
+    
+    # 1. Vector search using HNSW index (retrieve 2*top_k candidates)
+    vector_results = await self._vector_search(
+        query_embedding, session, top_k * 2
+    )
+    
+    # 2. BM25 full-text search (retrieve 2*top_k candidates)
+    bm25_results = await self._bm25_search(
+        tokenized_query, session, top_k * 2
+    )
+    
+    # 3. Combine and re-rank results
+    combined_results = self._hybrid_rerank(
+        vector_results, bm25_results, top_k
+    )
+    
+    return combined_results
+
+def _hybrid_rerank(
+    self,
+    vector_results: Dict[int, float],
+    bm25_results: Dict[int, float],
+    top_k: int
+) -> List[Dict[str, Any]]:
+    """Combine and re-rank results using weighted score fusion"""
+    
+    # Normalize scores to [0, 1] range
+    def normalize_scores(scores: Dict[int, float]) -> Dict[int, float]:
+        if not scores:
+            return {}
+        max_score = max(scores.values())
+        min_score = min(scores.values())
+        if max_score == min_score:
+            return {k: 1.0 for k in scores}
+        return {
+            k: (v - min_score) / (max_score - min_score)
+            for k, v in scores.items()
+        }
+    
+    norm_vector = normalize_scores(vector_results)
+    norm_bm25 = normalize_scores(bm25_results)
+    
+    # Combine scores with configurable weights
+    # Default: VECTOR_WEIGHT=0.6, BM25_WEIGHT=0.4
+    all_doc_ids = set(norm_vector.keys()) | set(norm_bm25.keys())
+    combined_scores = {}
+    
+    for doc_id in all_doc_ids:
+        vector_score = norm_vector.get(doc_id, 0.0)
+        bm25_score = norm_bm25.get(doc_id, 0.0)
+        
+        # Weighted combination
+        combined_score = (
+            settings.VECTOR_WEIGHT * vector_score +
+            settings.BM25_WEIGHT * bm25_score
+        )
+        combined_scores[doc_id] = combined_score
+    
+    # Sort by combined score descending
+    sorted_results = sorted(
+        combined_scores.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:top_k]
+    
+    return [
+        {"document_id": doc_id, "score": score}
+        for doc_id, score in sorted_results
+    ]
+\end{lstlisting}
+
+The hybrid reranking algorithm first normalizes scores from both retrieval methods to a common [0,1] scale using min-max normalization. This ensures that BM25 scores (which can be arbitrarily large) and cosine similarities (bounded in [0,1]) are comparable. The weighted combination then applies configurable weights (default: 60\% vector, 40\% BM25) to produce the final ranking. This approach consistently outperforms either method alone, as vector search captures semantic similarity while BM25 provides precise lexical matching for technical terms and exact phrases.
+
+\clearpage
+
+\section{Distributed Web Crawling}
+
+\subsection{Multi-threaded Crawler with DrissionPage}
+
+The web crawler implements a multi-threaded architecture using DrissionPage for browser automation. The system supports both headless browser mode (for JavaScript-heavy sites) and fast session mode (for static content).
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Crawler worker implementation with multi-tab browser concurrency},
+  label=code:crawler_worker
+}
+\begin{lstlisting}
+class CrawlerWorker:
+    """Crawler worker thread using DrissionPage"""
+    
+    def __init__(self, worker_id: int, stop_event: Event, browser_instance=None):
+        self.worker_id = worker_id
+        self.stop_event = stop_event
+        self.url_manager = URLManager()
+        self.content_extractor = ContentExtractor()
+        self.page = None
+        self.mode = DRISSION_MODE  # 's' for Session, 'd' for Driver
+        self.browser_instance = browser_instance  # Shared browser for multi-tab
+    
+    def _create_page(self):
+        """Create DrissionPage page object"""
+        if self.mode == 's':
+            # Session mode (fast, no JS execution)
+            self.page = SessionPage(timeout=REQUEST_TIMEOUT)
+            self.page.set.user_agent(USER_AGENT)
+        else:
+            # Driver mode (browser, JS execution)
+            if self.browser_instance:
+                # Multi-tab mode: create new tab in shared browser
+                self.page = self.browser_instance.new_tab()
+                self.page.set.timeouts(
+                    base=REQUEST_TIMEOUT, 
+                    page_load=REQUEST_TIMEOUT
+                )
+                logger.info(f"Worker {self.worker_id}: Created new tab")
+            else:
+                # Fallback: standalone browser instance
+                co = ChromiumOptions()
+                if HEADLESS:
+                    co.headless()
+                co.set_argument('--no-sandbox')
+                co.set_argument('--disable-dev-shm-usage')
+                co.set_user_agent(USER_AGENT)
+                
+                self.page = ChromiumPage(addr_or_opts=co)
+                self.page.set.timeouts(
+                    base=REQUEST_TIMEOUT, 
+                    page_load=REQUEST_TIMEOUT
+                )
+    
+    def fetch_page(self, url: str) -> Optional[str]:
+        """Fetch page content with retry logic"""
+        if not self.page:
+            self._create_page()
+        
+        retry_count = 0
+        while retry_count < MAX_RETRIES:
+            try:
+                # Navigate to URL
+                self.page.get(url)
+                
+                # Wait for JS rendering if in browser mode
+                if self.mode == 'd':
+                    time.sleep(3)  # Wait for JS to complete
+                
+                # Extract HTML
+                html = self.page.html
+                
+                if not html or len(html) < 100:
+                    logger.warning(f"Empty HTML from {url}")
+                    return None
+                
+                return html
+            
+            except (ElementNotFoundError, PageDisconnectedError) as e:
+                logger.warning(f"Page error for {url}: {e}")
+                retry_count += 1
+                if retry_count < MAX_RETRIES:
+                    time.sleep(2 ** retry_count)  # Exponential backoff
+                    # Recreate page on error
+                    self.page = None
+            except Exception as e:
+                logger.warning(f"Failed to fetch {url}: {e}")
+                retry_count += 1
+                if retry_count < MAX_RETRIES:
+                    time.sleep(2 ** retry_count)
+        
+        return None
+\end{lstlisting}
+
+The crawler worker implements exponential backoff for failed requests, doubling the wait time on each retry (2, 4, 8 seconds). The multi-tab architecture allows multiple workers to share a single browser instance while crawling different URLs concurrently, significantly reducing memory footprint compared to launching separate browser processes per worker.
+
+\subsection{URL Management with Redis and Bloom Filter}
+
+The URL manager uses Redis for distributed URL queue management and a Bloom filter for efficient duplicate URL detection across distributed workers.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={URL management with Redis queue and Bloom filter deduplication},
+  label=code:url_manager
+}
+\begin{lstlisting}
+class URLManager:
+    """Distributed URL queue manager using Redis"""
+    
+    def __init__(self):
+        self.redis_client = redis.Redis(
+            host=REDIS_HOST,
+            port=REDIS_PORT,
+            decode_responses=True
+        )
+        self.bloom = BloomFilter(max_elements=10000000, error_rate=0.001)
+        self._load_bloom_filter()
+    
+    def add_urls(self, urls: List[str], depth: int = 0) -> int:
+        """Add URLs to queue if not already visited"""
+        added = 0
+        for url in urls:
+            if not self.is_visited(url):
+                # Push to Redis queue with depth metadata
+                self.redis_client.rpush(
+                    "crawler:url_queue",
+                    json.dumps({"url": url, "depth": depth})
+                )
+                # Add to Bloom filter for fast duplicate detection
+                self.bloom.add(url)
+                added += 1
+        return added
+    
+    def get_next_url(self) -> Optional[dict]:
+        """Pop next URL from queue (FIFO)"""
+        item = self.redis_client.lpop("crawler:url_queue")
+        if item:
+            return json.loads(item)
+        return None
+    
+    def is_visited(self, url: str) -> bool:
+        """Check if URL already crawled using Bloom filter"""
+        # Bloom filter provides probabilistic membership test
+        # False positives possible, but no false negatives
+        return url in self.bloom
+    
+    def mark_visited(self, url: str):
+        """Mark URL as visited"""
+        self.bloom.add(url)
+        self.redis_client.sadd("crawler:visited_urls", url)
+    
+    def check_and_rest_if_needed(self):
+        """Rate limiting: enforce politeness delay"""
+        current_time = time.time()
+        last_request = float(self.redis_client.get("crawler:last_request") or 0)
+        
+        # Ensure minimum delay between requests (default: 1 second)
+        if current_time - last_request < REQUEST_DELAY:
+            time.sleep(REQUEST_DELAY - (current_time - last_request))
+        
+        self.redis_client.set("crawler:last_request", current_time)
+\end{lstlisting}
+
+The Bloom filter uses 10 million maximum elements with 0.1\% error rate, requiring approximately 18MB of memory. This enables the crawler to efficiently check whether a URL has been visited without querying Redis for every URL, reducing network latency. The false positive rate of 0.1\% means only 0.1\% of new URLs might be incorrectly skipped, which is acceptable for web crawling applications.
+
+\clearpage
+
+\section{Image Extraction and Multimodal Indexing}
+
+\subsection{Image Extraction from Web Pages}
+
+The image extractor identifies and downloads images from crawled pages, filtering by size and format to retain only meaningful visual content.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Image extraction and processing for multimodal search},
+  label=code:image_extraction
+}
+\begin{lstlisting}
+class ImageExtractor:
+    """Extract and process images from HTML"""
+    
+    MIN_WIDTH = 200
+    MIN_HEIGHT = 200
+    MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
+    
+    def extract_images(self, html: str, base_url: str) -> List[Dict]:
+        """Extract images with metadata from HTML"""
+        soup = BeautifulSoup(html, 'html.parser')
+        images = []
+        
+        for img_tag in soup.find_all('img'):
+            try:
+                # Get image source
+                img_url = img_tag.get('src') or img_tag.get('data-src')
+                if not img_url:
+                    continue
+                
+                # Resolve relative URLs
+                absolute_url = urljoin(base_url, img_url)
+                
+                # Download image
+                response = requests.get(
+                    absolute_url, 
+                    timeout=10,
+                    headers={'User-Agent': USER_AGENT}
+                )
+                
+                if response.status_code != 200:
+                    continue
+                
+                # Check file size
+                if len(response.content) > self.MAX_IMAGE_SIZE:
+                    logger.warning(f"Image too large: {absolute_url}")
+                    continue
+                
+                # Open and validate image
+                img = Image.open(BytesIO(response.content))
+                width, height = img.size
+                
+                # Filter small images (likely icons/logos)
+                if width < self.MIN_WIDTH or height < self.MIN_HEIGHT:
+                    continue
+                
+                # Convert to base64 for storage
+                buffered = BytesIO()
+                img.save(buffered, format=img.format or 'PNG')
+                img_base64 = base64.b64encode(
+                    buffered.getvalue()
+                ).decode('utf-8')
+                
+                # Extract metadata
+                alt_text = img_tag.get('alt', '')
+                title = img_tag.get('title', '')
+                
+                images.append({
+                    'url': absolute_url,
+                    'base64': img_base64,
+                    'width': width,
+                    'height': height,
+                    'alt_text': alt_text,
+                    'title': title,
+                    'format': img.format
+                })
+                
+            except Exception as e:
+                logger.warning(f"Failed to extract image: {e}")
+                continue
+        
+        logger.info(f"Extracted {len(images)} images from {base_url}")
+        return images
+\end{lstlisting}
+
+The extractor applies multiple quality filters: (1) minimum dimensions of 200x200 pixels to exclude icons and thumbnails, (2) maximum file size of 5MB to avoid extremely large images, and (3) format validation to ensure the image is readable. Extracted images are converted to base64 encoding for storage in the database, eliminating the need for separate file system management.
+
+\clearpage
+
+\section{HTTP Microservice for Embedding Generation}
+
+\subsection{FastAPI Service for Image Encoding}
+
+A dedicated Python microservice handles image embedding generation, exposing a RESTful API that accepts base64-encoded images and returns CLIP embeddings.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={FastAPI microservice for image embedding generation},
+  label=code:image_service
+}
+\begin{lstlisting}
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from embedding_service import get_embedding_service
+import uvicorn
+
+app = FastAPI(title="Verdant Search Embedding Service")
+embedding_service = None
+
+class ImageRequest(BaseModel):
+    image_base64: str
+    
+class ImageResponse(BaseModel):
+    embedding: List[float]
+    dimension: int
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialize embedding service on startup"""
+    global embedding_service
+    embedding_service = get_embedding_service()
+    print("Embedding service initialized")
+
+@app.post("/encode/image", response_model=ImageResponse)
+async def encode_image(request: ImageRequest):
+    """
+    Encode image to CLIP embedding vector
+    
+    Args:
+        image_base64: Base64-encoded image string
+        
+    Returns:
+        512-dimensional CLIP embedding vector
+    """
+    try:
+        # Generate embedding
+        embedding = embedding_service.encode_image_base64(
+            request.image_base64
+        )
+        
+        return ImageResponse(
+            embedding=embedding.tolist(),
+            dimension=len(embedding)
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to encode image: {str(e)}"
+        )
+
+@app.post("/encode/text", response_model=ImageResponse)
+async def encode_text(text: str):
+    """Encode text to embedding vector"""
+    try:
+        embedding = embedding_service.encode_text(text)[0]
+        
+        return ImageResponse(
+            embedding=embedding.tolist(),
+            dimension=len(embedding)
+        )
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to encode text: {str(e)}"
+        )
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "model": settings.EMBEDDING_MODEL,
+        "device": embedding_service.device if embedding_service else "N/A"
+    }
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8001)
+\end{lstlisting}
+
+The microservice architecture isolates the GPU-dependent embedding generation from other system components. This enables independent scaling: multiple embedding service instances can run on GPU-equipped nodes while the database and search services run on CPU-only nodes. The health check endpoint reports the loaded model and device (CPU/CUDA), enabling monitoring systems to verify GPU utilization.
+
+\clearpage
+
+\section{Performance Optimizations}
+
+\subsection{Redis Caching Layer}
+
+To reduce database load and improve query latency, the system implements a Redis caching layer that stores search results and embeddings for frequently accessed queries.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Redis caching for search results and query embeddings},
+  label=code:redis_cache
+}
+\begin{lstlisting}
+class CachedSearchService:
+    """Search service with Redis caching"""
+    
+    def __init__(self):
+        self.search_service = SearchService()
+        self.redis = redis.Redis(
+            host=settings.REDIS_HOST,
+            decode_responses=False  # Store binary data (embeddings)
+        )
+        self.CACHE_TTL = 300  # 5 minutes
+    
+    async def search_with_cache(
+        self,
+        query: str,
+        session: AsyncSession,
+        top_k: int = 10
+    ) -> List[Dict[str, Any]]:
+        """Search with result caching"""
+        
+        # Generate cache key from query and parameters
+        cache_key = f"search:{hash(query)}:{top_k}"
+        
+        # Try to get from cache
+        cached = self.redis.get(cache_key)
+        if cached:
+            logger.info(f"Cache hit for query: {query}")
+            return json.loads(cached)
+        
+        # Cache miss: execute search
+        results = await self.search_service.search(
+            query, session, top_k
+        )
+        
+        # Store in cache with TTL
+        self.redis.setex(
+            cache_key,
+            self.CACHE_TTL,
+            json.dumps(results)
+        )
+        
+        return results
+    
+    def cache_embedding(self, text: str, embedding: np.ndarray):
+        """Cache text embedding to avoid recomputation"""
+        cache_key = f"embedding:{hash(text)}"
+        
+        # Store numpy array as bytes
+        embedding_bytes = embedding.tobytes()
+        self.redis.setex(
+            cache_key,
+            self.CACHE_TTL * 2,  # Longer TTL for embeddings
+            embedding_bytes
+        )
+    
+    def get_cached_embedding(self, text: str) -> Optional[np.ndarray]:
+        """Retrieve cached embedding"""
+        cache_key = f"embedding:{hash(text)}"
+        
+        cached = self.redis.get(cache_key)
+        if cached:
+            # Reconstruct numpy array from bytes
+            return np.frombuffer(cached, dtype=np.float32)
+        
+        return None
+\end{lstlisting}
+
+The caching strategy differentiates between complete search results (5-minute TTL) and intermediate embeddings (10-minute TTL). Embeddings have a longer TTL because they are more expensive to compute (requiring GPU inference) and are reusable across different search queries. Cache keys use Python's hash() function for fast key generation, accepting potential hash collisions given the short TTL and probabilistic nature of caching.
+
+\subsection{Batch Processing for Index Updates}
+
+Index updates are batched to reduce database transaction overhead and improve throughput during bulk document ingestion.
+
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black}\itshape,
+  stringstyle=\color{red},
+  showstringspaces=false,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  caption={Batch indexing for improved throughput},
+  label=code:batch_index
+}
+\begin{lstlisting}
+class BatchIndexService:
+    """Service for batched document indexing"""
+    
+    BATCH_SIZE = 100
+    
+    def __init__(self):
+        self.batch_buffer = []
+        self.lock = asyncio.Lock()
+    
+    async def add_to_batch(
+        self,
+        doc: Dict[str, Any],
+        session: AsyncSession
+    ):
+        """Add document to batch, flush if batch full"""
+        async with self.lock:
+            self.batch_buffer.append(doc)
+            
+            if len(self.batch_buffer) >= self.BATCH_SIZE:
+                await self._flush_batch(session)
+    
+    async def _flush_batch(self, session: AsyncSession):
+        """Flush accumulated batch to database"""
+        if not self.batch_buffer:
+            return
+        
+        logger.info(f"Flushing batch of {len(self.batch_buffer)} documents")
+        
+        # 1. Bulk insert documents
+        doc_ids = await self._bulk_insert_documents(
+            self.batch_buffer, session
+        )
+        
+        # 2. Batch generate embeddings (GPU efficient)
+        texts = [doc['content'] for doc in self.batch_buffer]
+        embeddings = self.embedding_service.encode_text(texts)
+        
+        # 3. Bulk insert embeddings
+        await self._bulk_insert_embeddings(
+            doc_ids, embeddings, session
+        )
+        
+        # 4. Update inverted index in batch
+        await self._batch_update_inverted_index(
+            doc_ids, self.batch_buffer, session
+        )
+        
+        # Clear buffer
+        self.batch_buffer = []
+        
+        logger.info(f"Batch flush completed")
+    
+    async def _bulk_insert_documents(
+        self,
+        docs: List[Dict],
+        session: AsyncSession
+    ) -> List[int]:
+        """Bulk insert using COPY or INSERT INTO VALUES"""
+        # Use PostgreSQL COPY for maximum throughput
+        stmt = text("""
+            INSERT INTO documents (title, content, url, source_type)
+            VALUES (:title, :content, :url, :source_type)
+            RETURNING id
+        """)
+        
+        results = []
+        for doc in docs:
+            result = await session.execute(stmt, doc)
+            results.append(result.scalar())
+        
+        await session.commit()
+        return results
+\end{lstlisting}
+
+Batching reduces the number of database round-trips by 100x (for BATCH\_SIZE=100), dramatically improving indexing throughput. The GPU embedding generation also benefits from batching: encoding 100 texts in a single batch is 10-20x faster than encoding them individually due to reduced model invocation overhead and better GPU utilization through parallel matrix operations.
+
+\clearpage

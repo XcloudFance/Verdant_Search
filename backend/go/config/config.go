@@ -2,33 +2,42 @@ package config
 
 import (
 	"os"
+	"strconv"
 )
 
 // Config holds all application configuration
 type Config struct {
-	Port         string
-	JWTSecret    string
-	DBHost       string
-	DBPort       string
-	DBUser       string
-	DBPass       string
-	DBName       string
-	RedisAddr    string
-	Auth0Domain  string
+	Port            string
+	JWTSecret       string
+	JWTExpiryHours  int
+	DBHost          string
+	DBPort          string
+	DBUser          string
+	DBPass          string
+	DBName          string
+	RedisAddr       string
+	Auth0Domain     string
 }
 
 // LoadConfig loads configuration from environment variables with defaults
 func LoadConfig() *Config {
+	expiryHours := 24
+	if v := os.Getenv("JWT_EXPIRY_HOURS"); v != "" {
+		if n, err := strconv.Atoi(v); err == nil && n > 0 {
+			expiryHours = n
+		}
+	}
 	return &Config{
-		Port:        getEnv("PORT", "8080"),
-		JWTSecret:   getEnv("JWT_SECRET", "your-secret-key-change-this-in-production"),
-		DBHost:      getEnv("DB_HOST", "localhost"),
-		DBPort:      getEnv("DB_PORT", "5432"),
-		DBUser:      getEnv("DB_USER", "verdant"),
-		DBPass:      getEnv("DB_PASS", "verdant123"),
-		DBName:      getEnv("DB_NAME", "verdant_search"),
-		RedisAddr:   getEnv("REDIS_ADDR", "localhost:6379"),
-		Auth0Domain: getEnv("AUTH0_DOMAIN", "dev-mzxcgy6t1ssatho4.us.auth0.com"),
+		Port:           getEnv("PORT", "8080"),
+		JWTSecret:      getEnv("JWT_SECRET", "your-secret-key-change-this-in-production"),
+		JWTExpiryHours: expiryHours,
+		DBHost:         getEnv("DB_HOST", "localhost"),
+		DBPort:         getEnv("DB_PORT", "5432"),
+		DBUser:         getEnv("DB_USER", "verdant"),
+		DBPass:         getEnv("DB_PASS", "verdant123"),
+		DBName:         getEnv("DB_NAME", "verdant_search"),
+		RedisAddr:      getEnv("REDIS_ADDR", "localhost:6379"),
+		Auth0Domain:    getEnv("AUTH0_DOMAIN", "dev-mzxcgy6t1ssatho4.us.auth0.com"),
 	}
 }
 

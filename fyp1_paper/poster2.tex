@@ -1,0 +1,191 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{xcolor}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usetikzlibrary{positioning, shadows, fit}
+
+% Define colors
+\definecolor{primaryblue}{RGB}{44, 123, 219}
+\definecolor{lightblue}{RGB}{173, 216, 230}
+\definecolor{darkblue}{RGB}{25, 77, 135}
+\definecolor{teal}{RGB}{0, 150, 136}
+\definecolor{lightgray}{RGB}{240, 248, 255}
+\definecolor{mediumgray}{RGB}{200, 220, 240}
+
+\newcommand{\headerblock}{
+\begin{tikzpicture}
+\node[rectangle, fill=primaryblue, text=white, minimum width=16cm, minimum height=1.5cm, font=\Large\bfseries] {
+    AI-Driven Product Testing \& Optimization Platform\\
+    {\normalsize Intelligent A/B Testing with Natural Language Analytics}
+};
+\end{tikzpicture}
+}
+
+\newcommand{\abtestingblock}{
+\begin{tikzpicture}
+% Section title
+\node[rectangle, fill=mediumgray, minimum width=5cm, minimum height=0.8cm, font=\large\bfseries, rounded corners=5pt] (title) at (0,0) {What is A/B Testing};
+
+% Users info
+\node[rectangle, fill=white, drop shadow, minimum width=4.5cm, minimum height=1.2cm, rounded corners=5pt, below=0.3cm of title] (users) {
+    \textbf{1,000 users}\\[0.2cm]
+    \textbf{VERSION A} \hspace{1cm} \textbf{VERSION B}
+};
+
+% Version boxes with arrow
+\node[rectangle, fill=primaryblue, minimum width=1.2cm, minimum height=1cm, below left=0.5cm and 0.8cm of users] (versionA) {};
+\node[rectangle, fill=teal, minimum width=1.2cm, minimum height=1cm, below right=0.5cm and 0.8cm of users] (versionB) {};
+\draw[->, thick, >=stealth] (versionA.east) -- (versionB.west);
+
+% Conversion rates
+\node[font=\bfseries, below=0.2cm of versionA] {\textbf{2.5\%}\\CONVERSION};
+\node[font=\bfseries, below=0.2cm of versionB] {\textbf{4.2\%}\\CONVERSION};
+
+% Winner
+\node[rectangle, fill=teal, text=white, minimum width=4cm, minimum height=0.7cm, font=\bfseries, rounded corners=5pt, below=1.2cm of users] (winner) {VERSION B WINS (+68\%)};
+
+% Feature boxes
+\node[rectangle, fill=lightblue, minimum width=1.2cm, minimum height=0.8cm, font=\tiny, rounded corners=3pt, below left=0.5cm and 1cm of winner] {\faFileAlt\\BUTTON\\TEXT};
+\node[rectangle, fill=lightblue, minimum width=1.2cm, minimum height=0.8cm, font=\tiny, rounded corners=3pt, below=0.5cm of winner] {\faFile\\PAGE\\LAYOUT};
+\node[rectangle, fill=teal, text=white, minimum width=1.2cm, minimum height=0.8cm, font=\tiny, rounded corners=3pt, below right=0.5cm and 1cm of winner] {\faDollarSign\\PRICING\\STRATEGY};
+\end{tikzpicture}
+}
+
+\newcommand{\benefitsblock}{
+\begin{tikzpicture}
+\node[rectangle, fill=mediumgray, minimum width=4.5cm, minimum height=0.8cm, font=\large\bfseries, rounded corners=5pt] (title) at (0,0) {BENEFITS};
+
+\node[circle, fill=white, minimum size=0.8cm, below left=0.5cm and 1cm of title] (clock) {\faClock};
+\node[font=\Large\bfseries, below right=0.3cm and 0.2cm of title] {\textbf{90\%}\\SAVINGS};
+\node[font=\small, text width=2cm, below=1.2cm of title] {BETTER\\DATA DRIVE DECISIONS\\FOR EVERYONE};
+\end{tikzpicture}
+}
+
+\newcommand{\currentproblemsblock}{
+\begin{tikzpicture}
+% Title
+\node[rectangle, fill=mediumgray, minimum width=5cm, minimum height=0.8cm, font=\large\bfseries, rounded corners=5pt] (title) at (0,0) {Current Problems};
+
+% Process flow
+\node[rectangle, fill=mediumgray, minimum width=1.2cm, minimum height=0.6cm, font=\small, rounded corners=3pt, below left=0.5cm and 1.5cm of title] (setup) {Setup};
+\node[rectangle, fill=mediumgray, minimum width=1.2cm, minimum height=0.6cm, font=\small, rounded corners=3pt, below=0.5cm of title] (launch) {Launch};
+\node[rectangle, fill=mediumgray, minimum width=1.2cm, minimum height=0.6cm, font=\small, rounded corners=3pt, below right=0.5cm and 1.5cm of title] (analyze) {Analyze};
+
+\draw[->, thick, >=stealth] (setup.east) -- (launch.west);
+\draw[->, thick, >=stealth] (launch.east) -- (analyze.west);
+
+\node[font=\normalsize, below=0.3cm of launch] {DAYS TO WEEKS};
+\end{tikzpicture}
+}
+
+\newcommand{\askaiblock}{
+\begin{tikzpicture}
+% Ask AI button
+\node[rectangle, fill=darkblue, text=white, minimum width=4.5cm, minimum height=1cm, font=\large\bfseries, rounded corners=8pt] (askai) at (0,0) {Ask AI \faStar};
+
+% Question
+\node[rectangle, fill=darkblue, text=white, minimum width=4cm, minimum height=0.8cm, font=\normalsize, rounded corners=5pt, below=0.3cm of askai, text width=3.5cm, align=center] {How are our experiments performing this week?};
+
+% AI Response
+\node[rectangle, fill=white, drop shadow, minimum width=4cm, minimum height=1.5cm, rounded corners=5pt, below=0.8cm of askai, text width=3.5cm, align=left] (response) {
+    \textbf{AI 5 assistant}\\[0.2cm]
+    Here's an overview of conversion rates for all active experiments:
+};
+
+% Simple bar chart
+\node[below=0.3cm of response] (chart) {
+    \begin{tikzpicture}[scale=0.6]
+    \draw[fill=primaryblue] (0,0) rectangle (0.3,0.8);
+    \draw[fill=mediumgray] (0.8,0) rectangle (1.1,0.6);
+    \draw[fill=teal] (1.6,0) rectangle (1.9,1);
+    \node[font=\tiny] at (0.15,-0.3) {Control};
+    \node[font=\tiny] at (0.95,-0.3) {Variation A};
+    \node[font=\tiny] at (1.75,-0.3) {Winner B};
+    \node[font=\small, color=teal] at (1,-0.7) {Winner: Variation B};
+    \end{tikzpicture}
+};
+\end{tikzpicture}
+}
+
+\newcommand{\manualproblemsblock}{
+\begin{tikzpicture}
+\node[rectangle, fill=mediumgray, minimum width=5cm, minimum height=0.8cm, font=\large\bfseries, rounded corners=5pt] (title) at (0,0) {MANUAL PROBLEMS};
+
+% Problem grid
+\node[circle, fill=white, minimum size=0.6cm, below left=0.5cm and 1.5cm of title] (icon1) {\faCog};
+\node[font=\small\bfseries, text width=1.5cm, below right=0.5cm and 0.2cm of title] {SLOW\\MANUAL};
+
+\node[circle, fill=white, minimum size=0.6cm, below left=1.5cm and 1.5cm of title] (icon2) {\faClock};
+\node[font=\small\bfseries, text width=2cm, below=1.3cm of title] {DELAYED\\INSIGHTS\\{\tiny (3-5 days for results)}};
+
+\node[circle, fill=white, minimum size=0.6cm, below right=0.5cm and 1.5cm of title] (icon3) {\faUser};
+\node[font=\small\bfseries, text width=1.5cm, below right=0.5cm and 0.8cm of title] {COMPLEX\\ANALYSIS};
+
+\node[circle, fill=white, minimum size=0.6cm, below right=1.5cm and 1.5cm of title] (icon4) {\faTimes};
+\node[font=\small\bfseries, text width=1.8cm, below right=1.3cm and 0.5cm of title] {NO QUICK\\{\tiny Control over bad-performing features}};
+\end{tikzpicture}
+}
+
+\newcommand{\aisolutionblock}{
+\begin{tikzpicture}
+\node[rectangle, fill=mediumgray, minimum width=5cm, minimum height=0.8cm, font=\large\bfseries, rounded corners=5pt] (title) at (0,0) {AI-POWERED SOLUTION};
+
+% Solution features
+\node[circle, fill=teal, text=white, minimum size=0.6cm, below left=0.5cm and 2cm of title] {\faCheck};
+\node[font=\normalsize\bfseries, below left=0.3cm and 0.5cm of title] {FEATURE FLAGS};
+\node[rectangle, fill=teal, text=white, minimum width=1cm, minimum height=0.4cm, font=\tiny, rounded corners=2pt, below right=0.5cm and 1cm of title] {ALL ALLS};
+
+\node[circle, fill=primaryblue, text=white, minimum size=0.6cm, below left=1.3cm and 2cm of title] {\faBolt};
+\node[font=\normalsize\bfseries, below left=1.1cm and 0.5cm of title] {LAUNCH};
+\node[font=\normalsize, below=1.1cm of title] {CVAT ALERTS};
+
+\node[circle, fill=teal, text=white, minimum size=0.6cm, below left=2.1cm and 2cm of title] {\faChartBar};
+\node[font=\normalsize\bfseries, below left=1.9cm and 0.2cm of title] {REAL-TIME DATA};
+\node[circle, fill=lightblue, minimum size=0.4cm, below right=2.1cm and 1cm of title] {\faSignal};
+
+\node[circle, fill=primaryblue, text=white, minimum size=0.6cm, below left=2.9cm and 2cm of title] {\faBolt};
+\node[font=\normalsize\bfseries, text width=3cm, below=2.7cm of title] {INSTANT RESULTS\\WITH TIME ANALYTICS};
+\end{tikzpicture}
+}
+
+\begin{document}
+\pagestyle{empty}
+
+% Header
+\centerline{\headerblock}
+
+\vspace{0.5cm}
+
+% Three columns
+\begin{minipage}[t]{0.32\textwidth}
+\centering
+\abtestingblock
+
+\vspace{0.5cm}
+
+\benefitsblock
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.32\textwidth}
+\centering
+\currentproblemsblock
+
+\vspace{0.5cm}
+
+\askaiblock
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.32\textwidth}
+\centering
+\manualproblemsblock
+
+\vspace{0.5cm}
+
+\aisolutionblock
+\end{minipage}
+
+\end{document}

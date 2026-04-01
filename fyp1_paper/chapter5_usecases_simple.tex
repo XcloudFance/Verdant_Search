@@ -1,0 +1,202 @@
+\section{Use Case Descriptions}
+
+The following section provides detailed descriptions for selected representative use cases that demonstrate the core functionality of each system module.
+
+\subsection*{Module 1: User Management System}
+
+\subsubsection*{UC-1: User Registration}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
+\hline
+\textbf{Property} & \textbf{Details} \\
+\hline
+Use Case ID & UC-1 \\
+\hline
+Description & Allows new users to create an account on the Verdant Search platform \\
+\hline
+Priority & High \\
+\hline  
+Actor & User (prospective), System \\
+\hline
+Pre-condition & User does not have an existing account; System is operational \\
+\hline
+Post-condition & New user account is created; Verification email is sent; User can login after verification \\ 
+\hline
+Flow of Events & 1. User navigates to registration page \newline 2. System displays registration form \newline 3. User enters email and password (FR-1.1) \newline 4. System validates format and strength (FR-1.2) \newline 5. System creates account with hashed password \newline 6. System sends verification email (FR-1.3) \newline 7. System displays confirmation message \\
+\hline
+Exception Flow & - Email already exists: Error message displayed \newline - Password too weak: Validation error shown \newline - Email service fails: Account created but verification delayed \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection*{Module 2: Search and Retrieval System}
+
+\subsubsection*{UC-12: Submit Search Query}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
+\hline
+\textbf{Property} & \textbf{Details} \\
+\hline
+Use Case ID & UC-12 \\
+\hline
+Description & Allows users to initiate search by submitting text query, triggering hybrid retrieval pipeline \\
+\hline
+Priority & High \\
+\hline
+Actor & User, System \\
+\hline
+Pre-condition & User is authenticated; Search indices are built and available; Backend services operational \\
+\hline
+Post-condition & Query is processed and sanitized; Query logged for analytics; Hybrid retrieval triggered; User receives ranked results \\
+\hline
+Flow of Events & 1. User enters query in search box (FR-2.1) \newline 2. System validates query length \newline 3. System sanitizes query to prevent injection (FR-2.2) \newline 4. System normalizes text (lowercasing, whitespace removal) \newline 5. Optionally expands query with synonyms (FR-2.3) \newline 6. System logs query with user ID and timestamp \newline 7. System initiates parallel BM25 and vector search \newline 8. System displays loading indicator \\
+\hline
+Exception Flow & - Empty query: Display "Please enter a search query" \newline - Query too long (>1000 chars): Display "Query too long" error \newline - Injection detected: Log security event, display generic error \newline - Backend unavailable: Display "Service temporarily unavailable" \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection*{UC-16: Perform Keyword Search}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
+\hline
+\textbf{Property} & \textbf{Details} \\
+\hline
+Use Case ID & UC-16 \\
+\hline
+Description & Executes BM25 keyword-based retrieval using inverted index \\
+\hline
+Priority & High \\
+\hline
+Actor & System \\
+\hline
+Pre-condition & Sanitized query available from UC-12; BM25 inverted index loaded in memory \\
+\hline
+Post-condition & Top K documents retrieved with BM25 scores; Results passed to hybrid fusion \\
+\hline
+Flow of Events & 1. System tokenizes query into terms \newline 2. System retrieves posting lists from inverted index (FR-2.13) \newline 3. System computes BM25 scores using formula: $$BM25(D,Q) = \sum_{t \in Q} IDF(t) \cdot \frac{f(t,D) \cdot (k_1 + 1)}{f(t,D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{avgdl})}$$ where $k_1=1.2$, $b=0.75$ (FR-2.14) \newline 4. System ranks documents by descending score \newline 5. System retrieves top K=100 candidates (FR-2.15) \newline 6. System returns results to hybrid fusion \\
+\hline
+Exception Flow & - No matching documents: Return empty result set \newline - Index corrupted: Log error, fall back to vector-only search \newline - Computation timeout (>1s): Return partial results, log warning \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection*{UC-20: Apply Multimodal Reranking}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
+\hline
+\textbf{Property} & \textbf{Details} \\
+\hline
+Use Case ID & UC-20 \\
+\hline
+Description & Applies BLIP-2 multimodal listwise reranker to evaluate text and visual content relevance \\
+\hline
+Priority & High \\
+\hline
+Actor & System \\
+\hline
+Pre-condition & Hybrid search produced top K=20 candidates; BLIP-2 model loaded in GPU; Documents and images accessible \\
+\hline
+Post-condition & Documents reranked by multimodal relevance; Final ranked list returned to UI; Latency logged \\
+\hline
+Flow of Events & 1. System receives top K=20 candidates from hybrid search (FR-2.25) \newline 2. For each candidate, retrieve document text and images \newline 3. Construct multimodal prompt in setwise format with query, texts, and image references \newline 4. Encode prompt and images using BLIP-2 vision-language model (FR-2.26) \newline 5. BLIP-2 Q-Former processes cross-modal interactions \newline 6. System decodes listwise ranking from model output \newline 7. Reorder candidates by multimodal scores (FR-2.27) \newline 8. Return final ranked list to display component \\
+\hline
+Exception Flow & - Model inference fails: Log error, return original ranking \newline - Timeout (>3s): Terminate reranking, use partial results \newline - GPU memory exhausted: Fall back to CPU or skip reranking \newline - Image loading fails: Exclude failed images, continue with available content \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection*{Module 3: Data Ingestion and Indexing System}
+
+\subsubsection*{UC-26: Trigger Distributed Crawling}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
+\hline
+\textbf{Property} & \textbf{Details} \\
+\hline
+Use Case ID & UC-26 \\
+\hline
+Description & Allows administrators to initiate distributed crawling jobs coordinated via Kafka \\
+\hline
+Priority & High \\
+\hline
+Actor & Administrator, System \\
+\hline
+Pre-condition & Administrator authenticated with permissions; Data sources configured with credentials; Kafka cluster and workers operational \\
+\hline
+Post-condition & Crawl job created and queued in Kafka; Workers begin processing; Progress visible in dashboard; Documents queued for indexing \\
+\hline
+Flow of Events & 1. Administrator selects data sources to crawl \newline 2. Administrator clicks "Start Crawl" button (FR-3.4) \newline 3. System creates crawl job with unique ID and timestamp \newline 4. System partitions tasks across data sources \newline 5. System publishes tasks to Kafka topic "crawl-tasks" (FR-3.5) \newline 6. Kafka distributes tasks to available worker nodes \newline 7. Each worker consumes assigned tasks and begins crawling \newline 8. Workers report progress via Kafka "crawl-status" topic \newline 9. System aggregates metrics and updates dashboard \newline 10. Upon completion, workers publish documents to "documents-ingested" topic \\
+\hline
+Exception Flow & - Worker fails: System detects via missed heartbeats, reassigns tasks (FR-3.6) \newline - Data source unreachable: Worker applies exponential backoff (1s, 2s, 4s, 8s), then marks failed \newline - Kafka unavailable: Display error, prevent crawl initiation \newline - All workers busy: Tasks remain queued until workers available \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsection*{Module 5: RAG Generation System}
+
+\subsubsection*{UC-43: Receive User Query for RAG}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
+\hline
+\textbf{Property} & \textbf{Details} \\
+\hline
+Use Case ID & UC-43 \\
+\hline
+Description & Handles user queries for AI-powered answer generation based on retrieved context \\
+\hline
+Priority & High \\
+\hline
+Actor & User, System \\
+\hline
+Pre-condition & User authenticated with active session; Search system operational; LLM service (SGLang) running \\
+\hline
+Post-condition & Query validated and accepted; Query added to conversation history; Retrieval pipeline triggered; Query queued for LLM \\
+\hline
+Flow of Events & 1. User types question into RAG chat interface \newline 2. User submits via Send button or Enter key \newline 3. System receives query via WebSocket/HTTP POST (FR-5.1) \newline 4. System validates query length within 1000 char limit (FR-5.2) \newline 5. System checks load and available LLM capacity \newline 6. System adds query to conversation history in Redis \newline 7. System triggers hybrid retrieval pipeline (UC-18) \newline 8. System displays typing indicator \newline 9. Upon retrieval completion, proceed to context injection (UC-47) \\
+\hline
+Exception Flow & - Query too long (>1000 chars): Display "Query too long, please shorten" \newline - High load: Queue query (FR-5.3), display "Queued, estimated wait: X seconds" \newline - LLM unavailable: Display "Service temporarily unavailable" \newline - No retrieval results: Proceed to knowledge gap indication (UC-54) \\
+\hline
+\end{tabularx}
+\end{table}
+
+\subsubsection*{UC-51: Generate Grounded Answer}
+
+\begin{table}[H]
+\small
+\begin{tabularx}{\textwidth}{|p{0.25\textwidth}|X|}
+\hline
+\textbf{Property} & \textbf{Details} \\
+\hline
+Use Case ID & UC-51 \\
+\hline
+Description & Controls LLM answer generation to ensure responses grounded exclusively in retrieved context \\
+\hline
+Priority & High \\
+\hline
+Actor & System, LLM \\
+\hline
+Pre-condition & Context injected into LLM prompt (UC-47); LLM model loaded and ready; System prompt configured to prevent hallucination \\
+\hline
+Post-condition & LLM generates answer from provided context only; Answer includes inline citations; Uncertain claims marked with qualifiers; Answer streamed to user (UC-48) \\
+\hline
+Flow of Events & 1. System constructs system prompt: "You are an expert search assistant. Answer using ONLY the provided context. If context insufficient, say so clearly. Always cite sources using [1], [2] notation." (FR-5.26) \newline 2. System appends retrieved context chunks with source identifiers \newline 3. System appends user question to prompt \newline 4. System submits complete prompt to LLM via SGLang API \newline 5. LLM generates answer tokens using only provided context (FR-5.25) \newline 6. LLM includes citation markers [1], [2] referencing chunks \newline 7. For uncertain claims, LLM uses qualifiers like "According to the documentation..." (FR-5.27) \newline 8. System streams generated tokens to UI (UC-48) \\
+\hline
+Exception Flow & - LLM generates unsupported claim: Entailment validation (UC-53) flags for review \newline - Missing citations: System post-processes to add citations via context matching \newline - Generation timeout (>30s): Terminate, display partial answer with warning \newline - Empty response: Display "Unable to generate answer, please rephrase" \\
+\hline
+\end{tabularx}
+\end{table}
+
+\clearpage

@@ -1,0 +1,359 @@
+\begin{thebibliography}{52}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Asai et~al.(2024)Asai, Wu, Wang, Sil, and Hajishirzi]{asai2024self}
+Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Hajishirzi.
+\newblock Self-rag: Learning to retrieve, generate, and critique through
+  self-reflection.
+\newblock \emph{International Conference on Learning Representations}, 2024.
+
+\bibitem[Baeza-Yates and Ribeiro-Neto(1999)]{baeza1999modern}
+Ricardo Baeza-Yates and Berthier Ribeiro-Neto.
+\newblock \emph{Modern Information Retrieval}.
+\newblock ACM Press, 1999.
+
+\bibitem[Brin and Page(1998)]{brin1998anatomy}
+Sergey Brin and Lawrence Page.
+\newblock The anatomy of a large-scale hypertextual web search engine.
+\newblock In \emph{Computer Networks and ISDN Systems}, volume~30, pages
+  107--117, 1998.
+
+\bibitem[Burges et~al.(2005)Burges, Shaked, Renshaw, Lazier, Deeds, Hamilton,
+  and Hullender]{burges2005learning}
+Chris Burges, Tal Shaked, Erin Renshaw, Ari Lazier, Matt Deeds, Nicole
+  Hamilton, and Greg Hullender.
+\newblock Learning to rank using gradient descent.
+\newblock In \emph{Proceedings of the 22nd International Conference on Machine
+  Learning}, pages 89--96, 2005.
+
+\bibitem[Burges et~al.(2006)Burges, Ragno, and Le]{burges2006learning}
+Christopher~J Burges, Robert Ragno, and Quoc~V Le.
+\newblock Learning to rank with nonsmooth cost functions.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~19, 2006.
+
+\bibitem[Burges(2010)]{burges2010ranknet}
+Christopher~JC Burges.
+\newblock From ranknet to lambdarank to lambdamart: An overview.
+\newblock \emph{Microsoft Research Technical Report}, 2010.
+
+\bibitem[Cao et~al.(2007)Cao, Qin, Liu, Tsai, and Li]{cao2007learning}
+Zhe Cao, Tao Qin, Tie-Yan Liu, Ming-Feng Tsai, and Hang Li.
+\newblock Learning to rank: From pairwise approach to listwise approach.
+\newblock In \emph{Proceedings of the 24th International Conference on Machine
+  Learning}, pages 129--136, 2007.
+
+\bibitem[Craswell et~al.(2020)Craswell, Mitra, Yilmaz, Campos, and
+  Voorhees]{craswell2020overview}
+Nick Craswell, Bhaskar Mitra, Emine Yilmaz, Daniel Campos, and Ellen~M
+  Voorhees.
+\newblock Overview of the trec 2019 deep learning track.
+\newblock \emph{arXiv preprint arXiv:2003.07820}, 2020.
+
+\bibitem[Craswell et~al.(2021{\natexlab{a}})Craswell, Mitra, Yilmaz, and
+  Campos]{craswell2021msmarco}
+Nick Craswell, Bhaskar Mitra, Emine Yilmaz, and Daniel Campos.
+\newblock Ms marco: Benchmarking ranking models in the large-data regime.
+\newblock In \emph{Proceedings of the 44th International ACM SIGIR Conference
+  on Research and Development in Information Retrieval}, pages 1566--1576,
+  2021{\natexlab{a}}.
+
+\bibitem[Craswell et~al.(2021{\natexlab{b}})Craswell, Mitra, Yilmaz, and
+  Campos]{craswell2021overview}
+Nick Craswell, Bhaskar Mitra, Emine Yilmaz, and Daniel Campos.
+\newblock Overview of the trec 2020 deep learning track.
+\newblock \emph{arXiv preprint arXiv:2102.07662}, 2021{\natexlab{b}}.
+
+\bibitem[Craswell et~al.(2022)Craswell, Mitra, Yilmaz, Campos, and
+  Lin]{craswell2022overview}
+Nick Craswell, Bhaskar Mitra, Emine Yilmaz, Daniel Campos, and Jimmy Lin.
+\newblock Overview of the trec 2021 deep learning track.
+\newblock In \emph{TREC}, 2022.
+
+\bibitem[Devlin et~al.(2019)Devlin, Chang, Lee, and Toutanova]{devlin2019bert}
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and Kristina Toutanova.
+\newblock Bert: Pre-training of deep bidirectional transformers for language
+  understanding.
+\newblock In \emph{Proceedings of the 2019 Conference of the North American
+  Chapter of the Association for Computational Linguistics: Human Language
+  Technologies (NAACL-HLT)}, pages 4171--4186, 2019.
+
+\bibitem[Dong et~al.(2025)Dong, Liu, Feng, Li, Hu, Qi, Xu, Sun, Zhang, Wen,
+  Wang, Zhang, et~al.]{dong2025mmdocir}
+Kuicai Dong, Yujing Liu, Ruiyang Feng, Yiming Li, Jianqun Hu, Zhiwei Qi, Yi~Xu,
+  Yuhao Sun, Yong Zhang, Xin Wen, Jirong Wang, Xin Zhang, et~al.
+\newblock Mmdocir: Benchmarking multimodal retrieval for long documents.
+\newblock \emph{arXiv preprint arXiv:2501.08828}, 2025.
+
+\bibitem[Gao et~al.(2023)Gao, Xiong, Gao, Jia, Pan, Bi, Dai, Sun, and
+  Wang]{gao2023retrieval}
+Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, Yi~Dai,
+  Jiawei Sun, and Haofen Wang.
+\newblock Retrieval-augmented generation for large language models: A survey.
+\newblock \emph{arXiv preprint arXiv:2312.10997}, 2023.
+
+\bibitem[Guu et~al.(2020)Guu, Lee, Tung, Pasupat, and Chang]{guu2020retrieval}
+Kelvin Guu, Kenton Lee, Zora Tung, Panupong Pasupat, and Ming-Wei Chang.
+\newblock Realm: Retrieval-augmented language model pre-training.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  3929--3938, 2020.
+
+\bibitem[Izacard et~al.(2022)Izacard, Caron, Hosseini, Riedel, Bojanowski,
+  Joulin, and Grave]{izacard2022unsupervised}
+Gautier Izacard, Mathilde Caron, Lucas Hosseini, Sebastian Riedel, Piotr
+  Bojanowski, Armand Joulin, and Edouard Grave.
+\newblock Unsupervised dense information retrieval with contrastive learning.
+\newblock In \emph{Proceedings of the 2022 Conference on Empirical Methods in
+  Natural Language Processing}, pages 6829--6841, 2022.
+
+\bibitem[J{\"a}rvelin and Kek{\"a}l{\"a}inen(2000)]{jarvelin2000ir}
+Kalervo J{\"a}rvelin and Jaana Kek{\"a}l{\"a}inen.
+\newblock Ir evaluation methods for retrieving highly relevant documents.
+\newblock In \emph{Proceedings of the 23rd Annual International ACM SIGIR
+  Conference on Research and Development in Information Retrieval}, pages
+  41--48, 2000.
+
+\bibitem[J{\"a}rvelin and Kek{\"a}l{\"a}inen(2002)]{jarvelin2002cumulated}
+Kalervo J{\"a}rvelin and Jaana Kek{\"a}l{\"a}inen.
+\newblock Cumulated gain-based evaluation of ir techniques.
+\newblock \emph{ACM Transactions on Information Systems}, 20\penalty0
+  (4):\penalty0 422--446, 2002.
+
+\bibitem[J{\'e}gou et~al.(2011)J{\'e}gou, Douze, and Schmid]{jegou2011product}
+Herv{\'e} J{\'e}gou, Matthijs Douze, and Cordelia Schmid.
+\newblock Product quantization for nearest neighbor search.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine
+  Intelligence}, 33\penalty0 (1):\penalty0 117--128, 2011.
+
+\bibitem[Jia et~al.(2021)Jia, Yang, Xia, Chen, Parekh, Pham, Le, Sung, Li, and
+  Duerig]{jia2021scaling}
+Chao Jia, Yinfei Yang, Ye~Xia, Yi-Ting Chen, Zarana Parekh, Hieu Pham, Quoc Le,
+  Yun-Hsuan Sung, Zhen Li, and Tom Duerig.
+\newblock Scaling up visual and vision-language representation learning with
+  noisy text supervision.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  4904--4916, 2021.
+
+\bibitem[Karpukhin et~al.(2020)Karpukhin, O{\u{g}}uz, Min, Lewis, Wu, Edunov,
+  Chen, and Yih]{karpukhin2020dense}
+Vladimir Karpukhin, Barlas O{\u{g}}uz, Sewon Min, Patrick Lewis, Ledell Wu,
+  Sergey Edunov, Danqi Chen, and Wen-tau Yih.
+\newblock Dense passage retrieval for open-domain question answering.
+\newblock In \emph{Proceedings of the 2020 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 6769--6781, 2020.
+
+\bibitem[Khattab and Zaharia(2020)]{khattab2020colbert}
+Omar Khattab and Matei Zaharia.
+\newblock Colbert: Efficient and effective passage search via contextualized
+  late interaction over bert.
+\newblock In \emph{Proceedings of the 43rd International ACM SIGIR Conference
+  on Research and Development in Information Retrieval}, pages 39--48, 2020.
+
+\bibitem[Lewis et~al.(2020)Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal,
+  K{\"u}ttler, Lewis, Yih, Rockt{\"a}schel, et~al.]{lewis2020retrieval}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
+  Rockt{\"a}schel, et~al.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~33, pages 9459--9474, 2020.
+
+\bibitem[Li et~al.(2021)Li, Selvaraju, Gotmare, Joty, Xiong, and
+  Hoi]{li2021align}
+Junnan Li, Ramprasaath Selvaraju, Akhilesh Gotmare, Shafiq Joty, Caiming Xiong,
+  and Steven Chu~Hong Hoi.
+\newblock Align before fuse: Vision and language representation learning with
+  momentum distillation.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~34, pages 9694--9705, 2021.
+
+\bibitem[Li et~al.(2022)Li, Li, Xiong, and Hoi]{li2022blip}
+Junnan Li, Dongxu Li, Caiming Xiong, and Steven Hoi.
+\newblock Blip: Bootstrapping language-image pre-training for unified
+  vision-language understanding and generation.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  12888--12900, 2022.
+
+\bibitem[Li et~al.(2023)Li, Li, Savarese, and Hoi]{li2023blip2}
+Junnan Li, Dongxu Li, Silvio Savarese, and Steven Hoi.
+\newblock Blip-2: Bootstrapping language-image pre-training with frozen image
+  encoders and large language models.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  19730--19742, 2023.
+
+\bibitem[Lin et~al.(2021)Lin, Nogueira, and Yates]{lin2021pretrained}
+Jimmy Lin, Rodrigo Nogueira, and Andrew Yates.
+\newblock \emph{Pretrained Transformers for Text Ranking: BERT and Beyond}.
+\newblock Morgan \& Claypool Publishers, 2021.
+
+\bibitem[Liu(2009)]{liu2009learning}
+Tie-Yan Liu.
+\newblock Learning to rank for information retrieval.
+\newblock \emph{Foundations and Trends in Information Retrieval}, 3\penalty0
+  (3):\penalty0 225--331, 2009.
+
+\bibitem[Malkov and Yashunin(2018)]{malkov2018efficient}
+Yury~A Malkov and Dmitry~A Yashunin.
+\newblock Efficient and robust approximate nearest neighbor search using
+  hierarchical navigable small world graphs.
+\newblock \emph{IEEE Transactions on Pattern Analysis and Machine
+  Intelligence}, 42\penalty0 (4):\penalty0 824--836, 2018.
+
+\bibitem[Mikolov et~al.(2013)Mikolov, Chen, Corrado, and
+  Dean]{mikolov2013efficient}
+Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey Dean.
+\newblock Efficient estimation of word representations in vector space.
+\newblock \emph{arXiv preprint arXiv:1301.3781}, 2013.
+
+\bibitem[Mitra and Craswell(2018)]{mitra2017neural}
+Bhaskar Mitra and Nick Craswell.
+\newblock Neural information retrieval: At the end of the early years.
+\newblock \emph{Information Retrieval Journal}, 21\penalty0 (2-3):\penalty0
+  111--182, 2018.
+
+\bibitem[Mo et~al.(2024)Mo, Almansoori, Duan, Shatnawi, and
+  Moshfeghi]{mo2024survey}
+Fengran Mo, Abbas Almansoori, Xiaojie Duan, Maram Shatnawi, and Yashar
+  Moshfeghi.
+\newblock A survey of conversational search.
+\newblock \emph{ACM Transactions on Information Systems}, 2024.
+
+\bibitem[Nguyen et~al.(2016)Nguyen, Rosenberg, Song, Gao, Tiwary, Majumder, and
+  Deng]{nguyen2016ms}
+Tri Nguyen, Mir Rosenberg, Xia Song, Jianfeng Gao, Saurabh Tiwary, Rangan
+  Majumder, and Li~Deng.
+\newblock Ms marco: A human generated machine reading comprehension dataset.
+\newblock In \emph{CoCo@ NIPS}, 2016.
+
+\bibitem[Nogueira and Cho(2019)]{nogueira2019passage}
+Rodrigo Nogueira and Kyunghyun Cho.
+\newblock Passage re-ranking with bert.
+\newblock \emph{arXiv preprint arXiv:1901.04085}, 2019.
+
+\bibitem[Page et~al.(1999)Page, Brin, Motwani, and Winograd]{page1999pagerank}
+Lawrence Page, Sergey Brin, Rajeev Motwani, and Terry Winograd.
+\newblock The pagerank citation ranking: Bringing order to the web.
+\newblock \emph{Stanford InfoLab}, 1999.
+
+\bibitem[Pennington et~al.(2014)Pennington, Socher, and
+  Manning]{pennington2014glove}
+Jeffrey Pennington, Richard Socher, and Christopher~D Manning.
+\newblock Glove: Global vectors for word representation.
+\newblock In \emph{Proceedings of the 2014 Conference on Empirical Methods in
+  Natural Language Processing (EMNLP)}, pages 1532--1543, 2014.
+
+\bibitem[Pradeep et~al.(2023)Pradeep, Sharifymoghaddam, and
+  Lin]{pradeep2023rankzephyr}
+Ronak Pradeep, Sahel Sharifymoghaddam, and Jimmy Lin.
+\newblock Rankzephyr: Effective and robust zero-shot listwise reranking is a
+  breeze.
+\newblock \emph{arXiv preprint arXiv:2312.02724}, 2023.
+
+\bibitem[Radford et~al.(2021)Radford, Kim, Hallacy, Ramesh, Goh, Agarwal,
+  Sastry, Askell, Mishkin, Clark, et~al.]{radford2021learning}
+Alec Radford, Jong~Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh,
+  Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark,
+  et~al.
+\newblock Learning transferable visual models from natural language
+  supervision.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  8748--8763, 2021.
+
+\bibitem[Reimers and Gurevych(2019)]{reimers2019sentence}
+Nils Reimers and Iryna Gurevych.
+\newblock Sentence-bert: Sentence embeddings using siamese bert-networks.
+\newblock In \emph{Proceedings of the 2019 Conference on Empirical Methods in
+  Natural Language Processing and the 9th International Joint Conference on
+  Natural Language Processing (EMNLP-IJCNLP)}, pages 3982--3992, 2019.
+
+\bibitem[Robertson and Zaragoza(2009)]{robertson2009probabilistic}
+Stephen Robertson and Hugo Zaragoza.
+\newblock The probabilistic relevance framework: Bm25 and beyond.
+\newblock \emph{Foundations and Trends in Information Retrieval}, 3\penalty0
+  (4):\penalty0 333--389, 2009.
+
+\bibitem[Robertson et~al.(1994)Robertson, Walker, Jones, Hancock-Beaulieu, and
+  Gatford]{robertson1994okapi}
+Stephen~E Robertson, Steve Walker, Susan Jones, Micheline~M Hancock-Beaulieu,
+  and Mike Gatford.
+\newblock Okapi at trec-3.
+\newblock In \emph{TREC}, 1994.
+
+\bibitem[Salton and Buckley(1988)]{salton1988term}
+Gerard Salton and Christopher Buckley.
+\newblock Term-weighting approaches in automatic text retrieval.
+\newblock \emph{Information Processing \& Management}, 24\penalty0
+  (5):\penalty0 513--523, 1988.
+
+\bibitem[Salton et~al.(1975)Salton, Wong, and Yang]{salton1975vector}
+Gerard Salton, Anita Wong, and Chung-Shu Yang.
+\newblock A vector space model for automatic indexing.
+\newblock \emph{Communications of the ACM}, 18\penalty0 (11):\penalty0
+  613--620, 1975.
+
+\bibitem[Sp{\"a}rck~Jones(1972)]{sparck1972statistical}
+Karen Sp{\"a}rck~Jones.
+\newblock A statistical interpretation of term specificity and its application
+  in retrieval.
+\newblock \emph{Journal of Documentation}, 28\penalty0 (1):\penalty0 11--21,
+  1972.
+
+\bibitem[Sun et~al.(2023)Sun, Yan, Ma, Ren, Yin, and Ren]{sun2023chatgpt}
+Weiwei Sun, Lingyong Yan, Xinyu Ma, Pengjie Ren, Dawei Yin, and Zhaochun Ren.
+\newblock Is chatgpt good at search? investigating large language models as
+  re-ranking agents.
+\newblock \emph{arXiv preprint arXiv:2304.09542}, 2023.
+
+\bibitem[Thakur et~al.(2021)Thakur, Reimers, R{\"u}ckl{\'e}, Srivastava, and
+  Gurevych]{thakur2021beir}
+Nandan Thakur, Nils Reimers, Andreas R{\"u}ckl{\'e}, Abhishek Srivastava, and
+  Iryna Gurevych.
+\newblock Beir: A heterogenous benchmark for zero-shot evaluation of
+  information retrieval models.
+\newblock In \emph{Thirty-fifth Conference on Neural Information Processing
+  Systems Datasets and Benchmarks Track}, 2021.
+
+\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
+  Kaiser, and Polosukhin]{vaswani2017attention}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N Gomez, {\L}ukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock In \emph{Advances in Neural Information Processing Systems},
+  volume~30, 2017.
+
+\bibitem[Wang et~al.(2019)Wang, Yuan, and Lovell]{wang2019matching}
+Tan Wang, Xing Yuan, and Brian~C Lovell.
+\newblock Matching images and text with multi-modal tensor fusion and
+  re-ranking.
+\newblock In \emph{Proceedings of the 27th ACM International Conference on
+  Multimedia}, pages 12--20, 2019.
+
+\bibitem[Xia et~al.(2008)Xia, Liu, Wang, Zhang, and Li]{xia2008listwise}
+Fen Xia, Tie-Yan Liu, Jue Wang, Wensheng Zhang, and Hang Li.
+\newblock Listwise approach to learning to rank: Theory and algorithm.
+\newblock In \emph{Proceedings of the 25th International Conference on Machine
+  Learning}, pages 1192--1199, 2008.
+
+\bibitem[Xiong et~al.(2021)Xiong, Xiong, Li, Tang, Liu, Bennett, Ahmed, and
+  Overwijk]{xiong2021approximate}
+Lee Xiong, Chenyan Xiong, Ye~Li, Kwok-Fung Tang, Jialin Liu, Paul Bennett,
+  Junaid Ahmed, and Arnold Overwijk.
+\newblock Approximate nearest neighbor negative contrastive learning for dense
+  text retrieval.
+\newblock In \emph{International Conference on Learning Representations}, 2021.
+
+\bibitem[Yan et~al.(2024)Yan, Gu, Zhu, and Ling]{yan2024corrective}
+Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, and Zhen-Hua Ling.
+\newblock Corrective retrieval augmented generation.
+\newblock \emph{arXiv preprint arXiv:2401.15884}, 2024.
+
+\bibitem[Zobel and Moffat(2006)]{zobel2006inverted}
+Justin Zobel and Alistair Moffat.
+\newblock Inverted files for text search engines.
+\newblock \emph{ACM Computing Surveys}, 38\penalty0 (2):\penalty0 6, 2006.
+
+\end{thebibliography}

@@ -1,0 +1,158 @@
+═══════════════════════════════════════════════════════════════════
+                  LaTeX Beamer 编译命令速查卡
+═══════════════════════════════════════════════════════════════════
+
+【1. 首次部署 - 安装 LaTeX 环境】
+──────────────────────────────────────────────────────────────────
+sudo pacman -S texlive-core texlive-bin texlive-latexextra \
+               texlive-fontsextra texlive-bibtexextra texlive-pictures
+
+验证安装：
+  pdflatex --version
+  bibtex --version
+
+
+【2. 编译方法】
+──────────────────────────────────────────────────────────────────
+
+方法一：使用 Makefile（最简单）
+  make              # 完整编译
+  make view         # 编译并打开 PDF
+  make clean        # 清理辅助文件
+  make help         # 查看所有命令
+
+方法二：使用编译脚本
+  ./compile.sh      # 自动完整编译
+  ./clean.sh        # 清理辅助文件
+
+方法三：手动编译（完整流程）
+  pdflatex -interaction=nonstopmode sample.tex
+  bibtex sample
+  pdflatex -interaction=nonstopmode sample.tex
+  pdflatex -interaction=nonstopmode sample.tex
+
+方法四：快速编译（不处理参考文献）
+  pdflatex sample.tex
+
+
+【3. 清理命令】
+──────────────────────────────────────────────────────────────────
+清理辅助文件：
+  make clean
+  或
+  ./clean.sh
+  或
+  rm -f *.aux *.log *.out *.toc *.nav *.snm *.vrb *.bbl *.blg
+
+完全清理（包括PDF）：
+  make distclean
+
+
+【4. 查看 PDF】
+──────────────────────────────────────────────────────────────────
+  xdg-open sample.pdf          # 使用系统默认 PDF 阅读器
+  evince sample.pdf            # 使用 Evince
+  okular sample.pdf            # 使用 Okular
+
+
+【5. 常用调试命令】
+──────────────────────────────────────────────────────────────────
+查看编译日志：
+  cat sample.log
+
+查看最后 50 行日志：
+  tail -n 50 sample.log
+
+搜索错误信息：
+  grep -i error sample.log
+
+检查文件是否存在：
+  ls -lh sample.pdf
+
+
+【6. 推荐工作流】
+──────────────────────────────────────────────────────────────────
+第一次编译：
+  make
+
+修改文档后重新编译：
+  make
+
+查看结果：
+  make view
+
+完成工作后清理：
+  make clean
+
+
+【7. 项目文件说明】
+──────────────────────────────────────────────────────────────────
+主要文件：
+  sample.tex        - 主文档（需要编辑的主文件）
+  METHOD.tex        - 方法论章节（被 sample.tex 引用）
+  reference.bib     - 参考文献数据库
+
+输出文件：
+  sample.pdf        - 最终生成的演示文稿
+
+辅助工具：
+  compile.sh        - 自动编译脚本
+  clean.sh          - 清理脚本
+  Makefile          - Make 构建文件
+  README.md         - 项目说明
+  编译说明.md       - 详细编译指南
+  命令速查.txt      - 本文件
+
+
+【8. 故障排除】
+──────────────────────────────────────────────────────────────────
+问题：编译失败，提示找不到包
+解决：sudo pacman -S texlive-most
+
+问题：参考文献不显示
+解决：确保执行了完整编译流程（make 会自动处理）
+
+问题：图片无法显示
+解决：检查图片文件是否在项目目录中
+
+问题：编译卡住
+解决：按 Ctrl+C 中止，然后执行 make clean 清理后重试
+
+
+【9. 快速开始（新用户）】
+──────────────────────────────────────────────────────────────────
+cd /home/lancelot/下载/FYP_SLIDE    # 进入项目目录
+sudo pacman -S texlive-core texlive-bin texlive-latexextra \
+               texlive-fontsextra texlive-bibtexextra texlive-pictures
+make                                # 编译
+make view                           # 查看 PDF
+
+
+【10. 高级用户选项】
+──────────────────────────────────────────────────────────────────
+使用 latexmk 自动编译（如果已安装）：
+  latexmk -pdf -interaction=nonstopmode sample.tex
+
+使用 XeLaTeX（更好的字体支持）：
+  xelatex sample.tex
+  bibtex sample
+  xelatex sample.tex
+  xelatex sample.tex
+
+开启详细错误信息：
+  pdflatex -file-line-error -halt-on-error sample.tex
+
+
+═══════════════════════════════════════════════════════════════════
+                        最常用的命令
+═══════════════════════════════════════════════════════════════════
+
+  make              # 编译文档
+  make view         # 编译并查看
+  make clean        # 清理文件
+
+  ./compile.sh      # 或使用脚本编译
+
+═══════════════════════════════════════════════════════════════════
+
+

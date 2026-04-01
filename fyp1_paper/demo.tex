@@ -1,0 +1,376 @@
+%----------------------------------------------------------------------------------------
+%    PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\usetheme{SimplePlus}
+
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{pifont}
+\usepackage{adjustbox}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,calc}
+
+%----------------------------------------------------------------------------------------
+%    TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{Verdant Search: System Demonstration}
+
+\author{
+    \textbf{Student:} CAI HONGYI, S2175463 \\[0.3em]
+    \textbf{Supervisor:} CHIAM YIN KIA
+}
+
+\institute{University of Malaya}
+\date{\today}
+
+%----------------------------------------------------------------------------------------
+%    PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Demonstration Agenda}
+    \Large
+    \begin{enumerate}
+        \item \textbf{Module 2: Search and Retrieval}
+        \begin{itemize}
+            \large
+            \item Hybrid search (BM25 + Vector)
+            \item Search results display
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \textbf{Module 3: Data Ingestion (Partial)}
+        \begin{itemize}
+            \large
+            \item Document indexing process
+            \item Index monitoring
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \textbf{Module 5: AI Iterative Chat (RAG)}
+        \begin{itemize}
+            \large
+            \item Context-aware answer generation
+            \item Citation and source references
+            \item Iterative query refinement
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \textbf{Database Demonstration}
+    \end{enumerate}
+\end{frame}
+
+%------------------------------------------------
+\section{Module 2: Search and Retrieval}
+%------------------------------------------------
+
+\begin{frame}{Module 2: Search and Retrieval - Implementation Status}
+    \large
+    \textbf{Implemented Features:}
+    \begin{itemize}
+        \item \checkmark \textbf{Text Input \& Query Processing}
+        \begin{itemize}
+            \normalsize
+            \item User query submission through search interface
+            \item Query sanitization and normalization
+            \item Query expansion with synonyms
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Keyword Search (BM25)}
+        \begin{itemize}
+            \normalsize
+            \item Inverted index with term posting lists
+            \item BM25 probabilistic ranking
+            \item Fast lexical matching
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Vector Search (HNSW)}
+        \begin{itemize}
+            \normalsize
+            \item Sentence-BERT query encoding
+            \item HNSW approximate nearest neighbor search
+            \item Semantic similarity matching
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Module 2: Search and Retrieval - Implementation Status (Cont.)}
+    \large
+    \textbf{Implemented Features (Continued):}
+    \begin{itemize}
+        \item \checkmark \textbf{Hybrid Search Fusion}
+        \begin{itemize}
+            \normalsize
+            \item Reciprocal Rank Fusion (RRF) combining BM25 and vector scores
+            \item Weighted score combination
+            \item Metadata-based pre-filtering
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Search Results Display}
+        \begin{itemize}
+            \normalsize
+            \item Ranked document list with relevance scores
+            \item Document snippets with highlighted keywords
+            \item Metadata display (filename, page number, timestamp)
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Module 2: Search and Retrieval - Implementation Status (Final)}
+    \large
+    \textbf{Implemented Features (Final):}
+    \begin{itemize}
+        \item \checkmark \textbf{Conversational Search}
+        \begin{itemize}
+            \normalsize
+            \item Follow-up question support
+            \item Conversation history tracking
+            \item Query rewriting for context preservation
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Metadata Filtering}
+        \begin{itemize}
+            \normalsize
+            \item Filter by document type, date, source
+            \item Dynamic faceted search
+        \end{itemize}
+    \end{itemize}
+    
+    \vspace{1em}
+    \begin{block}{Ready for Demonstration}
+        All core search and retrieval features are fully implemented and operational.
+    \end{block}
+\end{frame}
+
+%------------------------------------------------
+\section{Module 3: Data Ingestion (Partial)}
+%------------------------------------------------
+
+\begin{frame}{Module 3: Data Ingestion - Partial Implementation Status}
+    \large
+    \textbf{Implemented Features:}
+    \begin{itemize}
+        \item \checkmark \textbf{Document Chunking}
+        \begin{itemize}
+            \normalsize
+            \item Semantic segmentation of documents
+            \item Chunk overlap for context preservation
+            \item Support for heading-based chunking
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Index Building}
+        \begin{itemize}
+            \normalsize
+            \item Inverted index construction for BM25 (Pyserini)
+            \item HNSW vector index building (FAISS)
+            \item Dense vector embedding generation (Sentence-BERT)
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Index Monitoring}
+        \begin{itemize}
+            \normalsize
+            \item Real-time indexing progress tracking
+            \item Index health and size monitoring
+            \item Document count statistics
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Module 3: Data Ingestion - Partial Implementation Status (Cont.)}
+    \large
+    \textbf{Implemented Features (Continued):}
+    \begin{itemize}
+        \item \checkmark \textbf{Scheduled Updates}
+        \begin{itemize}
+            \normalsize
+            \item Cron-based index refresh scheduling
+            \item Batch update support
+        \end{itemize}
+    \end{itemize}
+    
+    \vspace{1em}
+    \begin{block}{Demonstration Ready}
+        Index building and monitoring features are operational and ready for demonstration.
+    \end{block}
+\end{frame}
+
+%------------------------------------------------
+\section{Module 5: AI Iterative Chat (RAG)}
+%------------------------------------------------
+
+\begin{frame}{Module 5: AI Iterative Chat (RAG) - Implementation Status}
+    \large
+    \textbf{Implemented Features:}
+    \begin{itemize}
+        \item \checkmark \textbf{Query Processing \& Validation}
+        \begin{itemize}
+            \normalsize
+            \item User query reception and validation
+            \item Query length and format checking
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Context Injection}
+        \begin{itemize}
+            \normalsize
+            \item Retrieved context injection into LLM prompt
+            \item Context formatting with document metadata
+            \item Structured prompt engineering
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{AI Answer Generation}
+        \begin{itemize}
+            \normalsize
+            \item LLM-based answer generation grounded in context
+            \item Hallucination prevention (context-only responses)
+            \item Markdown-formatted answer display
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Module 5: AI Iterative Chat (RAG) - Implementation Status (Cont.)}
+    \large
+    \textbf{Implemented Features (Continued):}
+    \begin{itemize}
+        \item \checkmark \textbf{Citation \& Source References}
+        \begin{itemize}
+            \normalsize
+            \item Inline citations with source document links
+            \item Citations include page numbers and timestamps
+            \item Highlighted cited text in source documents
+            \item Formatted source references (title, author, timestamp)
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Real-time Streaming}
+        \begin{itemize}
+            \normalsize
+            \item Server-sent events (SSE) for streaming responses
+            \item Progressive answer display
+            \item Low latency user experience
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Knowledge Base Awareness}
+        \begin{itemize}
+            \normalsize
+            \item Clear indication of knowledge base limitations
+            \item Entailment checking for answer grounding validation
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Module 5: AI Iterative Chat (RAG) - Implementation Status (Final)}
+    \large
+    \textbf{Implemented Features (Final):}
+    \begin{itemize}
+        \item \checkmark \textbf{Iterative Conversation}
+        \begin{itemize}
+            \normalsize
+            \item Follow-up question support
+            \item Intent detection (follow-up vs. new query)
+            \item Conversation history maintenance (last 10 turns)
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Query Refinement Loop}
+        \begin{itemize}
+            \normalsize
+            \item LLM-based query rewriting with conversation context
+            \item Automatic retrieval triggering after rewriting
+            \item Dynamic document list updates
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \checkmark \textbf{Feedback Integration}
+        \begin{itemize}
+            \normalsize
+            \item User feedback analysis
+            \item Search strategy refinement based on feedback
+        \end{itemize}
+    \end{itemize}
+    
+    \vspace{0.5em}
+    \begin{block}{Ready for Demonstration}
+        Complete RAG pipeline with iterative refinement is fully operational.
+    \end{block}
+\end{frame}
+
+%------------------------------------------------
+\section{Database Demonstration}
+%------------------------------------------------
+
+\begin{frame}
+    \Huge{\centerline{\textbf{Database Demo}}}
+\end{frame}
+
+%------------------------------------------------
+\section{More To-Do in FYP2}
+%------------------------------------------------
+
+\begin{frame}{More To-Do in FYP2}
+    \Large
+    \textbf{Planned Enhancements:}
+    \begin{itemize}
+        \item \textbf{Complete Data Ingestion Module}
+        \begin{itemize}
+            \large
+            \item Distributed crawling from multiple sources (Confluence, Google Drive, Git)
+            \item Text and image extraction from documents
+            \item OCR support for scanned PDFs
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \textbf{Implement Image-Supported Search + Reranking}
+        \begin{itemize}
+            \large
+            \item CLIP-based image embeddings
+            \item Multimodal reranking with BLIP-2
+            \item Image-text cross-modal relevance scoring
+        \end{itemize}
+        
+        \vspace{0.5em}
+        \item \textbf{Implement Chatbot Image Conversational Ability}
+        \begin{itemize}
+            \large
+            \item Vision-language model integration for image understanding
+            \item Image-aware context injection
+            \item Multimodal citation with image references
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%------------------------------------------------
+
+\begin{frame}
+    \Huge{\centerline{\textbf{Thank You!}}}
+    
+    \vspace{1cm}
+    \Large{\centerline{Questions?}}
+    
+    \vspace{1cm}
+    \normalsize
+    \centerline{Verdant Search: AI Boosted Sharded Distributed Search Engine}
+    \centerline{CAI HONGYI, S2175463 | Supervisor: CHIAM YIN KIA}
+\end{frame}
+
+\end{document}

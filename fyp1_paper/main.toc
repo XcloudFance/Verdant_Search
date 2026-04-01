@@ -1,0 +1,121 @@
+\contentsline {chapter}{Acknowledgement}{1}{chapter*.2}%
+\contentsline {chapter}{Contents}{3}{chapter*.4}%
+\contentsline {chapter}{List of Tables}{6}{chapter*.5}%
+\contentsline {chapter}{List of Figures}{7}{chapter*.6}%
+\contentsline {chapter}{\numberline {1}Introduction}{8}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Background}{8}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Problem Statement}{8}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Objective}{9}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Project Scope}{9}{section.1.4}%
+\contentsline {subsection}{\numberline {1.4.1}System Scope}{9}{subsection.1.4.1}%
+\contentsline {subsection}{\numberline {1.4.2}Target Users}{10}{subsection.1.4.2}%
+\contentsline {subsection}{\numberline {1.4.3}System Limitations}{10}{subsection.1.4.3}%
+\contentsline {section}{\numberline {1.5}Project Schedule}{10}{section.1.5}%
+\contentsline {chapter}{\numberline {2}Literature Review}{11}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Search Engine Fundamentals and Architecture}{11}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Keyword-Based Search Methods}{11}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Vector Search and Neural Retrieval}{12}{section.2.3}%
+\contentsline {section}{\numberline {2.4}Learning-to-Rank Approaches}{12}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Multimodal Search and Retrieval}{13}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Retrieval-Augmented Generation}{13}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Benchmark Datasets and Evaluation}{14}{section.2.7}%
+\contentsline {section}{\numberline {2.8}Research Gaps and Opportunities}{14}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Proposed Approach: Multimodal LTR-Enhanced Search Engine}{15}{section.2.9}%
+\contentsline {subsection}{\numberline {2.9.1}Key Innovations}{15}{subsection.2.9.1}%
+\contentsline {chapter}{\numberline {3}Research Methodology}{17}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Software Development Methodology}{17}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Implementing the Scrum Framework}{17}{subsection.3.1.1}%
+\contentsline {subsubsection}{Scrum Roles}{18}{section*.15}%
+\contentsline {subsubsection}{Scrum Artifacts}{18}{section*.16}%
+\contentsline {subsubsection}{Scrum Events}{18}{section*.17}%
+\contentsline {subsection}{\numberline {3.1.2}Project Management and Workflow Tools}{19}{subsection.3.1.2}%
+\contentsline {section}{\numberline {3.2}Data Gathering Techniques}{19}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Literature Review}{19}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Stakeholder Interviews}{20}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Workflow Analysis}{21}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Existing Product Analysis}{21}{subsection.3.2.4}%
+\contentsline {chapter}{\numberline {4}Stakeholder Collaboration}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Collaborative Background}{23}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Stakeholder Introduction}{23}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Company Background}{23}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Project Context}{23}{subsection.4.2.2}%
+\contentsline {section}{\numberline {4.3}Key Stakeholders}{24}{section.4.3}%
+\contentsline {section}{\numberline {4.4}Collaboration Documentation}{24}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Collaboration Agreement}{24}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Initial Requirements Gathering Sessions}{25}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}System Architecture Review Meetings}{25}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.4}Product Review Meeting}{25}{subsection.4.4.4}%
+\contentsline {subsection}{\numberline {4.4.5}Meeting Appointments}{26}{subsection.4.4.5}%
+\contentsline {chapter}{\numberline {5}System Analysis and Design}{28}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Key System Modules}{28}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Module 1: User Management System}{28}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Module 2: Search and Retrieval System}{28}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Module 3: Data Ingestion and Indexing System}{28}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.4}Module 4: Analytics and Monitoring System}{29}{subsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.1.5}Module 5: RAG Generation System}{29}{subsection.5.1.5}%
+\contentsline {section}{\numberline {5.2}Hierarchical Task Analysis}{30}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Use Case Diagram}{31}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Use Case Tables}{35}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Use Case Descriptions}{42}{section.5.5}%
+\contentsline {section}{\numberline {5.6}Activity Diagrams}{46}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Database Design}{53}{section.5.7}%
+\contentsline {subsection}{\numberline {5.7.1}User Entity}{53}{subsection.5.7.1}%
+\contentsline {subsection}{\numberline {5.7.2}Session Entity}{53}{subsection.5.7.2}%
+\contentsline {subsection}{\numberline {5.7.3}Document Entity}{53}{subsection.5.7.3}%
+\contentsline {subsection}{\numberline {5.7.4}DocumentChunk Entity}{54}{subsection.5.7.4}%
+\contentsline {subsection}{\numberline {5.7.5}ConversationHistory Entity}{54}{subsection.5.7.5}%
+\contentsline {subsection}{\numberline {5.7.6}SearchQuery Entity}{54}{subsection.5.7.6}%
+\contentsline {subsection}{\numberline {5.7.7}SearchResult Entity}{54}{subsection.5.7.7}%
+\contentsline {subsection}{\numberline {5.7.8}DataSource Entity}{54}{subsection.5.7.8}%
+\contentsline {subsection}{\numberline {5.7.9}CrawlJob Entity}{54}{subsection.5.7.9}%
+\contentsline {subsection}{\numberline {5.7.10}AccessControl Entity}{54}{subsection.5.7.10}%
+\contentsline {subsection}{\numberline {5.7.11}Key Indexes and Performance Optimizations}{54}{subsection.5.7.11}%
+\contentsline {section}{\numberline {5.8}Deployment Architecture}{56}{section.5.8}%
+\contentsline {subsection}{\numberline {5.8.1}Client Tier}{56}{subsection.5.8.1}%
+\contentsline {subsection}{\numberline {5.8.2}Application Tier}{56}{subsection.5.8.2}%
+\contentsline {subsection}{\numberline {5.8.3}Data Tier}{57}{subsection.5.8.3}%
+\contentsline {subsection}{\numberline {5.8.4}ML Infrastructure}{57}{subsection.5.8.4}%
+\contentsline {subsection}{\numberline {5.8.5}Monitoring and Observability}{57}{subsection.5.8.5}%
+\contentsline {subsection}{\numberline {5.8.6}Development Environment}{57}{subsection.5.8.6}%
+\contentsline {section}{\numberline {5.9}Non-Functional Requirements}{58}{section.5.9}%
+\contentsline {subsection}{\numberline {5.9.1}Security Requirements Detail}{58}{subsection.5.9.1}%
+\contentsline {subsection}{\numberline {5.9.2}Performance Requirements Detail}{58}{subsection.5.9.2}%
+\contentsline {subsection}{\numberline {5.9.3}Scalability Approach}{59}{subsection.5.9.3}%
+\contentsline {section}{\numberline {5.10}User Interface Design}{60}{section.5.10}%
+\contentsline {subsection}{\numberline {5.10.1}Design Philosophy}{60}{subsection.5.10.1}%
+\contentsline {subsection}{\numberline {5.10.2}Responsive Design and Accessibility}{64}{subsection.5.10.2}%
+\contentsline {section}{\numberline {5.11}Technical Implementation}{65}{section.5.11}%
+\contentsline {subsection}{\numberline {5.11.1}Technology Stack}{65}{subsection.5.11.1}%
+\contentsline {subsubsection}{Backend Technologies}{65}{section*.66}%
+\contentsline {subsubsection}{Frontend Technologies}{65}{section*.67}%
+\contentsline {subsubsection}{AI/ML Technologies}{65}{section*.68}%
+\contentsline {subsubsection}{Infrastructure and DevOps}{66}{section*.69}%
+\contentsline {subsection}{\numberline {5.11.2}Hardware Specifications}{66}{subsection.5.11.2}%
+\contentsline {chapter}{\numberline {6}Implementation}{67}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Database Implementation}{67}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Schema Implementation with PostgreSQL and pgvector}{67}{subsection.6.1.1}%
+\contentsline {section}{\numberline {6.2}BM25 Search Implementation}{69}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}SQL-Based BM25 Calculator}{69}{subsection.6.2.1}%
+\contentsline {section}{\numberline {6.3}Vector Search with HNSW}{71}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Embedding Generation Service}{71}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}HNSW Vector Search Implementation}{71}{subsection.6.3.2}%
+\contentsline {section}{\numberline {6.4}Hybrid Search and Reciprocal Rank Fusion}{73}{section.6.4}%
+\contentsline {subsection}{\numberline {6.4.1}Search Service Integration}{73}{subsection.6.4.1}%
+\contentsline {section}{\numberline {6.5}Distributed Web Crawling}{75}{section.6.5}%
+\contentsline {subsection}{\numberline {6.5.1}Multi-threaded Crawler with DrissionPage}{75}{subsection.6.5.1}%
+\contentsline {subsection}{\numberline {6.5.2}URL Management with Redis and Bloom Filter}{76}{subsection.6.5.2}%
+\contentsline {section}{\numberline {6.6}Image Extraction and Multimodal Indexing}{78}{section.6.6}%
+\contentsline {subsection}{\numberline {6.6.1}Image Extraction from Web Pages}{78}{subsection.6.6.1}%
+\contentsline {section}{\numberline {6.7}HTTP Microservice for Embedding Generation}{80}{section.6.7}%
+\contentsline {subsection}{\numberline {6.7.1}FastAPI Service for Image Encoding}{80}{subsection.6.7.1}%
+\contentsline {section}{\numberline {6.8}Performance Optimizations}{82}{section.6.8}%
+\contentsline {subsection}{\numberline {6.8.1}Redis Caching Layer}{82}{subsection.6.8.1}%
+\contentsline {subsection}{\numberline {6.8.2}Batch Processing for Index Updates}{83}{subsection.6.8.2}%
+\contentsline {chapter}{\numberline {7}Conclusion}{85}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Project Summary}{85}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Research Gaps Addressed}{85}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Practical Impact}{86}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Limitations and Future Directions}{86}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Final Remarks}{86}{section.7.5}%
+\contentsline {chapter}{Bibliography}{88}{chapter*.71}%
+\contentsline {chapter}{\numberline {A}Logbook}{91}{appendix.A}%

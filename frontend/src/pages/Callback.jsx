@@ -36,8 +36,11 @@ export default function Callback() {
           console.error('[SSO] Callback failed:', err);
           navigate('/login');
         });
+    } else if (!new URLSearchParams(window.location.search).has('code')) {
+      // No OAuth code in URL — not a real callback, redirect to login
+      navigate('/login');
     }
-  }, [isAuthenticated, isLoading, error]);
+  }, [isAuthenticated, isLoading, error, loginWithSSO, navigate]);
 
   return (
     <Box sx={{

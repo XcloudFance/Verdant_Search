@@ -135,7 +135,7 @@ type AuthResponse struct {
 }
 
 // Register handles user registration
-func Register(jwtSecret string) gin.HandlerFunc {
+func Register(jwtSecret string, jwtExpiryHours int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Debug: Log raw request body
 		bodyBytes, _ := c.GetRawData()
@@ -186,7 +186,7 @@ func Register(jwtSecret string) gin.HandlerFunc {
 		}
 
 		// Generate JWT token
-		token, err := utils.GenerateToken(user.ID, user.Email, jwtSecret)
+		token, err := utils.GenerateToken(user.ID, user.Email, jwtSecret, jwtExpiryHours)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Failed to generate token",
@@ -202,7 +202,7 @@ func Register(jwtSecret string) gin.HandlerFunc {
 }
 
 // Login handles user authentication
-func Login(jwtSecret string) gin.HandlerFunc {
+func Login(jwtSecret string, jwtExpiryHours int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Debug: Log raw request body
 		bodyBytes, _ := c.GetRawData()
@@ -237,7 +237,7 @@ func Login(jwtSecret string) gin.HandlerFunc {
 		}
 
 		// Generate JWT token
-		token, err := utils.GenerateToken(user.ID, user.Email, jwtSecret)
+		token, err := utils.GenerateToken(user.ID, user.Email, jwtSecret, jwtExpiryHours)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": "Failed to generate token",
@@ -254,7 +254,7 @@ func Login(jwtSecret string) gin.HandlerFunc {
 
 // SSOLogin verifies an Auth0 ID token via JWKS, upserts the user, and returns
 // a Verdant JWT — no external dependency, pure standard-library JWKS parsing.
-func SSOLogin(jwtSecret, auth0Domain string) gin.HandlerFunc {
+func SSOLogin(jwtSecret, auth0Domain string, jwtExpiryHours int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req struct {
 			IDToken string `json:"id_token" binding:"required"`
@@ -283,7 +283,11 @@ func SSOLogin(jwtSecret, auth0Domain string) gin.HandlerFunc {
 			if name == "" {
 				name = claims.Email
 			}
-			dummyHash, _ := bcrypt.GenerateFromPassword([]byte("sso:"+claims.Sub), bcrypt.MinCost)
+			dummyHash, err := bcrypt.GenerateFromPassword([]byte("sso:"+claims.Sub), bcrypt.MinCost)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process SSO user"})
+				return
+			}
 			user = models.User{
 				Email:        claims.Email,
 				Name:         name,
@@ -297,7 +301,7 @@ func SSOLogin(jwtSecret, auth0Domain string) gin.HandlerFunc {
 		}
 
 		// ── Issue Verdant JWT ──────────────────────────────────────────────
-		token, err := utils.GenerateToken(user.ID, user.Email, jwtSecret)
+		token, err := utils.GenerateToken(user.ID, user.Email, jwtSecret, jwtExpiryHours)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 			return

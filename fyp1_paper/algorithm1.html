@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm 1: Hybrid Retrieval</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .node:hover rect, .node:hover ellipse {
+            filter: brightness(0.95);
+            stroke-width: 2.5;
+        }
+        .complexity-box {
+            background: #ecf0f1;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        .complexity-box h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .complexity-box p {
+            margin: 5px 0;
+            color: #34495e;
+            font-size: 14px;
+        }
+        .code {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Algorithm 1: Hybrid Retrieval with RRF Fusion</h2>
+        <p class="subtitle">Two-stage retrieval combining BM25 keyword search with HNSW vector search</p>
+        
+        <svg viewBox="0 0 1300 400" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#34495e" />
+                </marker>
+                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#3498db;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#2980b9;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#e74c3c;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#c0392b;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="grad3" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#27ae60;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#229954;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <!-- Input -->
+            <g class="node">
+                <ellipse cx="80" cy="200" rx="60" ry="40" fill="url(#grad1)" stroke="#2980b9" stroke-width="2"/>
+                <text x="80" y="195" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Query q</text>
+                <text x="80" y="210" text-anchor="middle" fill="white" font-size="11">Input</text>
+            </g>
+            
+            <!-- Preprocess -->
+            <line x1="140" y1="200" x2="190" y2="200" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <rect x="190" y="170" width="110" height="60" rx="8" fill="#ecf0f1" stroke="#95a5a6" stroke-width="2"/>
+                <text x="245" y="195" text-anchor="middle" font-size="13" font-weight="bold">Preprocess</text>
+                <text x="245" y="210" text-anchor="middle" font-size="10" fill="#7f8c8d">Tokenize</text>
+            </g>
+            
+            <!-- Split -->
+            <line x1="300" y1="200" x2="350" y2="200" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <polygon points="350,200 380,170 410,200 380,230" fill="#f39c12" stroke="#e67e22" stroke-width="2"/>
+                <text x="380" y="205" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Split</text>
+            </g>
+            
+            <!-- BM25 Path -->
+            <line x1="390" y1="180" x2="450" y2="100" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <rect x="450" y="50" width="140" height="50" rx="8" fill="#3498db" stroke="#2980b9" stroke-width="2"/>
+                <text x="520" y="72" text-anchor="middle" fill="white" font-size="12" font-weight="bold">BM25 Search</text>
+                <text x="520" y="87" text-anchor="middle" fill="white" font-size="10">Inverted Index</text>
+            </g>
+            
+            <line x1="590" y1="75" x2="650" y2="75" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <rect x="650" y="50" width="100" height="50" rx="8" fill="#5dade2" stroke="#3498db" stroke-width="2"/>
+                <text x="700" y="70" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Top K₁</text>
+                <text x="700" y="85" text-anchor="middle" fill="white" font-size="10">R_bm25</text>
+            </g>
+            
+            <!-- HNSW Path -->
+            <line x1="390" y1="220" x2="450" y2="300" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <rect x="450" y="250" width="140" height="50" rx="8" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                <text x="520" y="270" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Encode Query</text>
+                <text x="520" y="285" text-anchor="middle" fill="white" font-size="10">Sentence-BERT</text>
+            </g>
+            
+            <line x1="590" y1="275" x2="650" y2="275" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <rect x="650" y="250" width="140" height="50" rx="8" fill="#e74c3c" stroke="#c0392b" stroke-width="2"/>
+                <text x="720" y="270" text-anchor="middle" fill="white" font-size="12" font-weight="bold">HNSW ANN</text>
+                <text x="720" y="285" text-anchor="middle" fill="white" font-size="10">Vector Search</text>
+            </g>
+            
+            <line x1="790" y1="275" x2="850" y2="275" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <rect x="850" y="250" width="100" height="50" rx="8" fill="#ec7063" stroke="#e74c3c" stroke-width="2"/>
+                <text x="900" y="270" text-anchor="middle" fill="white" font-size="11" font-weight="bold">Top K₂</text>
+                <text x="900" y="285" text-anchor="middle" fill="white" font-size="10">R_hnsw</text>
+            </g>
+            
+            <!-- Merge to RRF -->
+            <line x1="750" y1="75" x2="1000" y2="150" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <line x1="950" y1="275" x2="1000" y2="210" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            
+            <g class="node">
+                <rect x="1000" y="150" width="160" height="80" rx="8" fill="url(#grad3)" stroke="#229954" stroke-width="2"/>
+                <text x="1080" y="175" text-anchor="middle" fill="white" font-size="13" font-weight="bold">RRF Fusion</text>
+                <text x="1080" y="195" text-anchor="middle" fill="white" font-size="11">score = Σ 1/(k+rank)</text>
+                <text x="1080" y="215" text-anchor="middle" fill="white" font-size="10">k = 60 (default)</text>
+            </g>
+            
+            <!-- Output -->
+            <line x1="1160" y1="190" x2="1210" y2="190" stroke="#34495e" stroke-width="2" marker-end="url(#arrowhead)"/>
+            <g class="node">
+                <ellipse cx="1250" cy="190" rx="50" ry="35" fill="url(#grad1)" stroke="#2980b9" stroke-width="2"/>
+                <text x="1250" y="185" text-anchor="middle" fill="white" font-size="12" font-weight="bold">Top N</text>
+                <text x="1250" y="200" text-anchor="middle" fill="white" font-size="10">Output</text>
+            </g>
+            
+            <!-- Labels -->
+            <text x="520" y="30" text-anchor="middle" fill="#2c3e50" font-size="11" font-weight="bold">Path 1: Keyword</text>
+            <text x="720" y="330" text-anchor="middle" fill="#2c3e50" font-size="11" font-weight="bold">Path 2: Semantic</text>
+        </svg>
+        
+        <div class="complexity-box">
+            <h3>⏱️ Time Complexity</h3>
+            <p><strong>BM25 Search:</strong> <span class="code">O(|q| × log N)</span> where |q| = query length, N = document count</p>
+            <p><strong>HNSW Search:</strong> <span class="code">O(d × log N)</span> where d = embedding dimension (768)</p>
+            <p><strong>RRF Fusion:</strong> <span class="code">O(K₁ + K₂)</span> typically K₁ = K₂ = 100</p>
+            <p><strong>Overall:</strong> <span class="code">O(log N)</span> due to parallel execution</p>
+        </div>
+        
+        <div class="complexity-box" style="border-left-color: #e74c3c; margin-top: 15px;">
+            <h3>💾 Space Complexity</h3>
+            <p><strong>Inverted Index:</strong> <span class="code">O(V × N)</span> where V = vocabulary size</p>
+            <p><strong>HNSW Index:</strong> <span class="code">O(N × d)</span> stored in memory for fast access</p>
+            <p><strong>Overall:</strong> <span class="code">O(N × d)</span> dominated by vector index</p>
+        </div>
+    </div>
+</body>
+</html>

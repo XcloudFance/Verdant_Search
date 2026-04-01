@@ -1,0 +1,721 @@
+\section{Use Case Descriptions}
+
+\subsection*{Module 1: User Management System}
+\label{module:minipage:user_management}
+
+% --- UC-1: User Registration ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: User Registration (UC-1)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & User Registration \\
+    \hline
+    Use Case ID & UC-1 \\
+    \hline
+    Description & This use case allows new users to create an account on the Verdant Search platform by providing registration details. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & User (prospective), System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User does not have an existing account in the system.
+            \item System is operational and accessible.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item A new user account is created and stored in the database.
+            \item Verification email is sent to the registered email address.
+            \item User can proceed to login after email verification.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        A prospective user navigates to the registration page and submits registration details.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User navigates to the registration page.
+            \item System displays registration form requesting email and password.
+            \item User enters email address and chooses a password (FR-1.1).
+            \item System validates email format and password strength requirements (minimum 8 characters, uppercase, lowercase, number, special character) (FR-1.2).
+            \item System checks if email already exists in database.
+            \item System creates new user account with hashed password.
+            \item System sends verification email to registered address (FR-1.3).
+            \item System displays confirmation message instructing user to verify email.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User clicks verification link in email: System marks account as verified and redirects to login page.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If email already exists: System displays error message "Email already registered" and prompts user to login or reset password.
+            \item If password does not meet strength requirements: System displays specific validation error (e.g., "Password must contain at least one uppercase letter").
+            \item If email format is invalid: System displays error "Please enter a valid email address".
+            \item If email service fails: System logs error, creates account but displays warning that verification email may be delayed.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-2: User Login via SSO ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: User Login via SSO (UC-2)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & User Login via SSO \\
+    \hline
+    Use Case ID & UC-2 \\
+    \hline
+    Description & This use case allows users to authenticate using Single Sign-On providers (LDAP, Okta, Azure AD) integrated with Infinity Datatech's identity management system. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & User, System, SSO Provider \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User has valid credentials with the SSO provider.
+            \item System has configured SSO integration with the provider.
+            \item System is operational and reachable.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is authenticated and session is established.
+            \item JWT token is generated and provided to user client.
+            \item User is redirected to main search interface.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User clicks "Sign in with SSO" button on login page.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User navigates to login page and selects SSO authentication option.
+            \item System redirects user to configured SSO provider login page.
+            \item User authenticates with SSO provider using their corporate credentials.
+            \item SSO provider validates credentials using LDAP, Okta, or Azure AD (FR-1.4).
+            \item SSO provider returns authentication token using OAuth2 or SAML protocol (FR-1.5).
+            \item System validates authentication token from SSO provider.
+            \item System creates or retrieves user account based on SSO identifier.
+            \item System generates JWT token for session management (FR-1.6).
+            \item System stores JWT token in secure HTTP-only cookie.
+            \item System redirects user to main search interface.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item First-time SSO user: System creates new account automatically using SSO profile information.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If SSO authentication fails: System displays error message and redirects back to login page.
+            \item If SSO provider is unreachable: System displays service unavailable message and suggests using email/password login.
+            \item If authentication token validation fails: System logs security event and denies access.
+            \item If user account is disabled: System displays "Account suspended" message and contacts administrator.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-12: Submit Search Query ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Submit Search Query (UC-12)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Submit Search Query \\
+    \hline
+    Use Case ID & UC-12 \\
+    \hline
+    Description & This use case allows users to initiate a search by submitting a text query, which triggers the hybrid retrieval pipeline combining BM25 and vector search. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & User, System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is authenticated and has active session.
+            \item Search indices (BM25 inverted index and HNSW vector index) are built and available.
+            \item System backend services are operational.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Query is processed and sanitized.
+            \item Search query is logged for analytics.
+            \item Hybrid retrieval pipeline is triggered.
+            \item User receives ranked search results.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User types query into search box and presses Enter or clicks Search button.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User enters search query in text input field (FR-2.1).
+            \item System validates query is not empty and within length limits.
+            \item System sanitizes query to prevent injection attacks (removes special characters, validates encoding) (FR-2.2).
+            \item System normalizes query text (lowercasing, removing extra whitespace).
+            \item System optionally expands query with synonyms if synonym detection is enabled (FR-2.3).
+            \item System logs query with user ID, timestamp, and session information.
+            \item System initiates parallel execution of BM25 keyword search (UC-16) and vector search (UC-17).
+            \item System displays loading indicator to user.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User refines existing search: System preserves previous context and stores query history.
+            \item System detects similar recent query: System retrieves cached results if available within freshness window (5 minutes).
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If query is empty: System displays "Please enter a search query" message.
+            \item If query exceeds maximum length (1000 characters): System displays "Query too long, please shorten" error.
+            \item If sanitization detects potential injection attack: System logs security event and displays generic error.
+            \item If backend search service is unavailable: System displays "Search service temporarily unavailable" and suggests retry.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+
+% --- UC-16: Perform Keyword Search ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Perform Keyword Search (UC-16)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Perform Keyword Search \\
+    \hline
+    Use Case ID & UC-16 \\
+    \hline
+    Description & This use case executes BM25 keyword-based retrieval using the inverted index to identify documents containing query terms. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Sanitized and normalized query is available from UC-12.
+            \item BM25 inverted index has been built and is loaded in memory.
+            \item Index contains document term frequencies and collection statistics.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Top K documents are retrieved based on BM25 scores.
+            \item Each result includes document ID, score, and matching term positions.
+            \item Results are passed to hybrid fusion component (UC-18).
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        Query submission (UC-12) triggers parallel keyword and vector search.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item System tokenizes query into individual terms.
+            \item System looks up each term in inverted index to retrieve posting lists (FR-2.13).
+            \item For each document in posting lists, system computes BM25 score using formula:
+            $$BM25(D,Q) = \sum_{t \in Q} IDF(t) \cdot \frac{f(t,D) \cdot (k_1 + 1)}{f(t,D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{avgdl})}$$
+            where $k_1=1.2$ and $b=0.75$ are tunable parameters (FR-2.14).
+            \item System ranks documents by descending BM25 score.
+            \item System retrieves top K=100 candidates with their scores and term positions (FR-2.15).
+            \item System returns results to hybrid search fusion component.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If query contains stop words: System optionally removes them based on configuration.
+            \item If query contains phrase: System uses term position information for proximity scoring.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If no documents match any query terms: System returns empty result set with message "No documents found".
+            \item If inverted index is corrupted or unavailable: System logs critical error and falls back to vector-only search.
+            \item If BM25 computation exceeds time limit (1 second): System returns partial results and logs performance warning.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-20: Apply Multimodal Reranking ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Apply Multimodal Reranking (UC-20)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Apply Multimodal Reranking \\
+    \hline
+    Use Case ID & UC-20 \\
+    \hline
+    Description & This use case applies a BLIP-2 based multimodal listwise reranker to top candidates from hybrid search, evaluating both textual content and visual layouts for relevance. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Hybrid search (UC-18) has produced merged top K=20 candidates.
+            \item BLIP-2 multimodal reranking model is loaded in GPU memory.
+            \item Document texts and associated images are accessible.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Documents are reranked based on multimodal relevance scores.
+            \item Final ranked list is returned to user interface.
+            \item Reranking latency is logged for performance monitoring.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        Hybrid search fusion completes and provides top K candidates.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item System receives top K=20 candidate documents from hybrid search (FR-2.25).
+            \item For each candidate, system retrieves document text and associated images.
+            \item System constructs multimodal prompt following setwise prompting format:
+            \begin{verbatim}
+Query: [user query]
+Documents:
+[1] Text: ... Images: [image1, image2]
+[2] Text: ... Images: [image3]
+...
+Rank these documents by relevance.
+            \end{verbatim}
+            \item System encodes prompt and images using BLIP-2 vision-language model (FR-2.26).
+            \item BLIP-2 Q-Former processes cross-modal interactions between text and images.
+            \item System decodes listwise ranking from model output.
+            \item System reorders candidates based on multimodal relevance scores (FR-2.27).
+            \item System returns final ranked list to display component.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Document has no images: System applies text-only reranking using BLIP-2 text encoder.
+            \item Candidate list has fewer than 20 documents: System reranks available candidates.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If BLIP-2 model inference fails: System logs error and returns original hybrid search ranking.
+            \item If reranking exceeds time limit (3 seconds): System terminates reranking and uses partial results.
+            \item If GPU memory is exhausted: System falls back to CPU inference or skips reranking.
+            \item If image loading fails: System excludes failed images and continues with available visual content.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-26: Trigger Distributed Crawling ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Trigger Distributed Crawling (UC-26)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Trigger Distributed Crawling \\
+    \hline
+    Use Case ID & UC-26 \\
+    \hline
+    Description & This use case allows administrators to initiate distributed crawling jobs coordinated via Kafka to ingest documents from configured data sources. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & Administrator, System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Administrator is authenticated with appropriate permissions.
+            \item Data sources are configured with valid credentials (UC-25).
+            \item Kafka cluster and crawler worker nodes are operational.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Crawling job is created and queued in Kafka.
+            \item Worker nodes begin processing crawl tasks.
+            \item Crawling progress is visible in monitoring dashboard.
+            \item Documents are extracted and queued for indexing.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        Administrator clicks "Start Crawl" button in admin dashboard or scheduled crawl time arrives.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item Administrator selects data sources to crawl from configuration list.
+            \item Administrator clicks "Start Crawl" button (FR-3.4).
+            \item System creates crawl job with unique job ID and timestamp.
+            \item System partitions crawl tasks across configured data sources.
+            \item System publishes crawl tasks to Kafka topic "crawl-tasks" (FR-3.5).
+            \item Kafka distributes tasks to available crawler worker nodes.
+            \item Each worker node consumes assigned tasks and begins crawling.
+            \item Workers report progress back to coordinator via Kafka "crawl-status" topic.
+            \item System aggregates progress metrics and updates dashboard.
+            \item Upon completion, workers publish extracted documents to "documents-ingested" topic.
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Incremental crawl: System retrieves last crawl timestamp and configures workers to fetch only updated documents.
+            \item Scheduled crawl: System triggers crawl automatically at configured interval without administrator action.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If worker node fails during crawl: System detects failure via missed heartbeats, reassigns tasks to healthy nodes (FR-3.6).
+            \item If data source is unreachable: Worker implements exponential backoff (1s, 2s, 4s, 8s) for retries, then marks task as failed.
+            \item If Kafka cluster is unavailable: System displays error message and prevents crawl initiation until Kafka is restored.
+            \item If all workers are busy: Tasks remain queued in Kafka until workers become available.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-43: Receive User Query (RAG) ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Receive User Query for RAG (UC-43)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Receive User Query for RAG \\
+    \hline
+    Use Case ID & UC-43 \\
+    \hline
+    Description & This use case handles user queries submitted to the RAG (Retrieval-Augmented Generation) system for AI-powered answer generation based on retrieved context. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & User, System \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item User is authenticated with active session.
+            \item Search and retrieval system is operational.
+            \item LLM inference service (SGLang) is running and responsive.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Query is validated and accepted.
+            \item Query is added to user conversation history.
+            \item Retrieval pipeline is triggered to fetch relevant context.
+            \item Query is queued for LLM processing.
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        User submits question in RAG chat interface and clicks Send or presses Enter.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item User types question into RAG chat input field.
+            \item User submits query by clicking Send button or pressing Enter.
+            \item System receives query via WebSocket or HTTP POST request (FR-5.1).
+            \item System validates query length is within 1000 character limit (FR-5.2).
+            \item System checks current system load and available LLM capacity.
+            \item System adds query to user conversation history stored in Redis.
+            \item System triggers hybrid retrieval pipeline (UC-18) to fetch relevant document chunks.
+            \item System displays typing indicator to user while processing.
+            \item Upon retrieval completion, system proceeds to context injection (UC-47).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Follow-up question detected: System identifies query as follow-up (UC-45) and triggers query rewriting (UC-55) before retrieval.
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If query exceeds 1000 characters: System displays "Query too long, please shorten to 1000 characters" error.
+            \item If system is under high load: System queues query (FR-5.3) and displays "Your question is queued, estimated wait: X seconds".
+            \item If LLM service is unavailable: System displays "Answer generation temporarily unavailable, please try again" message.
+            \item If retrieval returns no results: System proceeds to answer generation (UC-54) which indicates knowledge gap.
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+% --- UC-51: Generate Grounded Answer ---
+\begin{minipage}{\textwidth}
+\begin{center}
+    \textbf{Use Case: Generate Grounded Answer (UC-51)}
+\end{center}
+\vspace{0.5ex}
+\small
+
+\noindent
+\begin{tabularx}{\textwidth}{|p{0.28\textwidth}|X|}
+    \hline
+    \textbf{Property} & \textbf{Details} \\
+    \hline
+    Use Case Name & Generate Grounded Answer \\
+    \hline
+    Use Case ID & UC-51 \\
+    \hline
+    Description & This use case controls LLM answer generation to ensure responses are grounded exclusively in retrieved context, preventing hallucination. \\
+    \hline
+    Priority & High \\
+    \hline
+    Actor & System, LLM \\
+    \hline
+    Pre-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Context has been injected into LLM prompt (UC-47).
+            \item LLM model is loaded and ready for inference.
+            \item System prompt instructs model to avoid hallucination.
+        \end{itemize}%
+        } \\
+    \hline
+    Post-condition &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item LLM generates answer based only on provided context.
+            \item Answer includes inline citations to source chunks.
+            \item Uncertain claims are marked with confidence qualifiers.
+            \item Generated answer is streamed to user (UC-48).
+        \end{itemize}%
+        } \\
+    \hline
+    Triggering event &
+        \parbox[t]{\linewidth}{%
+        Context injection completes and final prompt is ready for LLM inference.
+        } \\
+    \hline
+    Flow of Events (Main Success Scenario) &
+        \parbox[t]{\linewidth}{%
+        \setlist[enumerate]{nosep, leftmargin=1.5em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{enumerate}
+            \item System constructs system prompt instructing LLM:
+            \begin{verbatim}
+You are an expert search assistant. Answer the question
+using ONLY the provided context. If the context doesn't
+contain enough information, say so clearly. Always cite
+sources using [1], [2] notation.
+            \end{verbatim}
+            (FR-5.26)
+            \item System appends retrieved context chunks with source identifiers.
+            \item System appends user question to prompt.
+            \item System submits complete prompt to LLM via SGLang inference API.
+            \item LLM generates answer tokens using only provided context (FR-5.25).
+            \item LLM includes citation markers [1], [2] referencing specific context chunks.
+            \item For uncertain claims, LLM uses qualifiers like "According to the documentation..." or "The context suggests..." (FR-5.27).
+            \item System streams generated tokens to user interface (UC-48).
+        \end{enumerate}%
+        } \\
+    \hline
+    Alternative Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item Context insufficient: LLM generates message "I cannot find enough information in the knowledge base to answer this question" (handled by UC-54).
+        \end{itemize}%
+        } \\
+    \hline
+    Exception Flow &
+        \parbox[t]{\linewidth}{%
+        \setlist[itemize]{nosep, leftmargin=1em, itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt, after=\strut}
+        \begin{itemize}
+            \item If LLM generates unsupported claim: Entailment validation (UC-53) flags the claim for review.
+            \item If LLM fails to include citations: System post-processes answer to add citations based on context matching.
+            \item If generation exceeds time limit (30 seconds): System terminates generation and displays partial answer with warning.
+            \item If LLM produces empty response: System displays "Unable to generate answer, please rephrase question".
+        \end{itemize}%
+        } \\
+    \hline
+\end{tabularx}
+\end{minipage}
+\bigskip
+
+\clearpage

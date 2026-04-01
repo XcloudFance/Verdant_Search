@@ -45,9 +45,9 @@ func main() {
 		// Auth routes (public)
 		auth := api.Group("/auth")
 		{
-			auth.POST("/register", handlers.Register(cfg.JWTSecret))
-			auth.POST("/login", handlers.Login(cfg.JWTSecret))
-			auth.POST("/sso", handlers.SSOLogin(cfg.JWTSecret, cfg.Auth0Domain))
+			auth.POST("/register", handlers.Register(cfg.JWTSecret, cfg.JWTExpiryHours))
+			auth.POST("/login", handlers.Login(cfg.JWTSecret, cfg.JWTExpiryHours))
+			auth.POST("/sso", handlers.SSOLogin(cfg.JWTSecret, cfg.Auth0Domain, cfg.JWTExpiryHours))
 		}
 
 		// Search route (public)
@@ -61,6 +61,14 @@ func main() {
 			history.POST("", handlers.AddToHistory)
 			history.DELETE("/:id", handlers.DeleteHistory)
 			history.DELETE("", handlers.ClearHistory)
+		}
+
+		// Protected user profile & preferences
+		user := api.Group("/user")
+		user.Use(middleware.JWTMiddleware(cfg.JWTSecret))
+		{
+			user.GET("/profile", handlers.GetProfile)
+			user.PUT("/preferences", handlers.UpdatePreferences)
 		}
 
 		// Crawler fleet management routes
