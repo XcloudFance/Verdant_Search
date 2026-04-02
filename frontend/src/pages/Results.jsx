@@ -13,6 +13,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import TimerIcon from '@mui/icons-material/Timer';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Navbar from '../components/layout/Navbar';
 import AmbientBackground from '../components/common/AmbientBackground';
@@ -23,6 +24,16 @@ import ImageResults from '../components/features/ImageResults';
 import { useHistory } from '../context/HistoryContext';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { PYTHON_API } from '../config';
+
+const formatIndexedAt = (iso) => {
+    if (!iso) return null;
+    const d = new Date(iso);
+    const diff = (Date.now() - d.getTime()) / 1000;
+    if (diff < 3600) return `Indexed ${Math.max(1, Math.floor(diff / 60))}m ago`;
+    if (diff < 86400) return `Indexed ${Math.floor(diff / 3600)}h ago`;
+    if (diff < 86400 * 30) return `Indexed ${Math.floor(diff / 86400)}d ago`;
+    return `Indexed ${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+};
 
 const Results = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -304,7 +315,7 @@ const Results = () => {
                             <Collapse in={filtersOpen}>
                                 <Box sx={{ mt: 1.5, p: 2, bgcolor: 'rgba(255,255,255,0.03)', borderRadius: 2, border: '1px solid rgba(255,255,255,0.08)', display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'flex-end' }}>
                                     <TextField
-                                        label="Date from"
+                                        label="Indexed from"
                                         type="date"
                                         size="small"
                                         value={filterDateFrom}
@@ -313,7 +324,7 @@ const Results = () => {
                                         sx={{ width: 160, '& .MuiInputBase-root': { color: 'text.primary', fontSize: 13 } }}
                                     />
                                     <TextField
-                                        label="Date to"
+                                        label="Indexed to"
                                         type="date"
                                         size="small"
                                         value={filterDateTo}
@@ -497,9 +508,17 @@ const Results = () => {
                                                     )}
                                                 </Stack>
 
-                                                <Typography variant="body2" color="text.secondary" mb={1}>
+                                                <Typography variant="body2" color="text.secondary" mb={0.5}>
                                                     {item.snippet}
                                                 </Typography>
+                                                {item.indexed_at && (
+                                                    <Stack direction="row" alignItems="center" spacing={0.4} mb={1}>
+                                                        <AccessTimeIcon sx={{ fontSize: 11, color: 'text.disabled' }} />
+                                                        <Typography variant="caption" sx={{ color: 'text.disabled', fontSize: 11 }}>
+                                                            {formatIndexedAt(item.indexed_at)}
+                                                        </Typography>
+                                                    </Stack>
+                                                )}
                                             </Box>
 
                                             {/* Pin Button */}

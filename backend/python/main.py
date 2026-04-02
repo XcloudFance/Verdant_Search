@@ -75,6 +75,7 @@ class SearchResult(BaseModel):
     pre_rank: Optional[int] = None    # Position before reranking
     post_rank: Optional[int] = None   # Position after reranking
     rank_delta: Optional[int] = None  # Positive = moved up
+    indexed_at: Optional[str] = None  # ISO timestamp when document was crawled/indexed
 
 class SearchResponse(BaseModel):
     query: str
@@ -282,6 +283,7 @@ async def search(
                     pre_rank=result.get("pre_rank"),
                     post_rank=result.get("post_rank"),
                     rank_delta=result.get("rank_delta"),
+                    indexed_at=document.created_at.isoformat() if document.created_at else None,
                 ))
 
         # 计算总页数
