@@ -21,6 +21,7 @@ import AnalyticsPanel from './pages/admin/AnalyticsPanel';
 import RerankerPanel from './pages/admin/RerankerPanel';
 import ConfigPanel from './pages/admin/ConfigPanel';
 import SearchDebugger from './pages/admin/SearchDebugger';
+import BackupPanel from './pages/admin/BackupPanel';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
                   <Route path="analytics" element={<AnalyticsPanel />} />
                   <Route path="reranker" element={<RerankerPanel />} />
                   <Route path="search-debug" element={<SearchDebugger />} />
+                  <Route path="backup" element={<BackupPanel />} />
                   <Route path="config" element={<ConfigPanel />} />
                 </Route>
               </Routes>

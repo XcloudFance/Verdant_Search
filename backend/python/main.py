@@ -15,6 +15,7 @@ from crawler_admin_router import router as crawler_admin_router
 from index_admin_router import router as index_admin_router
 from reranker_admin_router import router as reranker_admin_router
 from config_admin_router import router as config_admin_router
+from backup_router import router as backup_router
 from config import settings
 
 
@@ -25,6 +26,7 @@ app.include_router(crawler_admin_router)
 app.include_router(index_admin_router)
 app.include_router(reranker_admin_router)
 app.include_router(config_admin_router)
+app.include_router(backup_router)
 
 
 # CORS — allow all origins so the frontend can be served from any host.
