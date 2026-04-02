@@ -251,33 +251,58 @@ class SearchService:
         filters: Dict[str, Any],
         session: AsyncSession,
     ) -> set:
-        """Return set of document IDs matching the given metadata filters."""
-        conditions = ["1=1"]
-        params: Dict[str, Any] = {}
+        """
+        Return set of document IDs matching the given metadata filters.
+        Returns None on error or when no active filters, so the caller can
+        skip filtering entirely rather than returning zero results.
+        """
+        try:
+            date_from = filters.get("date_from")
+            date_to = filters.get("date_to")
+            content_type = filters.get("content_type")
+            source_type = filters.get("source_type")
 
-        date_from = filters.get("date_from")
-        date_to = filters.get("date_to")
-        content_type = filters.get("content_type")
-        source_type = filters.get("source_type")
+            # Nothing active — skip entirely
+            active = any([date_from, date_to,
+                          content_type and content_type not in ("all", "All", ""),
+                          source_type and source_type not in ("all", "All", "")])
+            if not active:
+                return None
 
-        if date_from:
-            conditions.append("created_at >= :date_from")
-            params["date_from"] = date_from
-        if date_to:
-            conditions.append("created_at <= :date_to")
-            params["date_to"] = date_to
-        if content_type and content_type not in ("all", "All", ""):
-            if content_type == "image":
-                conditions.append("jsonb_array_length(COALESCE(images, '[]'::jsonb)) > 0")
-            elif content_type == "text":
-                conditions.append("jsonb_array_length(COALESCE(images, '[]'::jsonb)) = 0")
-        if source_type and source_type not in ("all", "All", ""):
-            conditions.append("source_type = :source_type")
-            params["source_type"] = source_type
+            conditions = ["1=1"]
+            params: Dict[str, Any] = {}
 
-        sql = "SELECT id FROM documents WHERE " + " AND ".join(conditions)
-        result = await session.execute(text(sql), params)
-        return {row.id for row in result}
+            if date_from:
+                # date string "YYYY-MM-DD" — cast to date for clean comparison
+                conditions.append("created_at >= :date_from::date")
+                params["date_from"] = date_from
+            if date_to:
+                # +1 day so "2026-04-01" includes the full day
+                conditions.append("created_at < :date_to::date + interval '1 day'")
+                params["date_to"] = date_to
+
+            # images column is JSON (not JSONB) — use json_array_length
+            if content_type and content_type not in ("all", "All", ""):
+                if content_type == "image":
+                    conditions.append(
+                        "images IS NOT NULL AND json_array_length(images) > 0"
+                    )
+                elif content_type == "text":
+                    conditions.append(
+                        "(images IS NULL OR json_array_length(images) = 0)"
+                    )
+
+            if source_type and source_type not in ("all", "All", ""):
+                conditions.append("source_type = :source_type")
+                params["source_type"] = source_type
+
+            sql = "SELECT id FROM documents WHERE " + " AND ".join(conditions)
+            result = await session.execute(text(sql), params)
+            return {row.id for row in result}
+
+        except Exception as e:
+            print(f"⚠️  _apply_filters error (filters ignored): {e}")
+            return None  # fail-open: don't wipe results on filter error
 
     async def _bm25_search(
         self,
