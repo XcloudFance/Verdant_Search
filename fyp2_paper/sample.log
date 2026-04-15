@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2026.1.10)  26 MAR 2026 06:52
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2026.1.10)  8 APR 2026 13:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1014,32 +1014,28 @@ Dictionary: translator-theorem-dictionary, Language: English
 [2
 
 ]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 101
+
+[3
+
+]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 121
 .
  (/usr/share/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 101
+LaTeX Font Info:    Trying to load font information for U+msb on input line 121
 .
 
 (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Trying to load font information for OT1+mathkerncmss on inp
-ut line 101.
+ut line 121.
 
 (/usr/share/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
 File: ot1mathkerncmss.fd 2020/01/31 Fontinst v1.933 font definitions for OT1/ma
 thkerncmss.
 )
-Overfull \vbox (40.29852pt too high) detected at line 101
- []
-
-
-
-[3
-
-]
 
 [4
 
@@ -1052,12 +1048,12 @@ Overfull \vbox (40.29852pt too high) detected at line 101
 [6
 
 ]
-Overfull \hbox (1.20277pt too wide) in paragraph at lines 229--229
+Overfull \hbox (1.20277pt too wide) in paragraph at lines 215--215
  [] 
  []
 
 
-Overfull \hbox (1.20277pt too wide) in paragraph at lines 229--229
+Overfull \hbox (1.20277pt too wide) in paragraph at lines 215--215
  [] 
  []
 
@@ -1066,136 +1062,38 @@ Overfull \hbox (1.20277pt too wide) in paragraph at lines 229--229
 [7
 
 ]
-Overfull \hbox (1.35107pt too wide) in paragraph at lines 261--261
- []\OT1/cmtt/m/n/6 images/screenshots/user/login[]profile[]screens.png 
- []
+<loginpage.png, id=110, 1535.7375pt x 954.56625pt>
+File: loginpage.png Graphic file (type png)
+<use loginpage.png>
+Package pdftex.def Info: loginpage.png  used on input line 238.
+(pdftex.def)             Requested size: 172.79816pt x 107.40591pt.
 
-
-Overfull \hbox (3.97702pt too wide) in paragraph at lines 261--261
-[]|\OT1/cmss/bx/n/6 Module| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 261--261
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Overfull \hbox (11.0206pt too wide) in paragraph at lines 261--261
- [] 
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 238--238
+[]  
  []
 
 
 
 [8
 
-]
-Overfull \hbox (7.72617pt too wide) in paragraph at lines 294--294
- []\OT1/cmtt/m/n/6 images/screenshots/search/main[]search[]interface.png 
- []
-
-
-Overfull \hbox (3.97702pt too wide) in paragraph at lines 294--294
-[]|\OT1/cmss/bx/n/6 Module| 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
+ <./loginpage.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 262--262
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
+Underfull \hbox (badness 10000) in paragraph at lines 262--262
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
+Underfull \hbox (badness 10000) in paragraph at lines 262--262
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 294--294
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Overfull \hbox (11.0206pt too wide) in paragraph at lines 294--294
- [] 
- []
-
-
-Overfull \vbox (5.71368pt too high) detected at line 294
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 262--262
+[]  
  []
 
 
@@ -1203,52 +1101,33 @@ Overfull \vbox (5.71368pt too high) detected at line 294
 [9
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
+Underfull \hbox (badness 10000) in paragraph at lines 285--285
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 321--321
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Overfull \hbox (8.49245pt too wide) in paragraph at lines 321--321
- [] 
- []
-
-
-Overfull \vbox (30.60869pt too high) detected at line 321
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 285--285
+[]  
  []
 
 
@@ -1256,115 +1135,38 @@ Overfull \vbox (30.60869pt too high) detected at line 321
 [10
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
+<searchinterface2.png, id=128, 2223.30624pt x 1271.75125pt>
+File: searchinterface2.png Graphic file (type png)
+<use searchinterface2.png>
+Package pdftex.def Info: searchinterface2.png  used on input line 309.
+(pdftex.def)             Requested size: 172.7794pt x 98.83138pt.
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 351--351
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Overfull \hbox (10.3027pt too wide) in paragraph at lines 351--351
- [] 
- []
-
-
-Overfull \vbox (57.97911pt too high) detected at line 351
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 309--309
+[]  
  []
 
 
 
 [11
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
+ <./searchinterface2.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 332--332
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
+Underfull \hbox (badness 10000) in paragraph at lines 332--332
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
+Underfull \hbox (badness 10000) in paragraph at lines 332--332
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 380--380
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Overfull \hbox (10.3027pt too wide) in paragraph at lines 380--380
- [] 
- []
-
-
-Overfull \vbox (54.63695pt too high) detected at line 380
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 332--332
+[]  
  []
 
 
@@ -1372,110 +1174,82 @@ Overfull \vbox (54.63695pt too high) detected at line 380
 [12
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
+<results_conversational.png, id=139, 1878.01625pt x 1297.84875pt>
+File: results_conversational.png Graphic file (type png)
+<use results_conversational.png>
+Package pdftex.def Info: results_conversational.png  used on input line 354.
+(pdftex.def)             Requested size: 185.26222pt x 128.02995pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 354--354
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
+Underfull \hbox (badness 10000) in paragraph at lines 354--354
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
+Underfull \hbox (badness 10000) in paragraph at lines 354--354
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
+Underfull \hbox (badness 10000) in paragraph at lines 354--354
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
+Underfull \hbox (badness 10000) in paragraph at lines 354--354
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
-[]|\OT1/cmss/m/n/6 FR-
+Overfull \hbox (8.49245pt too wide) in paragraph at lines 354--354
+[]  
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 410--410
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Overfull \hbox (10.3027pt too wide) in paragraph at lines 410--410
- [] 
- []
-
-
-Overfull \vbox (57.97911pt too high) detected at line 410
+Overfull \vbox (3.59554pt too high) detected at line 354
  []
 
 
 
 [13
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
+ <./results_conversational.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 377--377
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
+Underfull \hbox (badness 10000) in paragraph at lines 377--377
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
+Underfull \hbox (badness 10000) in paragraph at lines 377--377
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
+Underfull \hbox (badness 1521) in paragraph at lines 377--377
+[]|\OT1/cmss/m/n/6 System shall rewrite follow-ups into stan-dalone
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 377--377
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
+Underfull \hbox (badness 10000) in paragraph at lines 377--377
 []|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 2134) in paragraph at lines 443--443
-[]|\OT1/cmss/m/n/6 System shall use LLM for query
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 443--443
-[]|\OT1/cmss/m/n/6 FR-
- []
-
-
-Overfull \hbox (8.49245pt too wide) in paragraph at lines 443--443
- [] 
- []
-
-
-Overfull \vbox (89.32146pt too high) detected at line 443
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 377--377
+[]  
  []
 
 
@@ -1483,36 +1257,82 @@ Overfull \vbox (89.32146pt too high) detected at line 443
 [14
 
 ]
+<crwaling_dashboard.png, id=151, 2225.31375pt x 1334.9875pt>
+File: crwaling_dashboard.png Graphic file (type png)
+<use crwaling_dashboard.png>
+Package pdftex.def Info: crwaling_dashboard.png  used on input line 399.
+(pdftex.def)             Requested size: 213.41037pt x 128.02698pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 399--399
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 399--399
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 399--399
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 399--399
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 399--399
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (10.3027pt too wide) in paragraph at lines 399--399
+[]  
+ []
+
+
+Overfull \vbox (3.59256pt too high) detected at line 399
+ []
+
+
 
 [15
 
-]
-Underfull \hbox (badness 10000) in paragraph at lines 490--490
-[]|\OT1/cmss/bx/n/8 Quality At-
+ <./crwaling_dashboard.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+[]|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 490--490
-[]|\OT1/cmss/m/n/8 NFR-
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+[]|\OT1/cmss/m/n/6 FR-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 490--490
-[]|\OT1/cmss/m/n/8 NFR-
+Underfull \hbox (badness 5417) in paragraph at lines 426--426
+[]|\OT1/cmss/m/n/6 System shall crawl lo-cal net-work shares via
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 490--490
-[]|\OT1/cmss/m/n/8 NFR-
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+[]|\OT1/cmss/m/n/6 FR-
  []
 
 
-Overfull \hbox (16.28368pt too wide) in paragraph at lines 490--490
- [] 
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+[]|\OT1/cmss/m/n/6 FR-
  []
 
 
-Overfull \vbox (76.0426pt too high) detected at line 490
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 426--426
+[]  
  []
 
 
@@ -1520,16 +1340,103 @@ Overfull \vbox (76.0426pt too high) detected at line 490
 [16
 
 ]
+<index_building.png, id=162, 1901.1025pt x 1332.98pt>
+File: index_building.png Graphic file (type png)
+<use index_building.png>
+Package pdftex.def Info: index_building.png  used on input line 451.
+(pdftex.def)             Requested size: 182.6082pt x 128.03784pt.
 
-[17
-
-]
-Overfull \hbox (3.82965pt too wide) in paragraph at lines 563--563
- [] 
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
  []
 
 
-Overfull \vbox (12.17615pt too high) detected at line 563
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 451--451
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (7.30754pt too wide) in paragraph at lines 451--451
+[]  
+ []
+
+
+
+[17
+
+ <./index_building.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 477--477
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 477--477
+[]  
  []
 
 
@@ -1537,15 +1444,83 @@ Overfull \vbox (12.17615pt too high) detected at line 563
 [18
 
 ]
-Overfull \vbox (71.40912pt too high) detected at line 596
+<rag_answer_citations.png, id=174, 2220.295pt x 1324.95pt>
+File: rag_answer_citations.png Graphic file (type png)
+<use rag_answer_citations.png>
+Package pdftex.def Info: rag_answer_citations.png  used on input line 501.
+(pdftex.def)             Requested size: 214.55527pt x 128.03477pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 501--501
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 501--501
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 501--501
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 501--501
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 501--501
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 501--501
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 501--501
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (7.30754pt too wide) in paragraph at lines 501--501
+[]  
  []
 
 
 
 [19
 
-]
-Overfull \vbox (66.14313pt too high) detected at line 617
+ <./rag_answer_citations.png (PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 526--526
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 526--526
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 526--526
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 526--526
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 526--526
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 526--526
+[]  
  []
 
 
@@ -1553,11 +1528,113 @@ Overfull \vbox (66.14313pt too high) detected at line 617
 [20
 
 ]
+<iterative1.png, id=186, 446.66875pt x 649.42625pt>
+File: iterative1.png Graphic file (type png)
+<use iterative1.png>
+Package pdftex.def Info: iterative1.png  used on input line 560.
+(pdftex.def)             Requested size: 72.41618pt x 105.28773pt.
+<iterative2.png, id=187, 467.7475pt x 276.03125pt>
+File: iterative2.png Graphic file (type png)
+<use iterative2.png>
+Package pdftex.def Info: iterative2.png  used on input line 560.
+(pdftex.def)             Requested size: 72.41618pt x 42.73386pt.
+<iterative3.png, id=188, 1863.96375pt x 1274.7625pt>
+File: iterative3.png Graphic file (type png)
+<use iterative3.png>
+Package pdftex.def Info: iterative3.png  used on input line 560.
+(pdftex.def)             Requested size: 72.41618pt x 49.52296pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 2134) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 System shall use LLM for query
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (8.49245pt too wide) in paragraph at lines 560--560
+[] 
+ []
+
+
+Overfull \vbox (7.47975pt too high) detected at line 560
+ []
+
+
 
 [21
 
-]
-Overfull \vbox (20.28319pt too high) detected at line 654
+ <./iterative1.png (PNG copy)> <./iterative2.png (PNG copy)> <./iterative3.png 
+(PNG copy)>]
+Underfull \hbox (badness 10000) in paragraph at lines 585--585
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 585--585
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 585--585
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 585--585
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 585--585
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 585--585
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 585--585
+[]|\OT1/cmss/m/n/6 FR-
+ []
+
+
+Overfull \hbox (4.54305pt too wide) in paragraph at lines 585--585
+[]  
  []
 
 
@@ -1565,14 +1642,39 @@ Overfull \vbox (20.28319pt too high) detected at line 654
 [22
 
 ]
-Overfull \vbox (75.81876pt too high) detected at line 681
- []
-
-
 
 [23
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 632--632
+[]|\OT1/cmss/bx/n/8 Quality At-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 632--632
+[]|\OT1/cmss/m/n/8 NFR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 632--632
+[]|\OT1/cmss/m/n/8 NFR-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 632--632
+[]|\OT1/cmss/m/n/8 NFR-
+ []
+
+
+Overfull \hbox (16.28368pt too wide) in paragraph at lines 632--632
+ [] 
+ []
+
+
+Overfull \vbox (76.0426pt too high) detected at line 632
+ []
+
+
 
 [24
 
@@ -1581,26 +1683,20 @@ Overfull \vbox (75.81876pt too high) detected at line 681
 [25
 
 ]
+Overfull \hbox (3.82965pt too wide) in paragraph at lines 705--705
+ [] 
+ []
+
+
+Overfull \vbox (12.17615pt too high) detected at line 705
+ []
+
+
 
 [26
 
 ]
-Overfull \hbox (41.51978pt too wide) in paragraph at lines 780--780
- []\OT1/cmtt/m/n/6 images/screenshots/code/blip2[]query[]construction.png 
- []
-
-
-Overfull \hbox (40.62724pt too wide) in paragraph at lines 780--780
- []\OT1/cmtt/m/n/6 images/screenshots/code/listwise[]score[]norm[]code.png 
- []
-
-
-Overfull \hbox (25.58205pt too wide) in paragraph at lines 780--780
- []\OT1/cmtt/m/n/6 images/screenshots/dev/mmdocir[]dataset[]page.png 
- []
-
-
-Overfull \vbox (15.94685pt too high) detected at line 780
+Overfull \vbox (71.40912pt too high) detected at line 738
  []
 
 
@@ -1608,7 +1704,7 @@ Overfull \vbox (15.94685pt too high) detected at line 780
 [27
 
 ]
-Overfull \vbox (63.40123pt too high) detected at line 808
+Overfull \vbox (66.14313pt too high) detected at line 759
  []
 
 
@@ -1616,23 +1712,25 @@ Overfull \vbox (63.40123pt too high) detected at line 808
 [28
 
 ]
-Overfull \vbox (142.69223pt too high) detected at line 839
- []
-
-
 
 [29
 
 ]
-Overfull \vbox (143.68785pt too high) detected at line 867
+<searchinterface.png, id=236, 1528.71124pt x 949.5475pt>
+File: searchinterface.png Graphic file (type png)
+<use searchinterface.png>
+Package pdftex.def Info: searchinterface.png  used on input line 795.
+(pdftex.def)             Requested size: 246.86143pt x 153.33612pt.
+
+Overfull \vbox (82.12357pt too high) detected at line 795
  []
 
 
 
 [30
 
-]
-Overfull \vbox (111.05226pt too high) detected at line 896
+ <./searchinterface.png (PNG copy)>]
+Overfull \vbox (75.81876pt too high) detected at line 822
  []
 
 
@@ -1640,69 +1738,34 @@ Overfull \vbox (111.05226pt too high) detected at line 896
 [31
 
 ]
-Overfull \vbox (103.55812pt too high) detected at line 920
- []
-
-
 
 [32
 
 ]
-Overfull \hbox (22.3945pt too wide) in paragraph at lines 946--946
- []\OT1/cmtt/m/n/6 images/screenshots/error/null[]login[]screen.png 
- []
-
-
-Overfull \hbox (39.35373pt too wide) in paragraph at lines 946--946
- []\OT1/cmtt/m/n/6 images/screenshots/code/null[]login[]validation[]code.png 
- []
-
-
-Overfull \hbox (55.29146pt too wide) in paragraph at lines 946--946
- []\OT1/cmtt/m/n/6 images/screenshots/code/golang[]login[]validation[]backend.p
-ng 
- []
-
-
-Overfull \hbox (43.81479pt too wide) in paragraph at lines 946--946
- []\OT1/cmtt/m/n/6 images/screenshots/error/null[]search[]query[]screen.png 
- []
-
-
-Overfull \vbox (6.05705pt too high) detected at line 946
- []
-
-
 
 [33
 
 ]
-Overfull \hbox (1.72212pt too wide) in paragraph at lines 969--969
- []\OT1/cmtt/m/n/6 images/screenshots/code/null[]datasource[]validation[]code.p
-ng 
- []
-
-
-Overfull \hbox (4.90967pt too wide) in paragraph at lines 969--969
- []\OT1/cmtt/m/n/6 images/screenshots/error/null[]profile[]displayname[]screen.
-png 
- []
-
-
-Overfull \vbox (16.95876pt too high) detected at line 969
- []
-
-
 
 [34
 
 ]
-Overfull \hbox (18.56232pt too wide) in paragraph at lines 987--987
- []\OT1/cmtt/m/n/6 images/screenshots/error/invalid[]register[]errors.png 
+Overfull \hbox (41.51978pt too wide) in paragraph at lines 921--921
+ []\OT1/cmtt/m/n/6 images/screenshots/code/blip2[]query[]construction.png 
  []
 
 
-Overfull \vbox (46.27957pt too high) detected at line 987
+Overfull \hbox (40.62724pt too wide) in paragraph at lines 921--921
+ []\OT1/cmtt/m/n/6 images/screenshots/code/listwise[]score[]norm[]code.png 
+ []
+
+
+Overfull \hbox (25.58205pt too wide) in paragraph at lines 921--921
+ []\OT1/cmtt/m/n/6 images/screenshots/dev/mmdocir[]dataset[]page.png 
+ []
+
+
+Overfull \vbox (15.94685pt too high) detected at line 921
  []
 
 
@@ -1710,8 +1773,7 @@ Overfull \vbox (46.27957pt too high) detected at line 987
 [35
 
 ]
-Overfull \hbox (32.33606pt too wide) in paragraph at lines 1003--1003
- []\OT1/cmtt/m/n/6 images/screenshots/error/auth[]login[]failed[]screen.png 
+Overfull \vbox (63.40123pt too high) detected at line 949
  []
 
 
@@ -1719,13 +1781,7 @@ Overfull \hbox (32.33606pt too wide) in paragraph at lines 1003--1003
 [36
 
 ]
-Overfull \hbox (30.41997pt too wide) in paragraph at lines 1022--1022
- []\OT1/cmtt/m/n/6 images/screenshots/error/confirm[]index[]rebuild[]modal.png 
-
- []
-
-
-Overfull \vbox (48.2029pt too high) detected at line 1022
+Overfull \vbox (142.69223pt too high) detected at line 980
  []
 
 
@@ -1733,9 +1789,7 @@ Overfull \vbox (48.2029pt too high) detected at line 1022
 [37
 
 ]
-Overfull \hbox (55.92033pt too wide) in paragraph at lines 1038--1038
- []\OT1/cmtt/m/n/6 images/screenshots/error/unprocessable[]duplicate[]crawl[]er
-ror.png 
+Overfull \vbox (143.68785pt too high) detected at line 1008
  []
 
 
@@ -1743,9 +1797,7 @@ ror.png
 [38
 
 ]
-Overfull \hbox (59.10788pt too wide) in paragraph at lines 1049--1049
- []\OT1/cmtt/m/n/6 images/screenshots/error/unprocessable[]index[]rebuilding[]e
-rror.png 
+Overfull \vbox (111.05226pt too high) detected at line 1037
  []
 
 
@@ -1753,17 +1805,7 @@ rror.png
 [39
 
 ]
-LaTeX Font Info:    Trying to load font information for OMS+cmss on input line 
-1073.
-LaTeX Font Info:    No file OMScmss.fd. on input line 1073.
-
-
-LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
-(Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 1073.
-
-
-Overfull \vbox (20.08226pt too high) detected at line 1073
+Overfull \vbox (103.55812pt too high) detected at line 1061
  []
 
 
@@ -1771,12 +1813,48 @@ Overfull \vbox (20.08226pt too high) detected at line 1073
 [40
 
 ]
+Overfull \hbox (22.3945pt too wide) in paragraph at lines 1087--1087
+ []\OT1/cmtt/m/n/6 images/screenshots/error/null[]login[]screen.png 
+ []
+
+
+Overfull \hbox (39.35373pt too wide) in paragraph at lines 1087--1087
+ []\OT1/cmtt/m/n/6 images/screenshots/code/null[]login[]validation[]code.png 
+ []
+
+
+Overfull \hbox (55.29146pt too wide) in paragraph at lines 1087--1087
+ []\OT1/cmtt/m/n/6 images/screenshots/code/golang[]login[]validation[]backend.p
+ng 
+ []
+
+
+Overfull \hbox (43.81479pt too wide) in paragraph at lines 1087--1087
+ []\OT1/cmtt/m/n/6 images/screenshots/error/null[]search[]query[]screen.png 
+ []
+
+
+Overfull \vbox (6.05705pt too high) detected at line 1087
+ []
+
+
 
 [41
 
 ]
-Overfull \hbox (82.53253pt too wide) in paragraph at lines 1123--1123
- [] 
+Overfull \hbox (1.72212pt too wide) in paragraph at lines 1110--1110
+ []\OT1/cmtt/m/n/6 images/screenshots/code/null[]datasource[]validation[]code.p
+ng 
+ []
+
+
+Overfull \hbox (4.90967pt too wide) in paragraph at lines 1110--1110
+ []\OT1/cmtt/m/n/6 images/screenshots/error/null[]profile[]displayname[]screen.
+png 
+ []
+
+
+Overfull \vbox (16.95876pt too high) detected at line 1110
  []
 
 
@@ -1784,23 +1862,12 @@ Overfull \hbox (82.53253pt too wide) in paragraph at lines 1123--1123
 [42
 
 ]
-Underfull \hbox (badness 3646) in paragraph at lines 1168--1168
-[]|\OT1/cmss/m/n/6 201 Cre-ated; ver-i-fi-ca-tion
+Overfull \hbox (18.56232pt too wide) in paragraph at lines 1128--1128
+ []\OT1/cmtt/m/n/6 images/screenshots/error/invalid[]register[]errors.png 
  []
 
 
-Underfull \hbox (badness 1014) in paragraph at lines 1168--1168
-[]|\OT1/cmss/m/n/6 Login with valid cre-
- []
-
-
-Underfull \hbox (badness 1303) in paragraph at lines 1168--1168
-[]|\OT1/cmss/m/n/6 200 OK; JWT to-ken re-
- []
-
-
-Underfull \hbox (badness 1189) in paragraph at lines 1168--1168
-\OT1/cmss/m/n/6 sion ex-pired, please lo-gin
+Overfull \vbox (46.27957pt too high) detected at line 1128
  []
 
 
@@ -1808,82 +1875,22 @@ Underfull \hbox (badness 1189) in paragraph at lines 1168--1168
 [43
 
 ]
-Underfull \hbox (badness 1688) in paragraph at lines 1201--1201
-[]|\OT1/cmss/m/n/6 200 OK; re-sults com-bine
+Overfull \hbox (32.33606pt too wide) in paragraph at lines 1144--1144
+ []\OT1/cmtt/m/n/6 images/screenshots/error/auth[]login[]failed[]screen.png 
  []
-
-
-Underfull \hbox (badness 2359) in paragraph at lines 1201--1201
-\OT1/cmss/m/n/6 RRF; mul-ti-modal con-tent
- []
-
-
-Underfull \hbox (badness 7238) in paragraph at lines 1201--1201
-[]|\OT1/cmss/m/n/6 Multimodal rerank-ing
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1201--1201
-\OT1/cmss/m/n/6 scores ap-plied; image-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1201--1201
-\OT1/cmss/m/n/6 relevant doc-u-ments pro-
- []
-
-
-LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
-(Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textbraceleft' on input line 1201.
 
 
 
 [44
 
 ]
-Underfull \hbox (badness 1297) in paragraph at lines 1230--1230
-[]|\OT1/cmss/m/n/6 Response in-cludes snip-pet
+Overfull \hbox (30.41997pt too wide) in paragraph at lines 1163--1163
+ []\OT1/cmtt/m/n/6 images/screenshots/error/confirm[]index[]rebuild[]modal.png 
+
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1230--1230
-\OT1/cmss/m/n/6 with ``ma-chine learn-ing
- []
-
-
-Underfull \hbox (badness 2080) in paragraph at lines 1230--1230
-[]|\OT1/cmss/m/n/6 Follow-up query trig-
- []
-
-
-Underfull \hbox (badness 2401) in paragraph at lines 1230--1230
-[]|\OT1/cmss/m/n/6 System rewrites to stan-
- []
-
-
-Underfull \hbox (badness 1132) in paragraph at lines 1230--1230
-\OT1/cmss/m/n/6 trig-gered; up-dated re-sults
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1230--1230
-[]|\OT1/cmss/m/n/6 Search with empty
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1230--1230
-[]|\OT1/cmss/m/n/6 P90 la-tency within
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1230--1230
-[]|\OT1/cmss/m/n/6 P90 re-sponse time $\OML/cmm/m/it/6 <$
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1230--1230
-\OT1/cmss/m/n/6 4000ms ver-i-fied via
+Overfull \vbox (48.2029pt too high) detected at line 1163
  []
 
 
@@ -1891,33 +1898,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 1230--1230
 [45
 
 ]
-Underfull \hbox (badness 1194) in paragraph at lines 1263--1263
-[]|\OT1/cmss/m/n/6 200 OK; an-swer con-tains
- []
-
-
-Underfull \hbox (badness 1215) in paragraph at lines 1263--1263
-\OT1/cmss/m/n/6 page num-ber, and chunk
- []
-
-
-Underfull \hbox (badness 5637) in paragraph at lines 1263--1263
-[]|\OT1/cmss/m/n/6 Grounding en-tail-ment
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1263--1263
-[]|\OT1/cmss/m/n/6 Follow-up trig-gers
- []
-
-
-Underfull \hbox (badness 1325) in paragraph at lines 1263--1263
-\OT1/cmss/m/n/6 query; new re-trieval ex-e-
- []
-
-
-Underfull \hbox (badness 2150) in paragraph at lines 1263--1263
-\OT1/cmss/m/n/6 cuted; up-dated grounded
+Overfull \hbox (55.92033pt too wide) in paragraph at lines 1179--1179
+ []\OT1/cmtt/m/n/6 images/screenshots/error/unprocessable[]duplicate[]crawl[]er
+ror.png 
  []
 
 
@@ -1925,33 +1908,9 @@ Underfull \hbox (badness 2150) in paragraph at lines 1263--1263
 [46
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 1284--1284
-[]|\OT1/cmss/m/n/6 Conversation his-tory
- []
-
-
-Underfull \hbox (badness 4805) in paragraph at lines 1284--1284
-[]|\OT1/cmss/m/n/6 Each LLM prompt con-
- []
-
-
-Underfull \hbox (badness 5652) in paragraph at lines 1284--1284
-\OT1/cmss/m/n/6 turns; con-text pre-served
- []
-
-
-Underfull \hbox (badness 2961) in paragraph at lines 1284--1284
-[]|\OT1/cmss/m/n/6 Source ref-er-ence for-
- []
-
-
-Underfull \hbox (badness 5667) in paragraph at lines 1284--1284
-[]|\OT1/cmss/m/n/6 References in-clude doc-u-
- []
-
-
-Underfull \hbox (badness 4660) in paragraph at lines 1284--1284
-\OT1/cmss/m/n/6 ment ti-tle, au-thor, and
+Overfull \hbox (59.10788pt too wide) in paragraph at lines 1190--1190
+ []\OT1/cmtt/m/n/6 images/screenshots/error/unprocessable[]index[]rebuilding[]e
+rror.png 
  []
 
 
@@ -1959,48 +1918,17 @@ Underfull \hbox (badness 4660) in paragraph at lines 1284--1284
 [47
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 1321--1321
-[]|\OT1/cmss/m/n/6 422 Un-pro-cess-able |
- []
+LaTeX Font Info:    Trying to load font information for OMS+cmss on input line 
+1214.
+LaTeX Font Info:    No file OMScmss.fd. on input line 1214.
 
 
-Underfull \hbox (badness 3158) in paragraph at lines 1321--1321
-[]|\OT1/cmss/m/n/6 Text chunks and image-
- []
+LaTeX Font Warning: Font shape `OMS/cmss/m/it' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 1214.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1321--1321
-\OT1/cmss/m/n/6 caption pairs ex-tracted;
- []
-
-
-Underfull \hbox (badness 5316) in paragraph at lines 1321--1321
-\OT1/cmss/m/n/6 stored in database with
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1321--1321
-[]|\OT1/cmss/m/n/6 HNSW in-dex re-
- []
-
-
-Underfull \hbox (badness 1147) in paragraph at lines 1321--1321
-\OT1/cmss/m/n/6 built/updated; new doc-u-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1321--1321
-[]|\OT1/cmss/m/n/6 Prometheus met-rics
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1321--1321
-[]|\OT1/cmss/m/n/6 200 OK; Prometheus-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1321--1321
-[]|\OT1/cmss/m/n/6 Grafana dash-board
+Overfull \vbox (20.08226pt too high) detected at line 1214
  []
 
 
@@ -2008,45 +1936,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 1321--1321
 [48
 
 ]
-Underfull \hbox (badness 2285) in paragraph at lines 1353--1353
-[]|\OT1/cmss/m/n/6 Data In-ges-tion + Search (Mul-ti-
- []
-
-
-Overfull \hbox (24.5206pt too wide) in paragraph at lines 1353--1353
- [] 
- []
-
-
-Overfull \vbox (33.77913pt too high) detected at line 1353
- []
-
-
 
 [49
 
 ]
-Underfull \hbox (badness 5924) in paragraph at lines 1383--1383
-[]|\OT1/cmss/m/n/6 LLM rewrites follow-up; new
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1383--1383
-\OT1/cmss/m/n/6 re-trieval trig-gered; up-dated
- []
-
-
-Underfull \hbox (badness 5924) in paragraph at lines 1383--1383
-[]|\OT1/cmss/m/n/6 LLM rewrites follow-up; new
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1383--1383
-\OT1/cmss/m/n/6 re-trieval trig-gered; up-dated
- []
-
-
-Overfull \hbox (36.9143pt too wide) in paragraph at lines 1383--1383
+Overfull \hbox (82.53253pt too wide) in paragraph at lines 1264--1264
  [] 
  []
 
@@ -2055,23 +1949,23 @@ Overfull \hbox (36.9143pt too wide) in paragraph at lines 1383--1383
 [50
 
 ]
-Underfull \hbox (badness 7064) in paragraph at lines 1410--1410
-[]|\OT1/cmss/m/n/6 User A (no Fi-nance ac-cess)
+Underfull \hbox (badness 3646) in paragraph at lines 1309--1309
+[]|\OT1/cmss/m/n/6 201 Cre-ated; ver-i-fi-ca-tion
  []
 
 
-Underfull \hbox (badness 1622) in paragraph at lines 1410--1410
-\OT1/cmss/m/n/6 re-sults; only per-mit-ted sources
+Underfull \hbox (badness 1014) in paragraph at lines 1309--1309
+[]|\OT1/cmss/m/n/6 Login with valid cre-
  []
 
 
-Underfull \hbox (badness 1931) in paragraph at lines 1410--1410
-[]|\OT1/cmss/m/n/6 Submit POST /search with-out
+Underfull \hbox (badness 1303) in paragraph at lines 1309--1309
+[]|\OT1/cmss/m/n/6 200 OK; JWT to-ken re-
  []
 
 
-Overfull \hbox (28.68369pt too wide) in paragraph at lines 1410--1410
- [] 
+Underfull \hbox (badness 1189) in paragraph at lines 1309--1309
+\OT1/cmss/m/n/6 sion ex-pired, please lo-gin
  []
 
 
@@ -2079,44 +1973,150 @@ Overfull \hbox (28.68369pt too wide) in paragraph at lines 1410--1410
 [51
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 1455--1455
-[]|\OT1/cmss/m/n/6 ``Query can-not be
+Underfull \hbox (badness 1688) in paragraph at lines 1342--1342
+[]|\OT1/cmss/m/n/6 200 OK; re-sults com-bine
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1455--1455
-[]|\OT1/cmss/m/n/6 ``Message can-not be
+Underfull \hbox (badness 2359) in paragraph at lines 1342--1342
+\OT1/cmss/m/n/6 RRF; mul-ti-modal con-tent
  []
 
 
-Overfull \hbox (25.3383pt too wide) in paragraph at lines 1455--1455
- [] 
+Underfull \hbox (badness 7238) in paragraph at lines 1342--1342
+[]|\OT1/cmss/m/n/6 Multimodal rerank-ing
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1455--1455
-[]|\OT1/cmss/m/n/6 CV-
+Underfull \hbox (badness 10000) in paragraph at lines 1342--1342
+\OT1/cmss/m/n/6 scores ap-plied; image-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1455--1455
-[]|\OT1/cmss/m/n/6 CV-
+Underfull \hbox (badness 10000) in paragraph at lines 1342--1342
+\OT1/cmss/m/n/6 relevant doc-u-ments pro-
  []
+
+
+LaTeX Font Warning: Font shape `OMS/cmss/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textbraceleft' on input line 1342.
 
 
 
 [52
 
 ]
+Underfull \hbox (badness 1297) in paragraph at lines 1371--1371
+[]|\OT1/cmss/m/n/6 Response in-cludes snip-pet
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1371--1371
+\OT1/cmss/m/n/6 with ``ma-chine learn-ing
+ []
+
+
+Underfull \hbox (badness 2080) in paragraph at lines 1371--1371
+[]|\OT1/cmss/m/n/6 Follow-up query trig-
+ []
+
+
+Underfull \hbox (badness 2401) in paragraph at lines 1371--1371
+[]|\OT1/cmss/m/n/6 System rewrites to stan-
+ []
+
+
+Underfull \hbox (badness 1132) in paragraph at lines 1371--1371
+\OT1/cmss/m/n/6 trig-gered; up-dated re-sults
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1371--1371
+[]|\OT1/cmss/m/n/6 Search with empty
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1371--1371
+[]|\OT1/cmss/m/n/6 P90 la-tency within
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1371--1371
+[]|\OT1/cmss/m/n/6 P90 re-sponse time $\OML/cmm/m/it/6 <$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1371--1371
+\OT1/cmss/m/n/6 4000ms ver-i-fied via
+ []
+
+
 
 [53
 
 ]
+Underfull \hbox (badness 1194) in paragraph at lines 1404--1404
+[]|\OT1/cmss/m/n/6 200 OK; an-swer con-tains
+ []
+
+
+Underfull \hbox (badness 1215) in paragraph at lines 1404--1404
+\OT1/cmss/m/n/6 page num-ber, and chunk
+ []
+
+
+Underfull \hbox (badness 5637) in paragraph at lines 1404--1404
+[]|\OT1/cmss/m/n/6 Grounding en-tail-ment
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1404--1404
+[]|\OT1/cmss/m/n/6 Follow-up trig-gers
+ []
+
+
+Underfull \hbox (badness 1325) in paragraph at lines 1404--1404
+\OT1/cmss/m/n/6 query; new re-trieval ex-e-
+ []
+
+
+Underfull \hbox (badness 2150) in paragraph at lines 1404--1404
+\OT1/cmss/m/n/6 cuted; up-dated grounded
+ []
+
+
 
 [54
 
 ]
-Overfull \vbox (4.76376pt too high) detected at line 1526
+Underfull \hbox (badness 10000) in paragraph at lines 1425--1425
+[]|\OT1/cmss/m/n/6 Conversation his-tory
+ []
+
+
+Underfull \hbox (badness 4805) in paragraph at lines 1425--1425
+[]|\OT1/cmss/m/n/6 Each LLM prompt con-
+ []
+
+
+Underfull \hbox (badness 5652) in paragraph at lines 1425--1425
+\OT1/cmss/m/n/6 turns; con-text pre-served
+ []
+
+
+Underfull \hbox (badness 2961) in paragraph at lines 1425--1425
+[]|\OT1/cmss/m/n/6 Source ref-er-ence for-
+ []
+
+
+Underfull \hbox (badness 5667) in paragraph at lines 1425--1425
+[]|\OT1/cmss/m/n/6 References in-clude doc-u-
+ []
+
+
+Underfull \hbox (badness 4660) in paragraph at lines 1425--1425
+\OT1/cmss/m/n/6 ment ti-tle, au-thor, and
  []
 
 
@@ -2124,17 +2124,66 @@ Overfull \vbox (4.76376pt too high) detected at line 1526
 [55
 
 ]
+Underfull \hbox (badness 10000) in paragraph at lines 1462--1462
+[]|\OT1/cmss/m/n/6 422 Un-pro-cess-able |
+ []
+
+
+Underfull \hbox (badness 3158) in paragraph at lines 1462--1462
+[]|\OT1/cmss/m/n/6 Text chunks and image-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1462--1462
+\OT1/cmss/m/n/6 caption pairs ex-tracted;
+ []
+
+
+Underfull \hbox (badness 5316) in paragraph at lines 1462--1462
+\OT1/cmss/m/n/6 stored in database with
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1462--1462
+[]|\OT1/cmss/m/n/6 HNSW in-dex re-
+ []
+
+
+Underfull \hbox (badness 1147) in paragraph at lines 1462--1462
+\OT1/cmss/m/n/6 built/updated; new doc-u-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1462--1462
+[]|\OT1/cmss/m/n/6 Prometheus met-rics
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1462--1462
+[]|\OT1/cmss/m/n/6 200 OK; Prometheus-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1462--1462
+[]|\OT1/cmss/m/n/6 Grafana dash-board
+ []
+
+
 
 [56
 
 ]
-Overfull \hbox (15.37271pt too wide) in paragraph at lines 1590--1590
- []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/software[]testing[]photo.png 
-
+Underfull \hbox (badness 2285) in paragraph at lines 1494--1494
+[]|\OT1/cmss/m/n/6 Data In-ges-tion + Search (Mul-ti-
  []
 
 
-Overfull \vbox (76.4672pt too high) detected at line 1590
+Overfull \hbox (24.5206pt too wide) in paragraph at lines 1494--1494
+ [] 
+ []
+
+
+Overfull \vbox (33.77913pt too high) detected at line 1494
  []
 
 
@@ -2142,24 +2191,28 @@ Overfull \vbox (76.4672pt too high) detected at line 1590
 [57
 
 ]
-Overfull \hbox (9.72249pt too wide) in paragraph at lines 1625--1625
+Underfull \hbox (badness 5924) in paragraph at lines 1524--1524
+[]|\OT1/cmss/m/n/6 LLM rewrites follow-up; new
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1524--1524
+\OT1/cmss/m/n/6 re-trieval trig-gered; up-dated
+ []
+
+
+Underfull \hbox (badness 5924) in paragraph at lines 1524--1524
+[]|\OT1/cmss/m/n/6 LLM rewrites follow-up; new
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1524--1524
+\OT1/cmss/m/n/6 re-trieval trig-gered; up-dated
+ []
+
+
+Overfull \hbox (36.9143pt too wide) in paragraph at lines 1524--1524
  [] 
- []
-
-
-Overfull \hbox (35.14468pt too wide) in paragraph at lines 1625--1625
- []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/meeting[]1[]photo.png 
- []
-
-
-Overfull \hbox (59.75252pt too wide) in paragraph at lines 1625--1625
- []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/meeting[]2[]testing[]photo.pn
-g 
- []
-
-
-Overfull \hbox (51.08241pt too wide) in paragraph at lines 1625--1625
- []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/meeting[]online[]teams.png 
  []
 
 
@@ -2167,63 +2220,23 @@ Overfull \hbox (51.08241pt too wide) in paragraph at lines 1625--1625
 [58
 
 ]
-Overfull \hbox (40.48917pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+Underfull \hbox (badness 7064) in paragraph at lines 1551--1551
+[]|\OT1/cmss/m/n/6 User A (no Fi-nance ac-cess)
  []
 
 
-Overfull \hbox (48.44002pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmtt/m/n/6 images/signatures/sig1.png 
+Underfull \hbox (badness 1622) in paragraph at lines 1551--1551
+\OT1/cmss/m/n/6 re-sults; only per-mit-ted sources
  []
 
 
-Overfull \hbox (2.10043pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmss/m/it/8 Supervisor 
+Underfull \hbox (badness 1931) in paragraph at lines 1551--1551
+[]|\OT1/cmss/m/n/6 Submit POST /search with-out
  []
 
 
-Overfull \hbox (4.20772pt too wide) in paragraph at lines 1651--1651
-[]|[]| 
- []
-
-
-Overfull \hbox (40.48917pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
- []
-
-
-Overfull \hbox (48.44002pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmtt/m/n/6 images/signatures/sig2.png 
- []
-
-
-Overfull \hbox (2.10043pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmss/m/it/8 Supervisor 
- []
-
-
-Overfull \hbox (4.20772pt too wide) in paragraph at lines 1651--1651
-[]|[]| 
- []
-
-
-Overfull \hbox (40.48917pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
- []
-
-
-Overfull \hbox (48.44002pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmtt/m/n/6 images/signatures/sig3.png 
- []
-
-
-Overfull \hbox (2.10043pt too wide) in paragraph at lines 1651--1651
- []\OT1/cmss/m/it/8 Supervisor 
- []
-
-
-Overfull \hbox (4.20772pt too wide) in paragraph at lines 1651--1651
-[]|[]| 
+Overfull \hbox (28.68369pt too wide) in paragraph at lines 1551--1551
+ [] 
  []
 
 
@@ -2231,63 +2244,28 @@ Overfull \hbox (4.20772pt too wide) in paragraph at lines 1651--1651
 [59
 
 ]
-Overfull \hbox (40.48917pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+Underfull \hbox (badness 10000) in paragraph at lines 1596--1596
+[]|\OT1/cmss/m/n/6 ``Query can-not be
  []
 
 
-Overfull \hbox (48.44002pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmtt/m/n/6 images/signatures/sig4.png 
+Underfull \hbox (badness 10000) in paragraph at lines 1596--1596
+[]|\OT1/cmss/m/n/6 ``Message can-not be
  []
 
 
-Overfull \hbox (2.10043pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmss/m/it/8 Supervisor 
+Overfull \hbox (25.3383pt too wide) in paragraph at lines 1596--1596
+ [] 
  []
 
 
-Overfull \hbox (4.20772pt too wide) in paragraph at lines 1673--1673
-[]|[]| 
+Underfull \hbox (badness 10000) in paragraph at lines 1596--1596
+[]|\OT1/cmss/m/n/6 CV-
  []
 
 
-Overfull \hbox (40.48917pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
- []
-
-
-Overfull \hbox (48.44002pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmtt/m/n/6 images/signatures/sig5.png 
- []
-
-
-Overfull \hbox (2.10043pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmss/m/it/8 Supervisor 
- []
-
-
-Overfull \hbox (4.20772pt too wide) in paragraph at lines 1673--1673
-[]|[]| 
- []
-
-
-Overfull \hbox (40.48917pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
- []
-
-
-Overfull \hbox (48.44002pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmtt/m/n/6 images/signatures/sig6.png 
- []
-
-
-Overfull \hbox (2.10043pt too wide) in paragraph at lines 1673--1673
- []\OT1/cmss/m/it/8 Supervisor 
- []
-
-
-Overfull \hbox (4.20772pt too wide) in paragraph at lines 1673--1673
-[]|[]| 
+Underfull \hbox (badness 10000) in paragraph at lines 1596--1596
+[]|\OT1/cmss/m/n/6 CV-
  []
 
 
@@ -2303,8 +2281,217 @@ Overfull \hbox (4.20772pt too wide) in paragraph at lines 1673--1673
 [62
 
 ]
+<UAT1.png, id=409, 771.88374pt x 671.50874pt>
+File: UAT1.png Graphic file (type png)
+<use UAT1.png>
+Package pdftex.def Info: UAT1.png  used on input line 1667.
+(pdftex.def)             Requested size: 213.95262pt x 186.12558pt.
+
+Overfull \vbox (3.85757pt too high) detected at line 1667
+ []
+
+
 
 [63
+
+ <./UAT1.png (PNG copy)>]
+<UAT2.png, id=415, 773.89125pt x 702.625pt>
+File: UAT2.png Graphic file (type png)
+<use UAT2.png>
+Package pdftex.def Info: UAT2.png  used on input line 1683.
+(pdftex.def)             Requested size: 213.95262pt x 194.24634pt.
+
+
+[64
+
+ <./UAT2.png (PNG copy)>]
+<UAT3.png, id=421, 813.0375pt x 364.36125pt>
+File: UAT3.png Graphic file (type png)
+<use UAT3.png>
+Package pdftex.def Info: UAT3.png  used on input line 1697.
+(pdftex.def)             Requested size: 226.29543pt x 101.40887pt.
+
+
+[65
+
+ <./UAT3.png (PNG copy)>]
+Overfull \hbox (15.37271pt too wide) in paragraph at lines 1723--1723
+ []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/software[]testing[]photo.png 
+
+ []
+
+
+Overfull \vbox (76.4672pt too high) detected at line 1723
+ []
+
+
+
+[66
+
+]
+Overfull \hbox (9.72249pt too wide) in paragraph at lines 1758--1758
+ [] 
+ []
+
+
+Overfull \hbox (35.14468pt too wide) in paragraph at lines 1758--1758
+ []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/meeting[]1[]photo.png 
+ []
+
+
+Overfull \hbox (59.75252pt too wide) in paragraph at lines 1758--1758
+ []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/meeting[]2[]testing[]photo.pn
+g 
+ []
+
+
+Overfull \hbox (51.08241pt too wide) in paragraph at lines 1758--1758
+ []\OT1/cmtt/m/n/6 images/screenshots/stakeholder/meeting[]online[]teams.png 
+ []
+
+
+
+[67
+
+]
+Overfull \hbox (40.48917pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+ []
+
+
+Overfull \hbox (48.44002pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmtt/m/n/6 images/signatures/sig1.png 
+ []
+
+
+Overfull \hbox (2.10043pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmss/m/it/8 Supervisor 
+ []
+
+
+Overfull \hbox (4.20772pt too wide) in paragraph at lines 1784--1784
+[]|[]| 
+ []
+
+
+Overfull \hbox (40.48917pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+ []
+
+
+Overfull \hbox (48.44002pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmtt/m/n/6 images/signatures/sig2.png 
+ []
+
+
+Overfull \hbox (2.10043pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmss/m/it/8 Supervisor 
+ []
+
+
+Overfull \hbox (4.20772pt too wide) in paragraph at lines 1784--1784
+[]|[]| 
+ []
+
+
+Overfull \hbox (40.48917pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+ []
+
+
+Overfull \hbox (48.44002pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmtt/m/n/6 images/signatures/sig3.png 
+ []
+
+
+Overfull \hbox (2.10043pt too wide) in paragraph at lines 1784--1784
+ []\OT1/cmss/m/it/8 Supervisor 
+ []
+
+
+Overfull \hbox (4.20772pt too wide) in paragraph at lines 1784--1784
+[]|[]| 
+ []
+
+
+
+[68
+
+]
+Overfull \hbox (40.48917pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+ []
+
+
+Overfull \hbox (48.44002pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmtt/m/n/6 images/signatures/sig4.png 
+ []
+
+
+Overfull \hbox (2.10043pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmss/m/it/8 Supervisor 
+ []
+
+
+Overfull \hbox (4.20772pt too wide) in paragraph at lines 1806--1806
+[]|[]| 
+ []
+
+
+Overfull \hbox (40.48917pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+ []
+
+
+Overfull \hbox (48.44002pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmtt/m/n/6 images/signatures/sig5.png 
+ []
+
+
+Overfull \hbox (2.10043pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmss/m/it/8 Supervisor 
+ []
+
+
+Overfull \hbox (4.20772pt too wide) in paragraph at lines 1806--1806
+[]|[]| 
+ []
+
+
+Overfull \hbox (40.48917pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmss/bx/n/9 [PLACEHOLDER] 
+ []
+
+
+Overfull \hbox (48.44002pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmtt/m/n/6 images/signatures/sig6.png 
+ []
+
+
+Overfull \hbox (2.10043pt too wide) in paragraph at lines 1806--1806
+ []\OT1/cmss/m/it/8 Supervisor 
+ []
+
+
+Overfull \hbox (4.20772pt too wide) in paragraph at lines 1806--1806
+[]|[]| 
+ []
+
+
+
+[69
+
+]
+
+[70
+
+]
+
+[71
+
+]
+
+[72
 
 ]
 \tf@nav=\write6
@@ -2329,13 +2516,13 @@ Package rerunfilecheck Info: File `sample.out' has not changed.
 (rerunfilecheck)             Checksum: E7719309EC8E93A33413D55B407566A6;1396.
  ) 
 Here is how much of TeX's memory you used:
- 26577 strings out of 475171
- 517755 string characters out of 5767095
- 894762 words of memory out of 5000000
- 48887 multiletter control sequences out of 15000+600000
- 576293 words of font info for 98 fonts, out of 8000000 for 9000
+ 26707 strings out of 475171
+ 520335 string characters out of 5767095
+ 895903 words of memory out of 5000000
+ 48999 multiletter control sequences out of 15000+600000
+ 575942 words of font info for 97 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 128i,16n,123p,402b,1053s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 128i,16n,123p,402b,1012s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/t
 exmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmss10.pfb></usr/share/texmf-dist/fonts/type1/public/
@@ -2349,10 +2536,10 @@ pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb></usr/share/texmf-dist/fon
 ts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texmf-dist/fonts/type1/
 public/amsfonts/symbols/msam7.pfb>
-Output written on sample.pdf (63 pages, 285815 bytes).
+Output written on sample.pdf (72 pages, 2738234 bytes).
 PDF statistics:
- 499 PDF objects out of 1000 (max. 8388607)
- 391 compressed objects within 4 object streams
- 135 named destinations out of 1000 (max. 500000)
- 125 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 563 PDF objects out of 1000 (max. 8388607)
+ 432 compressed objects within 5 object streams
+ 153 named destinations out of 1000 (max. 500000)
+ 190 words of extra memory for PDF output out of 10000 (max. 10000000)
 

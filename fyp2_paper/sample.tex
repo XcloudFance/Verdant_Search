@@ -69,20 +69,6 @@
       learning-to-rank approaches, vision language models, and
       retrieval-augmented generation techniques through literature review.
     \end{block}
-    \vspace{.4em}
-    \begin{block}{Fulfilment Methods}
-      \begin{itemize}
-        \item Literature Review conducted
-          \begin{itemize}\scriptsize
-            \item 9 research areas surveyed (architecture, keyword search,
-              vector embeddings, ANN, classical LTR, LLM ranking, VLMs,
-              RAG systems, benchmark datasets)
-            \item System Archeology for existing applications
-          \end{itemize}
-        \item Comparison with existing systems (Google, Perplexity,
-          MMDocIR, RankZephyr)
-      \end{itemize}
-    \end{block}
     \column{.48\textwidth}
     \begin{alertblock}{Research Gaps Identified}
       \begin{enumerate}\small
@@ -228,87 +214,158 @@
   \end{columns}
 \end{frame}
 
-%---- User Management Module --------------------------------------
-\begin{frame}{User Management Module}
+%---- User Management Module (1/3) --------------------------------
+\begin{frame}{User Management Module (1/3) — Registration \& Auth}
   \begin{columns}[t]
-    \column{.40\textwidth}
-    % PLACEHOLDER: Use Case Diagram — UC-01 Register, UC-02/03 Login/SSO, UC-04 Manage Profile, UC-05 Chat History, UC-06 Session
-    \imgph{2.2cm}{User Management Module Use Case Diagram (UC-01 to UC-11)}{images/diagrams/uc\_user\_management.png}
-    \vspace{.3em}
-    % PLACEHOLDER: Login page and Profile settings page screenshots
-    \imgph{3.2cm}{Login page (email/SSO) and User Profile settings page}{images/screenshots/user/login\_profile\_screens.png}
-    \column{.58\textwidth}
+    \column{.42\textwidth}
+    \includegraphics[width=\linewidth,height=4.5cm,keepaspectratio]{loginpage.png}
+    \column{.56\textwidth}
     \tiny\renewcommand{\arraystretch}{0.88}
-    \begin{table}
-      \begin{tabular}{p{.07\tw}|p{.07\tw}|p{.56\tw}|p{.14\tw}}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
         \toprule
-        \textbf{Module} & \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
         \midrule
-        \multirow{9}{*}{\rotatebox{90}{User Mgmt}}
-         & FR-1.1 & User shall register an account with email and password. & High \\
-         & FR-1.2 & System shall validate email format and password strength. & High \\
-         & FR-1.3 & System shall send verification email upon registration. & Medium \\
-         & FR-1.4 & User shall login with email/password or SSO authentication. & High \\
-         & FR-1.5 & System shall support SSO providers (LDAP, Okta, Azure AD). & High \\
-         & FR-1.6 & System shall authenticate user credentials securely. & High \\
-         & FR-1.7 & User shall manage profile with configurable preferences. & Medium \\
-         & FR-1.10 & User shall view and manage their chat history. & Medium \\
-         & FR-1.15 & System shall implement session management with timeout. & Medium \\
+        FR-1.1 & User shall register an account with email and password. & High \\
+        FR-1.2 & System shall validate email format and password strength. & High \\
+        FR-1.3 & System shall send verification email upon registration. & Medium \\
+        FR-1.4 & User shall login with email/password or SSO authentication. & High \\
+        FR-1.5 & System shall support SSO providers (LDAP, Okta, Azure AD). & High \\
+        FR-1.6 & System shall authenticate user credentials securely. & High \\
         \bottomrule
       \end{tabular}
-    \end{table}
   \end{columns}
 \end{frame}
 
-%---- Search & Retrieval Module (1/2) -----------------------------
-\begin{frame}{Search \& Retrieval Module (1/2) — Hybrid Search}
+%---- User Management Module (2/3) --------------------------------
+\begin{frame}{User Management Module (2/3) — Profile \& Preferences}
   \begin{columns}[t]
-    \column{.40\textwidth}
-    % PLACEHOLDER: Use Case Diagram — UC-12 Submit Query, UC-16 BM25, UC-17 Vector, UC-18 Hybrid
-    \imgph{2.2cm}{Search \& Retrieval Module Use Case Diagram (UC-12 to UC-24)}{images/diagrams/uc\_search\_retrieval.png}
-    \vspace{.3em}
-    % PLACEHOLDER: Main search interface with dual panel layout
-    \imgph{3.2cm}{Main Search Interface — query input, BM25 + vector hybrid results panel}{images/screenshots/search/main\_search\_interface.png}
-    \column{.58\textwidth}
+    \column{.42\textwidth}
+    % PLACEHOLDER: Settings / profile page showing language, result count, reranker toggle preferences
+    \imgph{4.5cm}{User profile and preferences settings page — language selector, results per page, reranker toggle}{images/screenshots/uc/user\_profile\_settings.png}
+    \column{.56\textwidth}
     \tiny\renewcommand{\arraystretch}{0.88}
-    \begin{table}
-      \begin{tabular}{p{.07\tw}|p{.07\tw}|p{.56\tw}|p{.14\tw}}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
         \toprule
-        \textbf{Module} & \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
         \midrule
-        \multirow{10}{*}{\rotatebox{90}{Search \& Retrieval}}
-         & FR-2.1 & User shall submit search query through text input. & High \\
-         & FR-2.2 & System shall sanitize and normalize query text. & High \\
-         & FR-2.4 & System shall perform keyword search using BM25. & High \\
-         & FR-2.5 & System shall build inverted index with term posting lists. & High \\
-         & FR-2.6 & System shall perform vector search using HNSW. & High \\
-         & FR-2.7 & System shall encode queries with Sentence-BERT embeddings. & High \\
-         & FR-2.8 & System shall support hybrid search with RRF fusion. & High \\
-         & FR-2.9 & System shall combine BM25 and vector scores with weighted fusion. & High \\
-         & FR-2.14 & System shall apply multimodal reranking to top candidates. & High \\
-         & FR-2.15 & System shall use BLIP-2 for cross-modal relevance scoring. & High \\
+        FR-1.7  & User shall manage profile with configurable preferences. & Medium \\
+        FR-1.8  & User shall update display name, avatar, and notification settings. & Medium \\
+        FR-1.9  & User shall configure language and search settings. & Medium \\
+        FR-1.10 & User shall view and manage their chat history. & Medium \\
+        FR-1.11 & System shall display chat history with timestamps and summaries. & Medium \\
+        FR-1.12 & User shall export chat history in JSON or markdown format. & Low \\
         \bottomrule
       \end{tabular}
-    \end{table}
   \end{columns}
 \end{frame}
 
-%---- Search & Retrieval Module (2/2) -----------------------------
-\begin{frame}{Search \& Retrieval Module (2/2) — Conversational Search}
+%---- User Management Module (3/3) --------------------------------
+\begin{frame}{User Management Module (3/3) — History \& Session}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    % PLACEHOLDER: Chat history panel showing list of past sessions with timestamps, search bar, delete button
+    \imgph{4.5cm}{Chat history panel — past session list with timestamps, keyword search, and delete controls}{images/screenshots/uc/chat\_history\_panel.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-1.13 & System shall provide search functionality within chat history. & Medium \\
+        FR-1.14 & User shall be able to delete individual or bulk chat entries. & Medium \\
+        FR-1.15 & System shall implement session management with timeout. & Medium \\
+        FR-1.16 & System shall automatically logout after 24 hours of inactivity. & Medium \\
+        FR-1.17 & System shall validate session tokens on each request. & Medium \\
+        \bottomrule
+      \end{tabular}
+  \end{columns}
+\end{frame}
+
+%---- Search & Retrieval Module (1/4) -----------------------------
+\begin{frame}{Search \& Retrieval Module (1/4) — Query \& BM25}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    \includegraphics[width=\linewidth,height=4.5cm,keepaspectratio]{searchinterface2.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-2.1 & User shall submit search query through text input. & High \\
+        FR-2.2 & System shall sanitize and normalize query text. & High \\
+        FR-2.3 & System shall support query expansion with synonyms. & Medium \\
+        FR-2.4 & System shall perform keyword search using BM25. & High \\
+        FR-2.5 & System shall build inverted index with term posting lists. & High \\
+        FR-2.6 & System shall perform vector search using HNSW. & High \\
+        FR-2.7 & System shall encode queries with Sentence-BERT embeddings. & High \\
+        \bottomrule
+      \end{tabular}
+  \end{columns}
+\end{frame}
+
+%---- Search & Retrieval Module (2/4) -----------------------------
+\begin{frame}{Search \& Retrieval Module (2/4) — Hybrid Fusion \& Reranking}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    % PLACEHOLDER: Diagram or admin panel showing BM25+HNSW RRF fusion scores and reranker output
+    \imgph{4.5cm}{Hybrid retrieval pipeline — BM25 and HNSW scores fused via RRF, then BLIP-2 multimodal reranking applied to top-K}{images/screenshots/uc/hybrid\_rerank\_pipeline.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-2.8  & System shall support hybrid search with RRF fusion. & High \\
+        FR-2.9  & System shall combine BM25 and vector scores with weighted fusion. & High \\
+        FR-2.10 & System shall support pre-filtering on metadata fields. & Medium \\
+        FR-2.14 & System shall apply multimodal reranking to top candidates. & High \\
+        FR-2.15 & System shall use BLIP-2 for cross-modal relevance scoring. & High \\
+        \bottomrule
+      \end{tabular}
+  \end{columns}
+\end{frame}
+
+%---- Search & Retrieval Module (3/4) -----------------------------
+\begin{frame}{Search \& Retrieval Module (3/4) — Results Display}
   \begin{columns}[t]
     \column{.55\textwidth}
-    % PLACEHOLDER: Search results page with multimodal content (images + text snippets), and follow-up query box
-    \imgph{5.8cm}{Search results with highlighted snippets and multimodal content / Follow-up conversational query interface}{images/screenshots/search/results\_conversational.png}
+    \includegraphics[width=\linewidth,height=4.5cm,keepaspectratio]{results_conversational.png}
     \column{.43\textwidth}
     \tiny\renewcommand{\arraystretch}{0.88}
-    \begin{table}
+    \vspace{-0.3em}
       \begin{tabular}{p{.08\tw}|p{.56\tw}|p{.20\tw}}
         \toprule
         \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
         \midrule
         FR-2.11 & System shall display search results as ranked document list. & High \\
         FR-2.12 & System shall show document snippets with highlighted keywords. & High \\
+        FR-2.13 & System shall return ranked list of context chunks. & High \\
         FR-2.16 & System shall extract and attach metadata to chunks. & Medium \\
+        FR-2.17 & Metadata shall include filename, page number, and timestamp. & Medium \\
+        \bottomrule
+      \end{tabular}
+  \end{columns}
+\end{frame}
+
+%---- Search & Retrieval Module (4/4) -----------------------------
+\begin{frame}{Search \& Retrieval Module (4/4) — Conversational Search}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    % PLACEHOLDER: Chat widget showing follow-up question being typed and rewritten query highlighted
+    \imgph{4.5cm}{Conversational search — follow-up question submitted, query rewriter produces standalone query, document panel updates}{images/screenshots/uc/conversational\_followup.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
         FR-2.18 & User shall ask follow-up questions to refine results. & High \\
         FR-2.19 & System shall track conversation history for context. & High \\
         FR-2.20 & System shall rewrite follow-ups into standalone queries. & High \\
@@ -316,108 +373,171 @@
         FR-2.22 & User shall filter results by metadata fields. & Medium \\
         \bottomrule
       \end{tabular}
-    \end{table}
   \end{columns}
 \end{frame}
 
-%---- Data Ingestion Module (1/2) ---------------------------------
-\begin{frame}{Data Ingestion Module (1/2) — Crawling \& Processing}
+%---- Data Ingestion Module (1/4) ---------------------------------
+\begin{frame}{Data Ingestion Module (1/4) — Source Config \& Crawling}
   \begin{columns}[t]
     \column{.52\textwidth}
-    % PLACEHOLDER: Admin data source configuration page / Kafka crawling job dashboard
-    \imgph{5.8cm}{Admin data source configuration panel / Kafka distributed crawling job status dashboard}{images/screenshots/ingestion/crawling\_dashboard.png}
+    \includegraphics[width=\linewidth,height=4.5cm,keepaspectratio]{crwaling_dashboard.png}
     \column{.46\textwidth}
-    % PLACEHOLDER: Data Ingestion Use Case Diagram (UC-25 to UC-42)
-    \imgph{2.2cm}{Data Ingestion Module Use Case Diagram (UC-25 Configure Sources, UC-26 Trigger Crawl, UC-33 Extract)}{images/diagrams/uc\_data\_ingestion.png}
-    \vspace{.3em}
-    \tiny\renewcommand{\arraystretch}{0.85}
-    \begin{table}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
       \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
         \toprule
         \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
         \midrule
-        FR-3.1  & Administrator shall configure data ingestion sources. & High \\
-        FR-3.3  & System shall trigger distributed crawling jobs. & High \\
-        FR-3.4  & System shall use Kafka for job coordination and task distribution. & High \\
-        FR-3.6  & System shall crawl Confluence spaces via REST API. & High \\
-        FR-3.8  & System shall crawl Google Drive files via Drive API. & High \\
-        FR-3.10 & System shall crawl Git repositories via Git protocol. & High \\
-        FR-3.12 & System shall extract text and images from documents. & High \\
-        FR-3.14 & System shall extract images with captions from documents. & High \\
+        FR-3.1 & Administrator shall configure data ingestion sources. & High \\
+        FR-3.2 & System shall validate source credentials and permissions. & High \\
+        FR-3.3 & System shall trigger distributed crawling jobs. & High \\
+        FR-3.4 & System shall use Kafka for job coordination and task distribution. & High \\
+        FR-3.5 & System shall implement exponential backoff for failed crawls. & Medium \\
         \bottomrule
       \end{tabular}
-    \end{table}
   \end{columns}
 \end{frame}
 
-%---- Data Ingestion Module (2/2) ---------------------------------
-\begin{frame}{Data Ingestion Module (2/2) — Chunking \& Indexing}
+%---- Data Ingestion Module (2/4) ---------------------------------
+\begin{frame}{Data Ingestion Module (2/4) — Source Connectors}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    % PLACEHOLDER: Admin panel showing Confluence, Google Drive, Git, SMB source connector configuration cards
+    \imgph{4.5cm}{Admin data source panel — Confluence, Google Drive, Git repo, and SMB/NFS connector configuration cards}{images/screenshots/uc/datasource\_connectors.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-3.6  & System shall crawl Confluence spaces via REST API. & High \\
+        FR-3.7  & System shall respect Confluence rate limits and pagination. & High \\
+        FR-3.8  & System shall crawl Google Drive files via Drive API. & High \\
+        FR-3.9  & System shall handle Google Docs, Sheets, Slides formats. & High \\
+        FR-3.10 & System shall crawl Git repositories via Git protocol. & High \\
+        FR-3.11 & System shall crawl local network shares via SMB/NFS. & High \\
+        FR-3.12 & System shall extract text and images from documents. & High \\
+        FR-3.13 & System shall use OCR for scanned PDF content. & Medium \\
+        FR-3.14 & System shall extract images with captions from documents. & High \\
+        \bottomrule
+      \end{tabular}
+  \end{columns}
+\end{frame}
+
+%---- Data Ingestion Module (3/4) ---------------------------------
+\begin{frame}[shrink=10]{Data Ingestion Module (3/4) — Chunking \& Index Building}
   \begin{columns}[t]
     \column{.52\textwidth}
-    % PLACEHOLDER: Index building progress screen / phpMyAdmin or pgAdmin showing index tables
-    \imgph{5.8cm}{Index building progress screen / Database showing inverted index and HNSW vector index tables}{images/screenshots/ingestion/index\_building.png}
+    \includegraphics[width=\linewidth,height=4.5cm,keepaspectratio]{index_building.png}
     \column{.46\textwidth}
-    \tiny\renewcommand{\arraystretch}{0.85}
-    \begin{table}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
       \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
         \toprule
         \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
         \midrule
         FR-3.15 & System shall chunk documents into semantic segments. & High \\
         FR-3.16 & System shall maintain chunk overlap for context preservation. & High \\
+        FR-3.17 & System shall support chunking by heading structure. & Medium \\
+        FR-3.18 & System shall support chunking by paragraph boundaries. & Medium \\
+        FR-3.19 & System shall support fixed token count chunking. & Medium \\
         FR-3.20 & System shall build inverted index for BM25. & High \\
         FR-3.21 & System shall use Pyserini for efficient index construction. & High \\
         FR-3.22 & System shall build HNSW vector index. & High \\
+        \bottomrule
+      \end{tabular}
+  \end{columns}
+\end{frame}
+
+%---- Data Ingestion Module (4/4) ---------------------------------
+\begin{frame}{Data Ingestion Module (4/4) — Embeddings \& Scheduling}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    % PLACEHOLDER: Admin index panel showing index stats, last refresh time, and cron schedule config
+    \imgph{4.5cm}{Admin index panel — HNSW index stats, CLIP embedding progress, cron schedule configuration and last sync timestamps}{images/screenshots/uc/index\_schedule\_panel.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
         FR-3.23 & System shall use FAISS for scalable vector indexing. & High \\
         FR-3.24 & System shall generate dense vector embeddings. & High \\
         FR-3.25 & System shall use CLIP for image embeddings. & High \\
+        FR-3.26 & Administrator shall monitor indexing progress. & Medium \\
+        FR-3.27 & Administrator shall manage index refresh schedule. & Medium \\
+        FR-3.28 & System shall support cron-based scheduling. & Medium \\
         FR-3.29 & System shall support real-time sync with webhooks. & Medium \\
         FR-3.30 & System shall support scheduled batch updates. & High \\
         \bottomrule
       \end{tabular}
-    \end{table}
   \end{columns}
 \end{frame}
 
-%---- RAG Generation Module (1/2) ---------------------------------
-\begin{frame}{RAG Generation Module (1/2) — Answer Generation}
+%---- RAG Generation Module (1/4) ---------------------------------
+\begin{frame}[shrink=10]{RAG Generation Module (1/4) — Context Injection \& Generation}
   \begin{columns}[t]
     \column{.52\textwidth}
-    % PLACEHOLDER: RAG chat interface showing AI-generated answer with inline citations
-    \imgph{5.8cm}{RAG Chat Interface — AI-generated answer with inline citations and source document references}{images/screenshots/rag/rag\_answer\_citations.png}
+    \includegraphics[width=\linewidth,height=4.5cm,keepaspectratio]{rag_answer_citations.png}
     \column{.46\textwidth}
-    % PLACEHOLDER: RAG Generation Use Case Diagram (UC-43 to UC-59)
-    \imgph{2.2cm}{RAG Generation Module Use Case Diagram (UC-43 Process Query, UC-44 View Answer, UC-47 Inject Context)}{images/diagrams/uc\_rag\_generation.png}
-    \vspace{.3em}
-    \tiny\renewcommand{\arraystretch}{0.85}
-    \begin{table}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
       \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
         \toprule
         \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
         \midrule
         FR-5.1 & System shall receive and process user query. & High \\
+        FR-5.2 & System shall validate query length and format. & High \\
         FR-5.3 & System shall inject retrieved context into LLM prompt. & High \\
+        FR-5.4 & System shall format context with document metadata. & High \\
         FR-5.5 & User shall view AI generated answer based on context. & High \\
+        FR-5.6 & System shall display answer with markdown formatting. & High \\
         FR-5.7 & LLM shall generate answers grounded in context. & High \\
-        FR-5.8 & LLM shall avoid hallucination by using only retrieved content. & High \\
-        FR-5.9 & System shall add inline citations to answers. & High \\
-        FR-5.11 & System shall validate answer grounding with entailment check. & Medium \\
-        FR-5.13 & System shall stream LLM response in real-time. & High \\
         \bottomrule
       \end{tabular}
-    \end{table}
   \end{columns}
 \end{frame}
 
-%---- RAG Generation Module (2/2) ---------------------------------
-\begin{frame}{RAG Generation Module (2/2) — Iterative Refinement}
+%---- RAG Generation Module (2/4) ---------------------------------
+\begin{frame}{RAG Generation Module (2/4) — Grounding, Citations \& Streaming}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    % PLACEHOLDER: AI answer panel showing inline citation markers linking to source document cards
+    \imgph{4.5cm}{AI answer panel — grounded response with inline citation markers (e.g.\ [1], [2]) linked to ranked document cards}{images/screenshots/uc/rag\_citations\_panel.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-5.8  & LLM shall avoid hallucination by using only retrieved content. & High \\
+        FR-5.9  & System shall add inline citations to answers. & High \\
+        FR-5.10 & Citations shall link to source document and page number. & High \\
+        FR-5.11 & System shall validate answer grounding with entailment check. & Medium \\
+        FR-5.12 & System shall indicate knowledge base limitations clearly. & High \\
+        FR-5.13 & System shall stream LLM response in real-time. & High \\
+        FR-5.14 & System shall use server-sent events for streaming. & High \\
+        \bottomrule
+      \end{tabular}
+  \end{columns}
+\end{frame}
+
+%---- RAG Generation Module (3/4) ---------------------------------
+\begin{frame}{RAG Generation Module (3/4) — Iterative Refinement}
   \begin{columns}[t]
     \column{.55\textwidth}
-    % PLACEHOLDER: Iterative RAG flow — follow-up question, query rewrite, new retrieval, updated answer
-    \imgph{5.8cm}{Iterative RAG — follow-up question triggers query rewriting, new retrieval, and updated grounded answer}{images/screenshots/rag/iterative\_rag\_flow.png}
+    \begin{minipage}{\linewidth}
+      \centering
+      \includegraphics[width=0.32\linewidth]{iterative1.png}\hfill
+      \includegraphics[width=0.32\linewidth]{iterative2.png}\hfill
+      \includegraphics[width=0.32\linewidth]{iterative3.png}
+    \end{minipage}
     \column{.43\textwidth}
     \tiny\renewcommand{\arraystretch}{0.88}
-    \begin{table}
+    \vspace{-0.3em}
       \begin{tabular}{p{.08\tw}|p{.56\tw}|p{.20\tw}}
         \toprule
         \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
@@ -425,20 +545,42 @@
         FR-5.15 & User shall ask follow-up questions. & High \\
         FR-5.16 & System shall detect follow-up vs new query intent. & High \\
         FR-5.17 & System shall maintain conversation history. & High \\
+        FR-5.18 & System shall limit history to last 10 conversation turns. & Medium \\
         FR-5.19 & System shall rewrite follow-ups with context. & High \\
         FR-5.20 & System shall use LLM for query rewriting with history. & High \\
         FR-5.21 & System shall trigger new retrieval after query rewriting. & High \\
-        FR-5.23 & System shall analyze user feedback on answers. & Medium \\
-        FR-5.25 & User shall view source citations. & High \\
         \bottomrule
       \end{tabular}
-    \end{table}
     \vspace{.3em}
     \begin{block}{Key Innovation}
-      \scriptsize \textbf{Closed-loop RAG}: LLM insights from the current
-      answer feed back into the next retrieval via query rewriting —
-      the only system with this capability.
+      \scriptsize \textbf{Closed-loop RAG}: LLM insights feed back into
+      the next retrieval via query rewriting.
     \end{block}
+  \end{columns}
+\end{frame}
+
+%---- RAG Generation Module (4/4) ---------------------------------
+\begin{frame}{RAG Generation Module (4/4) — Feedback \& Source Citations}
+  \begin{columns}[t]
+    \column{.42\textwidth}
+    % PLACEHOLDER: Source citations panel showing highlighted text in source document linked from AI answer
+    \imgph{4.5cm}{Source citation view — AI answer citation selected, source document highlighted at matched passage with metadata shown}{images/screenshots/uc/source\_citation\_view.png}
+    \column{.56\textwidth}
+    \tiny\renewcommand{\arraystretch}{0.88}
+    \vspace{-0.3em}
+      \begin{tabular}{p{.08\tw}|p{.60\tw}|p{.18\tw}}
+        \toprule
+        \textbf{ID} & \textbf{Requirement} & \textbf{Priority}\\
+        \midrule
+        FR-5.22 & System shall update document list with new results. & High \\
+        FR-5.23 & System shall analyze user feedback on answers. & Medium \\
+        FR-5.24 & System shall refine search strategy based on feedback. & Medium \\
+        FR-5.25 & User shall view source citations. & High \\
+        FR-5.26 & System shall highlight cited text in source documents. & Medium \\
+        FR-5.27 & System shall format source references. & Medium \\
+        FR-5.28 & References shall include title, author, and timestamp. & Medium \\
+        \bottomrule
+      \end{tabular}
   \end{columns}
 \end{frame}
 
@@ -648,8 +790,7 @@
       \end{itemize}
     \end{block}
     \column{.60\textwidth}
-    % PLACEHOLDER: Full dual-panel UI screenshot — left=results, right=RAG chat
-    \imgph{6.0cm}{Dual Panel UI: left panel showing ranked multimodal search results, right panel showing RAG chat with citations}{images/screenshots/app/dual\_panel\_ui.png}
+    \includegraphics[width=\linewidth,height=6.0cm,keepaspectratio]{searchinterface.png}
   \end{columns}
 \end{frame}
 
@@ -1092,7 +1233,7 @@
       Validation Testing  & 16 \quad
         \scriptsize(Null: 6 $\mid$ Conflict: 2 $\mid$ BVA: 4 $\mid$ EP: 4) \\
       \midrule
-      User Acceptance Test & 5 participants (domain experts + developers) \\
+      User Acceptance Test & 12 participants (domain experts + developers) \\
       \bottomrule
     \end{tabular}
   \end{table}
@@ -1507,59 +1648,51 @@
 \end{frame}
 
 %------ User Acceptance Testing ------------------------------------
-\begin{frame}{User Acceptance Testing}
-  \begin{block}{}
-    Ensures the system meets \textbf{user requirements and expectations}
-    in a real-world scenario before final deployment.
-    Conducted with \textbf{5 participants}: domain experts and software developers.
-  \end{block}
-  \begin{columns}[t]
-    \column{.48\textwidth}
-    % PLACEHOLDER: UAT Google Form or survey screenshot for Verdant-Search
-    \imgph{4.2cm}{User Acceptance Feedback Form for Verdant-Search (Google Forms screenshot showing search quality and usability questions)}{images/screenshots/uat/uat\_google\_form.png}
-    \column{.50\textwidth}
-    % PLACEHOLDER: UAT checklist showing all FR rows ticked for Verdant-Search
-    \imgph{5.0cm}{Verdant-Search UAT Acceptance Testing Checklist — all FR acceptance criteria showing pass marks}{images/screenshots/uat/uat\_checklist\_all\_fr.png}
-    \vspace{.2em}
-    \scriptsize \textbf{**complete test results attached in appendix}
+\begin{frame}{User Acceptance Testing — Participants \& Retrieval Relevance}
+  \begin{columns}[T]
+    \column{.52\textwidth}
+    \includegraphics[width=\linewidth]{UAT1.png}
+    \column{.46\textwidth}
+    \vspace{.4em}
+    \begin{block}{Setup}
+      \scriptsize \textbf{12 participants}: 66.7\% technical staff (engineers / sysadmins), 33.3\% product managers.
+    \end{block}
+    \vspace{.4em}
+    \begin{exampleblock}{Key Takeaway}
+      \scriptsize \textbf{83.3\%} (Agree + Strongly Agree) confirmed the system correctly retrieves relevant documents in the initial result set.
+    \end{exampleblock}
+    \vspace{.4em}
+    \scriptsize No participant disagreed with retrieval relevance.
   \end{columns}
 \end{frame}
 
-\begin{frame}{User Acceptance Testing — Overall Scores}
-  \begin{columns}[t]
-    \column{.48\textwidth}
-    \tiny\renewcommand{\arraystretch}{1.0}
-    \begin{table}
-      \centering
-      \begin{tabular}{p{.68\linewidth}|c}
-        \toprule
-        \textbf{Module / Criterion} & \textbf{Score (1--5)}\\
-        \midrule
-        \multicolumn{2}{c}{\textit{System Modules}} \\
-        User Management Module         & 4.5 \\
-        Search \& Retrieval Module      & 4.8 \\
-        Data Ingestion Module          & 4.6 \\
-        Analytics \& Monitoring Module & 4.4 \\
-        RAG Generation Module          & 4.7 \\
-        \midrule
-        \multicolumn{2}{c}{\textit{Overall System}} \\
-        Overall Search Quality            & 4.8 \\
-        Answer Accuracy (RAG)             & 4.7 \\
-        UI Learnability                   & 4.8 \\
-        Performance — Perceived Latency   & 4.5 \\
-        Overall Satisfaction              & 4.7 \\
-        \bottomrule
-      \end{tabular}
-    \end{table}
-    \column{.50\textwidth}
-    % PLACEHOLDER: UAT survey bar chart responses
-    \imgph{5.0cm}{UAT Feedback Survey Response bar charts — Search Quality, Answer Accuracy, Usability sections}{images/screenshots/uat/uat\_survey\_response\_charts.png}
-    \vspace{.3em}
-    \begin{exampleblock}{}
-      \scriptsize \textbf{UAT result shows high acceptance of the system}
+\begin{frame}{User Acceptance Testing — Hybrid Search \& Speed}
+  \begin{columns}[T]
+    \column{.52\textwidth}
+    \includegraphics[width=\linewidth]{UAT2.png}
+    \column{.46\textwidth}
+    \vspace{.4em}
+    \begin{exampleblock}{Hybrid Search Intent Matching}
+      \scriptsize \textbf{83.3\%} agreed the system effectively combines keyword-based and semantic search — query matches user intent.
     \end{exampleblock}
-    \vspace{.2em}
-    \scriptsize \textbf{**complete test results attached in appendix}
+    \vspace{.4em}
+    \begin{exampleblock}{Retrieval Speed}
+      \scriptsize \textbf{91.7\%} rated speed 4 or 5 out of 5. No participant rated below 3 — meets NFR-2.1 latency target.
+    \end{exampleblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{User Acceptance Testing — Reranker Effectiveness}
+  \begin{columns}[T]
+    \column{.55\textwidth}
+    \includegraphics[width=\linewidth]{UAT3.png}
+    \column{.43\textwidth}
+    \vspace{.4em}
+    \begin{exampleblock}{Key Takeaway}
+      \scriptsize \textbf{83.4\%} (Agree + Strongly Agree) confirmed the 2nd-stage reranking meaningfully improves result quality.
+    \end{exampleblock}
+    \vspace{.4em}
+    \scriptsize Validates the multimodal listwise LTR reranker as the core research contribution of this project.
   \end{columns}
 \end{frame}
 
